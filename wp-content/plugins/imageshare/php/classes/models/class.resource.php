@@ -33,17 +33,16 @@ class Resource {
                 'thumbnail'
             ),
             'public' => true
-            //'register_meta_box_cb' => array(Resource, 'meta_box_cb'),
         );
     }
 
     public static function manage_columns(array $columns) {
-        $columns['description'] = __('Description', 'imageshare');
-        $columns['contributor'] = __('Contributor', 'imageshare');
-        $columns['source'] = __('Source', 'imageshare');
-        $columns['subjects'] = __('Subject(s)', 'imageshare');
-        $columns['license'] = __('License', 'imageshare');
-        $columns['files'] = __('File(s)', 'imageshare');
+        $columns['description'] = self::i18n('Description');
+        $columns['contributor'] = self::i18n('Contributor');
+        $columns['source'] = self::i18n('Source');
+        $columns['subjects'] = self::i18n('Subject(s)');
+        $columns['license'] = self::i18n('License');
+        $columns['files'] = self::i18n('File(s)');
 
         return $columns;
     }
@@ -52,6 +51,10 @@ class Resource {
         $post = new Resource($post_id);
 
         switch ($column_name) {
+            case 'description':
+                echo $post->description;
+                break;
+
             case 'contributor':
                 echo $post->contributor;
                 break;
@@ -61,7 +64,7 @@ class Resource {
                 break;
 
             case 'subjects':
-                echo join(',', $post->subjects);
+                echo join(', ', $post->subjects);
                 break;
 
             case 'license':
@@ -69,51 +72,59 @@ class Resource {
                 break;
 
             case 'files':
-                echo count($post->files);
+                echo count($post->file_ids);
                 break;
         }
     }
 
     private function get_post($post_id) {
         $this->post = get_post($post_id);
+        return $this->load_custom_attributes();
+    }
 
+    public function load_custom_attributes() {
         if (!empty($this->post)) {
             $this->id = $this->post->ID;
             $this->post_id = $this->post->ID;
             $this->title = $this->post->post_title;
 
+            $this->_metadata = get_metadata('post', $this->post_id);
+
             // post metadata
-            $this->contributor = $this->get_contributor();
-            $this->source = $this->get_source();
-            $this->subjects = $this->get_subjects();
-            $this->license = $this->get_license();
-            $this->files = $this->get_files();
+            $this->description = get_post_meta($this->post_id, 'description', true);
+            $this->contributor = get_post_meta($this->post_id, 'contributor', true);
+            $this->source      = get_post_meta($this->post_id, 'source', true);
+
+            $this->license     = $this->get_license();
+            $this->subjects    = $this->get_subjects();
+
+            $this->file_ids = get_post_meta($this->post_id, 'files', false);
+
+            //$this->files       = $this->get_files();
 
             return $this->id;
         }
-        
+
         return null;
     }
 
-    private function get_contributor() {
-        //TODO
-    }
-
-    private function get_source() {
-        //TODO
+    private function get_license() {
+        $term_id = get_post_meta($this->post_id, 'license', true);
+        $term = get_term($term_id, 'licenses');
+        return $term->name;
     }
 
     private function get_subjects() {
-        //TODO
-        return array();
-    }
-
-    private function get_license() {
-        //TODO
+        $term_ids = get_post_meta($this->post_id, 'subjects', true);
+        return array_map(function($term_id) {
+            $term = get_term($term_id, 'subjects');
+            return $term->name;
+        }, $term_ids);
     }
 
     private function get_files() {
-        //TODO
-        return array();
+        return [];
     }
+
+
 }
