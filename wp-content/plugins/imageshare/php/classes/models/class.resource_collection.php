@@ -30,10 +30,9 @@ class ResourceCollection {
             'capability_type' => 'post',
             'supports' => array(
                 'title',
-                'thumbnail'
             ),
-            'public' => true
-            //'register_meta_box_cb' => array(Resource, 'meta_box_cb'),
+            'public' => true,
+            'show_ui' => true
         );
     }
 
@@ -48,25 +47,47 @@ class ResourceCollection {
         $post = new ResourceCollection($post_id);
 
         switch ($column_name) {
+            case 'description':
+                echo $post->description;
+                break;
+
             case 'size':
-                echo count($post->resources);
+                if (empty($post->resource_ids)) {
+                    echo "0";
+                } else {
+                    echo count($post->resource_ids);
+                }
+                break;
 
             case 'contributor':
                 echo $post->contributor;
+                break;
         }
+    }
+
+    public static function from_post(\WP_Post $post) {
+        $wrapped = new ResourceCollection();
+        $wrapped->post = $post;
+        return $wrapped->load_custom_attributes();
     }
 
     private function get_post($post_id) {
         $this->post = get_post($post_id);
+        return $this->load_custom_attributes();
+    }
 
+    public function load_custom_attributes() {
         if (!empty($this->post)) {
             $this->id = $this->post->ID;
             $this->post_id = $this->post->ID;
             $this->title = $this->post->post_title;
 
+            $this->_metadata = get_metadata('post', $this->post_id);
+
             // post metadata
-            $this->contributor = $this->get_contributor();
-            $this->resources   = $this->get_resources();
+            $this->description = get_post_meta($this->post_id, 'description', true);
+            $this->contributor = get_post_meta($this->post_id, 'contributor', true);
+            $this->resource_ids = get_post_meta($this->post_id, 'resources', true);
 
             return $this->id;
         }
@@ -74,13 +95,4 @@ class ResourceCollection {
         return null;
     }
 
-    private function get_contributor() {
-        //TODO
-        return false;
-    }
-
-    private function get_resources() {
-        //TODO
-        return [];
-    }
 }

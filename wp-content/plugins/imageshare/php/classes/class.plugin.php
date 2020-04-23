@@ -3,11 +3,13 @@
 namespace Imageshare;
 
 require_once imageshare_php_file('classes/class.logger.php');
+
 require_once imageshare_php_file('classes/models/class.resource_collection.php');
 require_once imageshare_php_file('classes/models/class.resource.php');
 require_once imageshare_php_file('classes/models/class.resource_file.php');
 
 use Imageshare\Logger;
+
 use Imageshare\Models\ResourceCollection;
 use Imageshare\Models\Resource;
 use Imageshare\Models\ResourceFile;
