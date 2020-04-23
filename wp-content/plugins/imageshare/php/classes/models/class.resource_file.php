@@ -33,17 +33,16 @@ class ResourceFile {
                 'thumbnail'
             ),
             'public' => true
-            //'register_meta_box_cb' => array(Resource, 'meta_box_cb'),
         );
     }
 
     public static function manage_columns(array $columns) {
-        $columns['description'] = __('Description', 'imageshare');
-        $columns['type'] = __('Type', 'imageshare');
-        $columns['file_type'] = __('File Type', 'imageshare');
-        $columns['grades'] = __('Grade(s)', 'imageshare');
-        $columns['language'] = __('Language', 'imageshare');
-        $columns['accommodations'] = __('Accommodation(s)', 'imageshare');
+        $columns['description'] = self::i18n('Description');
+        $columns['type'] = self::i18n('Type');
+        $columns['file_type'] = self::i18n('File Type');
+        $columns['grades'] = self::i18n('Grade(s)');
+        $columns['language'] = self::i18n('Language');
+        $columns['accommodations'] = self::i18n('Accommodation(s)');
 
         return $columns;
     }
@@ -65,7 +64,7 @@ class ResourceFile {
                 break;
 
             case 'grades':
-                echo join(',', $post->grades);
+                echo join(', ', $post->grades);
                 break;
 
             case 'language':
@@ -80,20 +79,21 @@ class ResourceFile {
 
     private function get_post($post_id) {
         $this->post = get_post($post_id);
+        return $this->load_custom_attributes();
+    }
 
+    public function load_custom_attributes() {
         if (!empty($this->post)) {
             $this->id = $this->post->ID;
             $this->post_id = $this->post->ID;
 
-            // post metadata
-            $this->resource_type = $this->get_resource_type();
-            $this->file_type = $this->get_file_type();
-            $this->preview_image = $this->get_preview_image();
+            $this->description = get_post_meta($this->post_id, 'description', true);
+            $this->resource_type = $this->get_meta_term_name('resource_type', 'resource_types');
+            $this->file_type = $this->get_meta_term_name('file_type', 'file_types');
+            $this->language = $this->get_meta_term_name('language', 'languages');
+
             $this->grades = $this->get_grades();
             $this->accommodations = $this->get_accommodations();
-            $this->language = $this->get_language();
-            $this->file = $this->get_file();
-            $this->description = $this->get_description();
 
             return $this->id;
         }
@@ -101,41 +101,21 @@ class ResourceFile {
         return null;
     }
 
-    private function get_description() {
-        //TODO
-    }
-
-    private function get_resource_type() {
-        //TODO
-    }
-
-    private function get_file_type() {
-        //TODO
-    }
-
-    private function get_file() {
-        //TODO
-    }
-
-    private function get_preview_image() {
-        //TODO
-        return array(
-            'url' => "",
-            'alt' => ""
-        );
-    }
-
     private function get_grades() {
-        //TODO
-        return array();
+        $term_ids = get_post_meta($this->post_id, 'grades', true);
+        return array_map(function($term_id) {
+            $term = get_term($term_id, 'grade_ranges');
+            return $term->name;
+        }, $term_ids);
     }
 
     private function get_accommodations() {
-        //TODO
-        return array();
     }
 
-    private function get_language() {
-        //TODO
+    private function get_meta_term_name(string $meta_key, string $taxonomy) {
+        $term_id = get_post_meta($this->post_id, $meta_key, true);
+        $term = get_term($term_id, $taxonomy);
+        return $term->name;
     }
+
 }
