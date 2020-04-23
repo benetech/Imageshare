@@ -37,9 +37,9 @@ class ResourceCollection {
     }
 
     public static function manage_columns(array $columns) {
-        $columns['description'] = __('Description', 'imageshare');
-        $columns['contributor'] = __('Contributor', 'imageshare');
-        $columns['size'] = __('Size', 'imageshare');
+        $columns['description'] = self::i18n('Description');
+        $columns['contributor'] = self::i18n('Contributor');
+        $columns['size'] = self::i18n('Size');
         return $columns;
     }
 
