@@ -1,3 +1,8 @@
 wp-config.php
 *.swp
 debug.log
+wp-content/plugins/*
+!wp-content/plugins/imageshare
+wp-content/plugins/imageshare/vendor
+template_cache
+

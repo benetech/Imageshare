@@ -27,9 +27,22 @@ function _imageshare_file(string $type, string $path) {
     return IMAGESHARE_PLUGIN_PATH . DIRECTORY_SEPARATOR . $type . DIRECTORY_SEPARATOR . $path;
 }
 
+require_once('vendor/autoload.php');
+
 require_once imageshare_php_file('classes/class.plugin.php');
 
 use ImageShare\Plugin;
+
+$twig_template_dir = IMAGESHARE_PLUGIN_PATH . DIRECTORY_SEPARATOR . 'templates';
+
+$twig_loader = new \Twig\Loader\FilesystemLoader($twig_template_dir);
+$twig_loader->addPath($twig_template_dir . DIRECTORY_SEPARATOR . 'admin', 'admin');
+
+global $twig;
+$twig = new \Twig\Environment($twig_loader, [
+    'cache' => IMAGESHARE_PLUGIN_PATH . DIRECTORY_SEPARATOR . 'template_cache',
+    'debug' => true
+]);
 
 global $imageshare_plugin;
 $imageshare_plugin = new Plugin(IMAGESHARE_PLUGIN_FILE, IMAGESHARE_VERSION, is_admin());
