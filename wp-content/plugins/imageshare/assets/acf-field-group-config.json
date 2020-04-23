@@ -1,0 +1,392 @@
+[
+    {
+        "key": "group_5ea174fb1ee9d",
+        "title": "btis_collection",
+        "fields": [
+            {
+                "key": "field_5ea1751151360",
+                "label": "Description",
+                "name": "description",
+                "type": "text",
+                "instructions": "",
+                "required": 1,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "default_value": "",
+                "placeholder": "",
+                "prepend": "",
+                "append": "",
+                "maxlength": ""
+            },
+            {
+                "key": "field_5ea1752251361",
+                "label": "Contributor",
+                "name": "contributor",
+                "type": "text",
+                "instructions": "",
+                "required": 1,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "default_value": "",
+                "placeholder": "",
+                "prepend": "",
+                "append": "",
+                "maxlength": ""
+            },
+            {
+                "key": "field_5ea1754751362",
+                "label": "Resources",
+                "name": "resources",
+                "type": "relationship",
+                "instructions": "",
+                "required": 1,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "post_type": [
+                    "btis_resource"
+                ],
+                "taxonomy": "",
+                "filters": [
+                    "search",
+                    "taxonomy"
+                ],
+                "elements": "",
+                "min": "",
+                "max": "",
+                "return_format": "id"
+            }
+        ],
+        "location": [
+            [
+                {
+                    "param": "post_type",
+                    "operator": "==",
+                    "value": "btis_collection"
+                }
+            ]
+        ],
+        "menu_order": 0,
+        "position": "normal",
+        "style": "seamless",
+        "label_placement": "top",
+        "instruction_placement": "label",
+        "hide_on_screen": "",
+        "active": true,
+        "description": ""
+    },
+    {
+        "key": "group_5ea1890299104",
+        "title": "btis_resource",
+        "fields": [
+            {
+                "key": "field_5ea189173edd2",
+                "label": "Description",
+                "name": "description",
+                "type": "text",
+                "instructions": "",
+                "required": 1,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "default_value": "",
+                "placeholder": "",
+                "prepend": "",
+                "append": "",
+                "maxlength": ""
+            },
+            {
+                "key": "field_5ea189233edd3",
+                "label": "Subject(s)",
+                "name": "subjects",
+                "type": "taxonomy",
+                "instructions": "",
+                "required": 1,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "taxonomy": "subjects",
+                "field_type": "checkbox",
+                "add_term": 0,
+                "save_terms": 1,
+                "load_terms": 1,
+                "return_format": "id",
+                "multiple": 0,
+                "allow_null": 0
+            },
+            {
+                "key": "field_5ea189483edd4",
+                "label": "License",
+                "name": "license",
+                "type": "taxonomy",
+                "instructions": "",
+                "required": 1,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "taxonomy": "licenses",
+                "field_type": "radio",
+                "add_term": 0,
+                "save_terms": 1,
+                "load_terms": 1,
+                "return_format": "id",
+                "multiple": 0,
+                "allow_null": 0
+            },
+            {
+                "key": "field_5ea189663edd5",
+                "label": "Contributor",
+                "name": "contributor",
+                "type": "text",
+                "instructions": "",
+                "required": 1,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "default_value": "",
+                "placeholder": "",
+                "prepend": "",
+                "append": "",
+                "maxlength": ""
+            },
+            {
+                "key": "field_5ea189733edd6",
+                "label": "Source",
+                "name": "source",
+                "type": "text",
+                "instructions": "",
+                "required": 1,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "default_value": "",
+                "placeholder": "",
+                "prepend": "",
+                "append": "",
+                "maxlength": ""
+            },
+            {
+                "key": "field_5ea189783edd7",
+                "label": "File(s)",
+                "name": "files",
+                "type": "relationship",
+                "instructions": "",
+                "required": 1,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "post_type": [
+                    "btis_resource_file"
+                ],
+                "taxonomy": "",
+                "filters": [
+                    "search",
+                    "post_type",
+                    "taxonomy"
+                ],
+                "elements": "",
+                "min": "",
+                "max": "",
+                "return_format": "object"
+            }
+        ],
+        "location": [
+            [
+                {
+                    "param": "post_type",
+                    "operator": "==",
+                    "value": "btis_resource"
+                }
+            ]
+        ],
+        "menu_order": 0,
+        "position": "normal",
+        "style": "seamless",
+        "label_placement": "top",
+        "instruction_placement": "label",
+        "hide_on_screen": "",
+        "active": true,
+        "description": ""
+    },
+    {
+        "key": "group_5ea1812a034e5",
+        "title": "btis_resource_file",
+        "fields": [
+            {
+                "key": "field_5ea181329e00e",
+                "label": "Description",
+                "name": "description",
+                "type": "text",
+                "instructions": "",
+                "required": 1,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "default_value": "",
+                "placeholder": "",
+                "prepend": "",
+                "append": "",
+                "maxlength": ""
+            },
+            {
+                "key": "field_5ea1814f9e00f",
+                "label": "Type",
+                "name": "resource_type",
+                "type": "taxonomy",
+                "instructions": "",
+                "required": 1,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "taxonomy": "resource_types",
+                "field_type": "radio",
+                "allow_null": 0,
+                "add_term": 0,
+                "save_terms": 1,
+                "load_terms": 1,
+                "return_format": "id",
+                "multiple": 0
+            },
+            {
+                "key": "field_5ea1819e9e010",
+                "label": "File Type",
+                "name": "file_type",
+                "type": "taxonomy",
+                "instructions": "",
+                "required": 1,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "taxonomy": "file_types",
+                "field_type": "radio",
+                "allow_null": 0,
+                "add_term": 0,
+                "save_terms": 1,
+                "load_terms": 1,
+                "return_format": "id",
+                "multiple": 0
+            },
+            {
+                "key": "field_5ea181bd9e011",
+                "label": "Grade(s)",
+                "name": "grades",
+                "type": "taxonomy",
+                "instructions": "",
+                "required": 1,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "taxonomy": "grade_ranges",
+                "field_type": "checkbox",
+                "add_term": 0,
+                "save_terms": 1,
+                "load_terms": 1,
+                "return_format": "id",
+                "multiple": 0,
+                "allow_null": 0
+            },
+            {
+                "key": "field_5ea181e49e012",
+                "label": "Language",
+                "name": "language",
+                "type": "taxonomy",
+                "instructions": "",
+                "required": 1,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "taxonomy": "languages",
+                "field_type": "radio",
+                "allow_null": 0,
+                "add_term": 0,
+                "save_terms": 1,
+                "load_terms": 1,
+                "return_format": "id",
+                "multiple": 0
+            },
+            {
+                "key": "field_5ea181fd9e013",
+                "label": "Accommodations",
+                "name": "accommodations",
+                "type": "taxonomy",
+                "instructions": "",
+                "required": 1,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "taxonomy": "a11y_accs",
+                "field_type": "checkbox",
+                "add_term": 0,
+                "save_terms": 1,
+                "load_terms": 1,
+                "return_format": "id",
+                "multiple": 0,
+                "allow_null": 0
+            }
+        ],
+        "location": [
+            [
+                {
+                    "param": "post_type",
+                    "operator": "==",
+                    "value": "btis_resource_file"
+                }
+            ]
+        ],
+        "menu_order": 0,
+        "position": "normal",
+        "style": "seamless",
+        "label_placement": "top",
+        "instruction_placement": "label",
+        "hide_on_screen": "",
+        "active": true,
+        "description": ""
+    }
+]
