@@ -27,3 +27,4 @@ jobs:
         WPENGINE_SSH_KEY_PRIVATE: ${{ secrets.WPENGINE_SSH_KEY_PRIVATE }}
         WPENGINE_SSH_KEY_PUBLIC: ${{ secrets.WPENGINE_SSH_KEY_PUBLIC }}
         WPENGINE_ENVIRONMENT_NAME: imgsdev
+        LOCAL_BRANCH: Development
