@@ -41,7 +41,6 @@ class Resource {
         $columns['contributor'] = self::i18n('Contributor');
         $columns['source'] = self::i18n('Source');
         $columns['subjects'] = self::i18n('Subject(s)');
-        $columns['license'] = self::i18n('License');
         $columns['files'] = self::i18n('File(s)');
 
         return $columns;
@@ -65,10 +64,6 @@ class Resource {
 
             case 'subjects':
                 echo join(', ', $post->subjects);
-                break;
-
-            case 'license':
-                echo $post->license;
                 break;
 
             case 'files':
@@ -95,7 +90,6 @@ class Resource {
             $this->contributor = get_post_meta($this->post_id, 'contributor', true);
             $this->source      = get_post_meta($this->post_id, 'source', true);
 
-            $this->license     = $this->get_license();
             $this->subjects    = $this->get_subjects();
 
             $this->file_ids = get_post_meta($this->post_id, 'files', false);
@@ -106,12 +100,6 @@ class Resource {
         }
 
         return null;
-    }
-
-    private function get_license() {
-        $term_id = get_post_meta($this->post_id, 'license', true);
-        $term = get_term($term_id, 'licenses');
-        return $term->name;
     }
 
     private function get_subjects() {

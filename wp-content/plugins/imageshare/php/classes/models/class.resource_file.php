@@ -43,6 +43,7 @@ class ResourceFile {
         $columns['grades'] = self::i18n('Grade(s)');
         $columns['language'] = self::i18n('Language');
         $columns['accommodations'] = self::i18n('Accommodation(s)');
+        $columns['license'] = self::i18n('License');
 
         return $columns;
     }
@@ -74,6 +75,10 @@ class ResourceFile {
             case 'accommodations':
                 //TODO term - subterm
                 break;
+
+            case 'license':
+                echo $post->license;
+                break;
         }
     }
 
@@ -93,6 +98,7 @@ class ResourceFile {
             $this->language = $this->get_meta_term_name('language', 'languages');
 
             $this->grades = $this->get_grades();
+            $this->license = $this->get_license();
             $this->accommodations = $this->get_accommodations();
 
             return $this->id;
@@ -109,7 +115,14 @@ class ResourceFile {
         }, $term_ids);
     }
 
+    private function get_license() {
+        $term_id = get_post_meta($this->post_id, 'license', true);
+        $term = get_term($term_id, 'licenses');
+        return $term->name;
+    }
+
     private function get_accommodations() {
+        //TODO
     }
 
     private function get_meta_term_name(string $meta_key, string $taxonomy) {
