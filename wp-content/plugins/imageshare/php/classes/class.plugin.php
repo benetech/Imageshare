@@ -189,7 +189,7 @@ class Plugin {
     }
 
     private function register_licenses_taxonomy() {
-        register_taxonomy('licenses', array('btis_resource'), array(
+        register_taxonomy('licenses', array('btis_resource_file'), array(
             'label' => self::i18n('Licenses'),
             'labels' => array(
                 'singular_name' => self::i18n('License')
