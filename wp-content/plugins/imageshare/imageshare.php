@@ -19,6 +19,9 @@ define('IMAGESHARE_PLUGIN_FILE', __FILE__);
 define('IMAGESHARE_PLUGIN_PATH', plugin_dir_path(__FILE__));
 define('IMAGESHARE_VERSION', '0.0.1');
 
+define('IMAGESHARE_TEMPLATE_PATH', IMAGESHARE_PLUGIN_PATH . DIRECTORY_SEPARATOR . 'templates');
+define('IMAGESHARE_TEMPLATE_CACHE_PATH', IMAGESHARE_PLUGIN_PATH . DIRECTORY_SEPARATOR . 'template_cache');
+
 function imageshare_php_file(string $path) {
     return _imageshare_file('php', $path);
 }
