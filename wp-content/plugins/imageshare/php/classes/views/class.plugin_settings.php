@@ -3,12 +3,14 @@
 namespace Imageshare\Views;
 
 require_once imageshare_php_file('classes/class.logger.php');
+require_once imageshare_php_file('classes/views/class.view.php');
 
 use Imageshare\Logger;
 
-class PluginSettings {
+class PluginSettings extends View {
     public static function render() {
-        return "settings";
+        $template = self::load('settings.twig');
+        return $template->render();
     }
 }
  
