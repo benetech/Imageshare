@@ -3,7 +3,7 @@
 Plugin Name: Imageshare
 Description: Benetech Imageshare resource management
 Plugin URI: https://imageshare.benetech.com
-Author: Job van Achterberg & Prime Access Consulting
+Author: Prime Access Consulting
 Version: 0.0.1
 Author URI: https://pac.bz
  */
@@ -31,6 +31,6 @@ require_once imageshare_php_file('classes/class.plugin.php');
 
 use ImageShare\Plugin;
 
-global $imageshare_plugin;
-$imageshare_plugin = new Plugin(IMAGESHARE_PLUGIN_FILE, IMAGESHARE_VERSION, is_admin());
+global $imageshare;
+$imageshare = new Plugin(IMAGESHARE_PLUGIN_FILE, IMAGESHARE_VERSION, is_admin());
 
