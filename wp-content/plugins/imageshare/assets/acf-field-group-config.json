@@ -132,28 +132,6 @@
                 "allow_null": 0
             },
             {
-                "key": "field_5ea189483edd4",
-                "label": "License",
-                "name": "license",
-                "type": "taxonomy",
-                "instructions": "",
-                "required": 1,
-                "conditional_logic": 0,
-                "wrapper": {
-                    "width": "",
-                    "class": "",
-                    "id": ""
-                },
-                "taxonomy": "licenses",
-                "field_type": "radio",
-                "add_term": 0,
-                "save_terms": 1,
-                "load_terms": 1,
-                "return_format": "id",
-                "multiple": 0,
-                "allow_null": 0
-            },
-            {
                 "key": "field_5ea189663edd5",
                 "label": "Contributor",
                 "name": "contributor",
@@ -319,6 +297,28 @@
                 },
                 "taxonomy": "grade_ranges",
                 "field_type": "checkbox",
+                "add_term": 0,
+                "save_terms": 1,
+                "load_terms": 1,
+                "return_format": "id",
+                "multiple": 0,
+                "allow_null": 0
+            },
+            {
+                "key": "field_5ea189483edd4",
+                "label": "License",
+                "name": "license",
+                "type": "taxonomy",
+                "instructions": "",
+                "required": 1,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "taxonomy": "licenses",
+                "field_type": "radio",
                 "add_term": 0,
                 "save_terms": 1,
                 "load_terms": 1,
