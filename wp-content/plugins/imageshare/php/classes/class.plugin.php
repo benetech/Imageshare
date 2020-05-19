@@ -8,11 +8,15 @@ require_once imageshare_php_file('classes/models/class.resource_collection.php')
 require_once imageshare_php_file('classes/models/class.resource.php');
 require_once imageshare_php_file('classes/models/class.resource_file.php');
 
+require_once imageshare_php_file('classes/controllers/class.resource_collection.php');
+
 use Imageshare\Logger;
 
 use Imageshare\Models\ResourceCollection;
 use Imageshare\Models\Resource;
 use Imageshare\Models\ResourceFile;
+
+use Imageshare\Controllers\ResourceCollection as ResourceCollectionController;
 
 class Plugin {
     private $is_activated = false;
@@ -69,6 +73,11 @@ class Plugin {
         add_action('init', array($this, 'init'));
     }
 
+    private function load_controllers() {
+        $this->controllers = (object) array();
+        $this->controllers->resource_collection = new ResourceCollectionController();
+    }
+
     public function activate() {
         if ($this->is_activated) {
             Logger::log("Plugin already active");
@@ -96,6 +105,7 @@ class Plugin {
     public function init() {
         $this->register_taxonomies();
         $this->register_custom_post_types();
+        $this->load_controllers();
     }
 
     public static function model(string $model) {
