@@ -9,6 +9,7 @@ require_once imageshare_php_file('classes/models/class.resource.php');
 require_once imageshare_php_file('classes/models/class.resource_file.php');
 
 require_once imageshare_php_file('classes/controllers/class.resource_collection.php');
+require_once imageshare_php_file('classes/controllers/class.plugin_settings.php');
 
 use Imageshare\Logger;
 
@@ -17,12 +18,14 @@ use Imageshare\Models\Resource;
 use Imageshare\Models\ResourceFile;
 
 use Imageshare\Controllers\ResourceCollection as ResourceCollectionController;
+use Imageshare\Controllers\PluginSettings as PluginSettingsController;
 
 class Plugin {
     private $is_activated = false;
 
     private $file;
     private $version;
+    private $is_admin;
 
     const TAXONOMY_HIERARCHY = array(
         'a11y_accs' => array(
@@ -62,6 +65,7 @@ class Plugin {
 
         $this->file = $file;
         $this->version = $version;
+        $this->is_admin = $is_admin;
 
         $this->setup();
     }
@@ -76,6 +80,10 @@ class Plugin {
     private function load_controllers() {
         $this->controllers = (object) array();
         $this->controllers->resource_collection = new ResourceCollectionController();
+
+        if ($this->is_admin) {
+            $this->controllers->plugin_settings = new PluginSettingsController();
+        }
     }
 
     public function activate() {
