@@ -10,6 +10,73 @@ class ResourceFile {
 
     const type = 'btis_resource_file';
 
+    public static function create($args) {
+        $existing = get_posts([
+            'post_type' => self::type,
+            'meta_key' => 'uri',
+            'meta_value' => $args['uri'],
+            'meta_compare' => '==='            
+        ]);
+
+        if (count($existing)) {
+            throw new \Exception(sprintf(__('A ResourceFile with URI "%s" already exists', 'imageshare'), $args['uri']));
+        }
+
+        $format  = self::get_taxonomy_term_id('file_formats', $args['format']);
+        $type    = self::get_taxonomy_term_id('file_types', $args['type']);
+        $license = self::get_taxonomy_term_id('licenses', $args['license']);
+        $accommodations = self::map_accommodations($args['accommodations']);
+        $language = self::map_language_code($args['language']);
+
+        $post_data = [
+            'post_type' => self::type,
+            'post_title' => $args['title'],
+            'comment_status' => 'closed',
+            'post_category' => [],
+            'tags_input' => [],
+            'meta_input' => [
+                'uri' => $args['uri'],
+                'length_minutes' => $args['length_minutes'],
+                'type' => $type,
+                'format' => $format,
+                'license' => $license,
+                'accommodations' => $accommodations,
+                'language' => $language
+            ]
+        ];
+
+        $post_id = wp_insert_post($post_data, true);
+
+        if (is_wp_error($post_id)) {
+            // the original WP_Error for inserting a post is empty for some reason
+            throw new \Exception(sprintf(__('Unable to create resource file "%s"', 'imageshare'), $args['title']));
+        }
+
+        // TODO create thumbnail attachment
+
+        return $post_id;
+    }
+
+    public static function map_accommodations($accommodations) {
+        // TODO map to list of term IDs
+        return [];
+    }
+
+    public static function map_language_code($language_code) {
+        // TODO map to taxonomy id
+        return $language_code;
+    }
+
+    public static function get_taxonomy_term_id($taxonomy, $term_name) {
+        $term = get_term_by('name', $term_name, $taxonomy);
+
+        if ($term === false) {
+            throw new \Exception(sprintf(__('Term %s was not found in taxonomy %s', 'imageshare'), $term_name, $taxonomy));
+        }
+
+        return $term->term_id;
+    }
+
     public function __construct($post_id = null) {
         if (!empty($post_id)) {
             $this->get_post($post_id);
@@ -37,13 +104,13 @@ class ResourceFile {
     }
 
     public static function manage_columns(array $columns) {
-        $columns['description'] = self::i18n('Description');
+        $columns['uri'] = self::i18n('URI');
         $columns['type'] = self::i18n('Type');
-        $columns['file_type'] = self::i18n('File Type');
-        $columns['grades'] = self::i18n('Grade(s)');
+        $columns['format'] = self::i18n('Format');
         $columns['language'] = self::i18n('Language');
         $columns['accommodations'] = self::i18n('Accommodation(s)');
         $columns['license'] = self::i18n('License');
+        $columns['length_minutes'] = self::i18n('Length (minutes)');
 
         return $columns;
     }
@@ -52,20 +119,16 @@ class ResourceFile {
         $post = new ResourceFile($post_id);
 
         switch ($column_name) {
-            case 'description':
-                echo $post->description;
+            case 'uri':
+                echo $post->uri;
                 break;
 
             case 'type':
-                echo $post->resource_type;
+                echo $post->type;
                 break;
 
-            case 'file_type':
-                echo $post->file_type;
-                break;
-
-            case 'grades':
-                echo join(', ', $post->grades);
+            case 'format':
+                echo $post->format;
                 break;
 
             case 'language':
@@ -79,6 +142,11 @@ class ResourceFile {
             case 'license':
                 echo $post->license;
                 break;
+
+            case 'length_minutes':
+                echo $post->length_minutes;
+                break;
+
         }
     }
 
@@ -92,13 +160,18 @@ class ResourceFile {
             $this->id = $this->post->ID;
             $this->post_id = $this->post->ID;
 
-            $this->description = get_post_meta($this->post_id, 'description', true);
-            $this->resource_type = $this->get_meta_term_name('resource_type', 'resource_types');
-            $this->file_type = $this->get_meta_term_name('file_type', 'file_types');
-            $this->language = $this->get_meta_term_name('language', 'languages');
+            $this->uri = get_post_meta($this->post_id, 'uri', true);
+            $this->length_minutes = get_post_meta($this->post_id, 'length_minutes', true);
 
-            $this->grades = $this->get_grades();
-            $this->license = $this->get_license();
+            $this->type = $this->get_meta_term_name('type', 'file_types');
+            $this->format = $this->get_meta_term_name('format', 'file_formats');
+
+            //$this->language = $this->get_meta_term_name('language', 'languages');
+            // TODO map language to ISO name
+            $this->language = get_post_meta($this->post_id, 'language', true);
+
+            $this->license = $this->get_meta_term_name('license', 'licenses');
+
             $this->accommodations = $this->get_accommodations();
 
             return $this->id;
@@ -107,27 +180,21 @@ class ResourceFile {
         return null;
     }
 
-    private function get_grades() {
-        $term_ids = get_post_meta($this->post_id, 'grades', true);
-        return array_map(function($term_id) {
-            $term = get_term($term_id, 'grade_ranges');
-            return $term->name;
-        }, $term_ids);
-    }
-
-    private function get_license() {
-        $term_id = get_post_meta($this->post_id, 'license', true);
-        $term = get_term($term_id, 'licenses');
-        return $term->name;
-    }
-
     private function get_accommodations() {
         //TODO
+        // these will be multiple term IDs that can then be mapped
+        return '';
     }
 
     private function get_meta_term_name(string $meta_key, string $taxonomy) {
         $term_id = get_post_meta($this->post_id, $meta_key, true);
         $term = get_term($term_id, $taxonomy);
+
+        if ($parent_id = $term->parent) {
+            $parent_term = get_term($parent_id);
+            return join(' - ', [$parent_term->name, $term->name]);
+        }
+
         return $term->name;
     }
 

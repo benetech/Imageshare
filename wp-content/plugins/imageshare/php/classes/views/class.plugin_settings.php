@@ -9,8 +9,10 @@ use Imageshare\Logger;
 
 class PluginSettings extends View {
     public static function render() {
+        $nonce = wp_create_nonce('imageshare-settings');
+
         $template = self::load('settings.twig');
-        return $template->render();
+        return $template->render(['wp_nonce' => $nonce]);
     }
 }
  

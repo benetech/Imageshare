@@ -2,13 +2,44 @@
 
 namespace Imageshare\Models;
 
-require_once imageshare_php_file('classes/class.logger.php');
-
-use Imageshare\Logger;
-
 class Resource {
 
     const type = 'btis_resource';
+
+    public static function create($args) {
+        if (post_exists($args['title'], '', '', self::type)) {
+            throw new \Exception(sprintf(__('A Resource with unique title "%s" already exists', 'imageshare'), $args['title']));
+        }
+
+        $post_data = [
+            'post_type' => self::type,
+            'post_title' => $args['title'],
+            'comment_status' => 'closed',
+            'post_category' => [],
+            'tags_input' => $args['tags'],
+            'meta_input' => [
+                'description' => $args['description'],
+                'source' => $args['source'],
+                'subject' => $args['subject'],
+                'files' => [],
+            ]
+        ];
+
+        $post_id = wp_insert_post($post_data, true);
+
+        if (is_wp_error($post_id)) {
+            // the original WP_Error for inserting a post is empty for some reason
+            throw new \Exception(sprintf(__('Unable to create resource "%s"', 'imageshare'), $args['title']));
+        }
+
+        // TODO create thumbnail attachment
+
+        return $post_id;
+    }
+
+    public static function associate_resource_file($resource_id, $resource_file_id) {
+        // add to the list of ids in resource meta data
+    }
 
     public function __construct($post_id = null) {
         if (!empty($post_id)) {
@@ -38,9 +69,8 @@ class Resource {
 
     public static function manage_columns(array $columns) {
         $columns['description'] = self::i18n('Description');
-        $columns['contributor'] = self::i18n('Contributor');
         $columns['source'] = self::i18n('Source');
-        $columns['subjects'] = self::i18n('Subject(s)');
+        $columns['subject'] = self::i18n('Subject');
         $columns['files'] = self::i18n('File(s)');
 
         return $columns;
@@ -54,16 +84,12 @@ class Resource {
                 echo $post->description;
                 break;
 
-            case 'contributor':
-                echo $post->contributor;
-                break;
-
             case 'source':
                 echo $post->source;
                 break;
 
-            case 'subjects':
-                echo join(', ', $post->subjects);
+            case 'subject':
+                echo $post->subject;
                 break;
 
             case 'files':
@@ -83,14 +109,10 @@ class Resource {
             $this->post_id = $this->post->ID;
             $this->title = $this->post->post_title;
 
-            $this->_metadata = get_metadata('post', $this->post_id);
-
             // post metadata
             $this->description = get_post_meta($this->post_id, 'description', true);
-            $this->contributor = get_post_meta($this->post_id, 'contributor', true);
             $this->source      = get_post_meta($this->post_id, 'source', true);
-
-            $this->subjects    = $this->get_subjects();
+            $this->subject     = get_post_meta($this->post_id, 'subject', true); 
 
             $this->file_ids = get_post_meta($this->post_id, 'files', false);
 
@@ -100,14 +122,6 @@ class Resource {
         }
 
         return null;
-    }
-
-    private function get_subjects() {
-        $term_ids = get_post_meta($this->post_id, 'subjects', true);
-        return array_map(function($term_id) {
-            $term = get_term($term_id, 'subjects');
-            return $term->name;
-        }, $term_ids);
     }
 
     private function get_files() {
