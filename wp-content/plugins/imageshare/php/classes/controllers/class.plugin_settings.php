@@ -110,7 +110,7 @@ class PluginSettings {
 
                 ResourceModel::associate_resource_file($resource_id, $file_id);
             } catch (Exception $error) {
-                // log the error
+                Logger::log("Error creating resource file: " . $error->getMessage());
             }
         }
 

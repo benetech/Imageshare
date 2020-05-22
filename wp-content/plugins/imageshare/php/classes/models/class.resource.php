@@ -40,7 +40,7 @@ class Resource {
 
     public static function associate_resource_file($resource_id, $resource_file_id) {
         $files = get_post_meta($resource_id, 'files', true);
-        array_push($files, $resource_id);
+        array_push($files, $resource_file_id);
         update_post_meta($resource_id, 'files', $files);
     }
 
@@ -129,20 +129,11 @@ class Resource {
             $this->description = get_post_meta($this->post_id, 'description', true);
             $this->source      = get_post_meta($this->post_id, 'source', true);
             $this->subject     = get_post_meta($this->post_id, 'subject', true); 
-
-            $this->file_ids = get_post_meta($this->post_id, 'files', false);
-
-            //$this->files       = $this->get_files();
+            $this->file_ids    = get_post_meta($this->post_id, 'files', true);
 
             return $this->id;
         }
 
         return null;
     }
-
-    private function get_files() {
-        return [];
-    }
-
-
 }
