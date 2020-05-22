@@ -13,6 +13,8 @@ if (!defined( 'ABSPATH')) {
     exit;
 }
 
+require_once('vendor/autoload.php');
+
 error_log('Loading Imageshare plugin');
 
 define('IMAGESHARE_PLUGIN_FILE', __FILE__);
@@ -24,6 +26,10 @@ define('IMAGESHARE_TEMPLATE_CACHE_PATH', IMAGESHARE_PLUGIN_PATH . DIRECTORY_SEPA
 
 function imageshare_php_file(string $path) {
     return _imageshare_file('php', $path);
+}
+
+function imageshare_asset_file(string $path) {
+    return _imageshare_file('assets', $path);
 }
 
 function _imageshare_file(string $type, string $path) {
