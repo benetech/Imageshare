@@ -12,6 +12,8 @@ use ImageShare\Views\PluginSettings as View;
 use ImageShare\Models\Resource as ResourceModel;
 use ImageShare\Models\ResourceFile as ResourceFileModel;
 
+use Swaggest\JsonSchema\Schema;
+
 class PluginSettings {
     const i18n_ns    = 'imageshare';
     const capability = 'manage_options';
@@ -44,10 +46,21 @@ class PluginSettings {
                 return new \WP_Error('imageshare', __('Unable to load records from supplied file.', 'imageshare'));
             }
 
-            // TODO schema validation
+            try {
+                $this->validate($records);
+            } catch (\Exception $validation_error) {
+                Logger::log('Validation exception: ' . $validation_error->getMessage());
+                return ['resources' => [], 'errors' => [$validation_error->getMessage()]];
+            }
 
             return $this->create_resources($records);
         }
+    }
+
+    private function validate($records) {
+        $schema_json = file_get_contents(imageshare_asset_file('import.schema.json'));
+        $schema = Schema::import(json_decode($schema_json));
+        $schema->in($records);
     }
 
     private function create_resources($records) {
@@ -61,10 +74,10 @@ class PluginSettings {
 
             try {
                 $resource = $this->create_resource($value);
-                array_push($result['resources'], $resource);
+                array_push($result['resources'], sprintf(__('Resource created: %s', 'imageshare'), $value));
             } catch (\Exception $error) {
                 Logger::log("Error creating resource: " . $error->getMessage());
-                array_push($result['errors'], [$value, $error->getMessage()]);        
+                array_push($result['errors'], "({$key}) {$error->getMessage()}");
             }
         }
 
@@ -72,13 +85,6 @@ class PluginSettings {
     }
 
     private function create_resource($record) {
-        if (is_array($record->tags)) {
-            $tags = $record->tags;
-        } else {
-            $tags = explode(',', $record->tags);
-            $tags = array_map(function ($_) { return trim($_); }, $tags);
-        }
-
         $resource_id = ResourceModel::create([
             'title'         => $record->unique_name,
             'thumbnail_uri' => $record->featured_image_URI,
@@ -86,23 +92,20 @@ class PluginSettings {
             'source'        => $record->source,
             'description'   => $record->description,
             'subject'       => $record->subject,
-            'tags'          => $tags
+            'tags'          => $record->tags
         ]);
 
         foreach ($record->files as $file) {
-            $accommodations = [];
-            // TODO parse accommodations
-
             try {
                 $file_id = ResourceFileModel::create([
-                    'title'             => $file->display_name,
-                    'uri'               => $file->URI,
-                    'type'              => $file->type,
-                    'format'            => $file->format,
-                    'license'           => $file->license,
-                    'accommodations'    => $accommodations,
-                    'language'          => $file->language,
-                    'length_minutes'    => $file->length_minutes
+                    'title'          => $file->display_name,
+                    'uri'            => $file->URI,
+                    'type'           => $file->type,
+                    'format'         => $file->format,
+                    'license'        => $file->license,
+                    'accommodations' => $file->accommodations,
+                    'languages'      => $file->languages,
+                    'length_minutes' => $file->length_minutes
                 ]);
 
                 ResourceModel::associate_resource_file($resource_id, $file_id);
@@ -117,9 +120,12 @@ class PluginSettings {
     public function render_settings_page() {
         if (isset($_POST['is_update'])) {
             $parse_result = $this->handle_form_submit();
+            Logger::log($parse_result);
+            $rendered = View::render(['result' => $parse_result]);
+        } else {
+            $rendered = View::render();
         }
 
-        $rendered = View::render();
         echo $rendered;
     }
 }

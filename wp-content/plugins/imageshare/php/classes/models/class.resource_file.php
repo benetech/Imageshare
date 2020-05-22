@@ -26,7 +26,7 @@ class ResourceFile {
         $type    = self::get_taxonomy_term_id('file_types', $args['type']);
         $license = self::get_taxonomy_term_id('licenses', $args['license']);
         $accommodations = self::map_accommodations($args['accommodations']);
-        $language = self::map_language_code($args['language']);
+        $languages = self::map_language_codes($args['languages']);
 
         $post_data = [
             'post_type' => self::type,
@@ -41,7 +41,7 @@ class ResourceFile {
                 'format' => $format,
                 'license' => $license,
                 'accommodations' => $accommodations,
-                'language' => $language
+                'languages' => $languages
             ]
         ];
 
@@ -62,9 +62,9 @@ class ResourceFile {
         return [];
     }
 
-    public static function map_language_code($language_code) {
-        // TODO map to taxonomy id
-        return $language_code;
+    public static function map_language_codes($language_codes) {
+        // TODO map to ISO language, then map to taxonomy id
+        return $language_codes;
     }
 
     public static function get_taxonomy_term_id($taxonomy, $term_name) {
@@ -107,7 +107,7 @@ class ResourceFile {
         $columns['uri'] = self::i18n('URI');
         $columns['type'] = self::i18n('Type');
         $columns['format'] = self::i18n('Format');
-        $columns['language'] = self::i18n('Language');
+        $columns['languages'] = self::i18n('Language(s)');
         $columns['accommodations'] = self::i18n('Accommodation(s)');
         $columns['license'] = self::i18n('License');
         $columns['length_minutes'] = self::i18n('Length (minutes)');
@@ -131,8 +131,8 @@ class ResourceFile {
                 echo $post->format;
                 break;
 
-            case 'language':
-                echo $post->language;
+            case 'languages':
+                echo join(',', $post->languages);
                 break;
 
             case 'accommodations':
@@ -166,9 +166,8 @@ class ResourceFile {
             $this->type = $this->get_meta_term_name('type', 'file_types');
             $this->format = $this->get_meta_term_name('format', 'file_formats');
 
-            //$this->language = $this->get_meta_term_name('language', 'languages');
             // TODO map language to ISO name
-            $this->language = get_post_meta($this->post_id, 'language', true);
+            $this->language = get_languages();
 
             $this->license = $this->get_meta_term_name('license', 'licenses');
 
@@ -178,6 +177,10 @@ class ResourceFile {
         }
         
         return null;
+    }
+
+    private function get_languages() {
+        return '';
     }
 
     private function get_accommodations() {
