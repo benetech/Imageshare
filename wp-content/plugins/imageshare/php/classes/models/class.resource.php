@@ -81,7 +81,11 @@ class Resource {
 
         switch ($column_name) {
             case 'description':
-                echo $post->description;
+                $description = strlen($post->description) > 125
+                    ? substr($post->description, 0, 125) . "..."
+                    : $post->description
+                ;
+                echo $description;
                 break;
 
             case 'source':
