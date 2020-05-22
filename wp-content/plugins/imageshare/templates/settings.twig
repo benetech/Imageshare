@@ -1,6 +1,16 @@
 <div class="wrap">
     <h1>{{ 'Imageshare configuration' | i18n }}</h1>
 
+    {% if result is defined %}
+        {% for error in result.errors %}
+            <div class="notice notice-error">{{ error | e }}</div>
+        {% endfor %}
+
+        {% for resource in result.resources %}
+            <div class="notice notice-success">{{ resource | e}}</div>
+        {% endfor %}
+    {% endif %}
+
     <h2 class="title">{{ 'Tools' | i18n }}</h2>
 
     <section>
@@ -15,6 +25,7 @@
 
             <button class="button button-primary">{{ 'Import' | i18n }}</button>
         </form>
+
     </section>
 
 </div>
