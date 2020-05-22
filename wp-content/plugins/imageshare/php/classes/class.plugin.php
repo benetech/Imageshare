@@ -40,15 +40,14 @@ class Plugin {
             'Other'     => array('Website', 'PDF', 'TXT', 'Word'),
             'Tactile'   => array('AI', 'OBJ', 'STL')
         ),
-        'languages'     => array(
+        'languages' => array(
             'All Languages',
-            'Braille',
-            'English' => array('English Audio', 'English Caption'),
+            'English',
             'Spanish',
             'French',
             'German'
         ),
-        'licenses'          => array('CC BY 4.0', 'CC:BY', 'CC:BY-NC', 'CC:BY-NC-ND', 'CC:BY-NC-SA', 'CC:BY-ND', 'CC:BY-SA', 'DCMP Membership', 'GNU-GPL', 'OER'),
+        'licenses'          => array('CC:BY 4.0', 'CC:BY', 'CC:BY-NC', 'CC:BY-NC-ND', 'CC:BY-NC-SA', 'CC:BY-ND', 'CC:BY-SA', 'DCMP Membership', 'GNU-GPL', 'OER'),
         'file_types'        => array('2D Tactile Graphic', '3D Model', 'Audio File', 'Image', 'Lesson Plan', 'Manipulative', 'Text Document', 'URL', 'Video', 'Handmade Object'),
         'subjects'          => array(
             'Science'       => array('Biology', 'Chemistry', 'Physics', 'Environment', 'Earth', 'Astronomy', 'Algebra 1', 'Algebra 2', 'Calculus', 'Statistics'),
@@ -172,7 +171,7 @@ class Plugin {
             'labels' => array(
                 'singular_name' => self::i18n('Language')
             ),
-            'hierarchical' => true
+            'hierarchical' => false
         ));
     }
 
