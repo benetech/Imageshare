@@ -74,7 +74,7 @@ class PluginSettings {
 
             try {
                 $resource = $this->create_resource($value);
-                array_push($result['resources'], sprintf(__('Resource created: %s', 'imageshare'), $value));
+                array_push($result['resources'], sprintf(__('Resource created: %s', 'imageshare'), $key));
             } catch (\Exception $error) {
                 Logger::log("Error creating resource: " . $error->getMessage());
                 array_push($result['errors'], "({$key}) {$error->getMessage()}");

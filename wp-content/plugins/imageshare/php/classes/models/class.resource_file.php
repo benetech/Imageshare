@@ -9,6 +9,15 @@ use Imageshare\Logger;
 class ResourceFile {
 
     const type = 'btis_resource_file';
+    const default_license = 'GNU-GPL';
+
+    const language_mapping = [
+        'all' => 'All languages',
+        'en' => 'English',
+        'es' => 'Spanish',
+        'fr' => 'French',
+        'de' => 'German',
+    ];
 
     public static function create($args) {
         $existing = get_posts([
@@ -22,11 +31,21 @@ class ResourceFile {
             throw new \Exception(sprintf(__('A ResourceFile with URI "%s" already exists', 'imageshare'), $args['uri']));
         }
 
+        $license = strlen($args['license'])
+            ? $args['license']
+            : self::default_license
+        ;
+
         $format  = self::get_taxonomy_term_id('file_formats', $args['format']);
         $type    = self::get_taxonomy_term_id('file_types', $args['type']);
-        $license = self::get_taxonomy_term_id('licenses', $args['license']);
-        $accommodations = self::map_accommodations($args['accommodations']);
-        $languages = self::map_language_codes($args['languages']);
+        $license = self::get_taxonomy_term_id('licenses', $license);
+        $accommodations = self::accommodations_to_term_ids($args['accommodations']);
+        $languages = self::language_codes_to_term_ids($args['languages']);
+
+        $length = strlen($args['length_minutes'])
+            ? $args['length_minutes']
+            : '0'
+        ;
 
         $post_data = [
             'post_type' => self::type,
@@ -36,7 +55,7 @@ class ResourceFile {
             'tags_input' => [],
             'meta_input' => [
                 'uri' => $args['uri'],
-                'length_minutes' => $args['length_minutes'],
+                'length_minutes' => $length,
                 'type' => $type,
                 'format' => $format,
                 'license' => $license,
@@ -57,14 +76,19 @@ class ResourceFile {
         return $post_id;
     }
 
-    public static function map_accommodations($accommodations) {
-        // TODO map to list of term IDs
-        return [];
+    public static function accommodations_to_term_ids($accommodations) {
+        return array_map(function ($acc) {
+            return self::get_taxonomy_term_id('a11y_accs', $acc);
+        }, $accommodations);
     }
 
-    public static function map_language_codes($language_codes) {
-        // TODO map to ISO language, then map to taxonomy id
-        return $language_codes;
+    public static function language_codes_to_term_ids($language_codes) {
+        $term_ids = array_map(function ($lc) {
+            $lang = self::language_mapping[$lc];
+            return self::get_taxonomy_term_id('languages', $lang);
+        }, $language_codes);
+
+        return $term_ids;
     }
 
     public static function get_taxonomy_term_id($taxonomy, $term_name) {
@@ -132,11 +156,11 @@ class ResourceFile {
                 break;
 
             case 'languages':
-                echo join(',', $post->languages);
+                echo join(', ', $post->languages);
                 break;
 
             case 'accommodations':
-                //TODO term - subterm
+                echo join(', ', $post->accommodations);
                 break;
 
             case 'license':
@@ -162,14 +186,13 @@ class ResourceFile {
 
             $this->uri = get_post_meta($this->post_id, 'uri', true);
             $this->length_minutes = get_post_meta($this->post_id, 'length_minutes', true);
+            $this->license = $this->get_meta_term_name('license', 'licenses');
 
             $this->type = $this->get_meta_term_name('type', 'file_types');
             $this->format = $this->get_meta_term_name('format', 'file_formats');
 
             // TODO map language to ISO name
-            $this->language = get_languages();
-
-            $this->license = $this->get_meta_term_name('license', 'licenses');
+            $this->languages = $this->get_languages();
 
             $this->accommodations = $this->get_accommodations();
 
@@ -180,13 +203,24 @@ class ResourceFile {
     }
 
     private function get_languages() {
-        return '';
+        $languages = get_post_meta($this->post_id, 'languages', true);
+        return array_map(function ($term_id) {
+            return get_term($term_id, 'languages')->name;
+        }, $languages);
     }
 
     private function get_accommodations() {
-        //TODO
-        // these will be multiple term IDs that can then be mapped
-        return '';
+        $accommodations = get_post_meta($this->post_id, 'accommodations', true);
+        return array_map(function ($term_id) {
+            $term = get_term($term_id, 'a11y_accs');
+
+            if ($parent_id = $term->parent) {
+                $parent_term = get_term($parent_id);
+                return join(' - ', [$parent_term->name, $term->name]);
+            }
+
+            return $term->name;
+        }, $accommodations);
     }
 
     private function get_meta_term_name(string $meta_key, string $taxonomy) {

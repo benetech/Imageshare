@@ -16,7 +16,6 @@ class Resource {
             'post_title' => $args['title'],
             'comment_status' => 'closed',
             'post_category' => [],
-            'tags_input' => $args['tags'],
             'meta_input' => [
                 'description' => $args['description'],
                 'source' => $args['source'],
@@ -32,13 +31,17 @@ class Resource {
             throw new \Exception(sprintf(__('Unable to create resource "%s"', 'imageshare'), $args['title']));
         }
 
+        wp_set_post_terms($post_id, $args['tags']);
+
         // TODO create thumbnail attachment
 
         return $post_id;
     }
 
     public static function associate_resource_file($resource_id, $resource_file_id) {
-        // add to the list of ids in resource meta data
+        $files = get_post_meta($resource_id, 'files', true);
+        array_push($files, $resource_id);
+        update_post_meta($resource_id, 'files', $files);
     }
 
     public function __construct($post_id = null) {
@@ -71,6 +74,7 @@ class Resource {
         $columns['description'] = self::i18n('Description');
         $columns['source'] = self::i18n('Source');
         $columns['subject'] = self::i18n('Subject');
+        $columns['tags'] = self::i18n('Tags');
         $columns['files'] = self::i18n('File(s)');
 
         return $columns;
@@ -98,6 +102,14 @@ class Resource {
 
             case 'files':
                 echo count($post->file_ids);
+                break;
+
+            case 'tags':
+                $term_names = array_map(function ($term) {
+                    return $term->name;
+                }, wp_get_post_terms($post_id));
+
+                echo join(', ', $term_names);
                 break;
         }
     }
