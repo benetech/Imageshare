@@ -1,0 +1,92 @@
+{
+    "title": "A key/value object, <Key>: <Resource>",
+    "type": "object",
+    "patternProperties": {
+        ".*": {
+            "$ref": "#/definitions/resource"
+        }
+    },
+    "additionalProperties": false,
+    "definitions": {
+        "resource": {
+            "type": "object",
+            "properties": {
+                "unique_name": {
+                    "type": "string"                
+                },
+                "featured_image_URI": {
+                    "type": "string",
+                    "format": "uri-reference"
+                },
+                "featured_image_alt": {
+                    "type": "string"
+                },
+                "source": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "subject": {
+                    "enum": ["Biology", "Chemistry", "Physics", "Environment", "Earth", "Astronomy", "Algebra 1", "Algebra 2", "Calculus", "Statistics", "Engineering", "Circuits", "Computer Programming"]
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "uniqueItems": true
+                },
+                "files": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/resource_file"
+                    },
+                    "uniqueItems": true
+                }
+            },
+            "additionalProperties": false,
+            "minProperties": 7
+        },
+        "resource_file": {
+            "type": "object",
+            "properties": {
+                "URI": {
+                    "type": "string",
+                    "format": "uri"
+                },
+                "format": {
+                    "enum": ["AAC", "MP3", "WAV", "GIF", "JPG", "PNG", "AVI", "Generic", "HDV", "MP4", "Quicktime", "Website", "PDF", "TXT", "Word", "AI", "OBJ", "STL"]
+                },
+                "display_name": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "license": {
+                    "enum": ["CC:BY 4.0", "CC:BY", "CC:BY-NC", "CC:BY-NC-ND", "CC:BY-NC-SA", "CC:BY-ND", "CC:BY-SA", "DCMP Membership", "GNU-GPL", "OER", ""]
+                },
+                "accommodations": {
+                    "type": "array",
+                    "items": {
+                        "enum": ["Closed Captioning", "High Contrast Audio", "Sign Language", "Transcript", "Leveled Content", "Braille", "Textured", "Audio Description", "Image Description", "Labels", "Sonification", "Tactile Graphics with Braille", "Tactile Graphics with Text", "Tactile Model"]
+                    }
+                },
+                "languages": {
+                    "type": "array",
+                    "items": {
+                        "enum": ["all", "en", "es", "fr", "de"]
+                    },
+                    "uniqueItems": true
+                },
+                "length_minutes": {
+                    "type": "string",
+                    "pattern": "^[0-9]*$"
+                }
+            },
+            "additionalProperties": false,
+            "minProperties": 8
+        }
+    }
+}
