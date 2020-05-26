@@ -1,0 +1,67 @@
+{
+    "a11y_accs": {
+        "applies_to": ["btis_resource_file"],
+        "plural": "Accessibility Accommodations",
+        "singular": "Accessibility Accommodation",
+        "hierarchical": true,
+        "terms": {
+            "Auditive": ["Closed Captioning", "High Contrast Audio", "Sign Language", "Transcript"],
+            "Cognitive": ["Leveled Content"],
+            "Tactile": ["Braille", "Textured"],
+            "Visual": ["Audio Description", "Image Description", "Labels", "Sonification", "Tactile Graphics with Braille", "Tactile Graphics with Text", "Tactile Model"]
+        }
+    },
+    "file_formats": {
+        "applies_to": ["btis_resource_file"],
+        "plural": "Formats",
+        "singular": "Format",
+        "hierarchical": true,
+        "terms": {
+            "Audio": ["AAC", "MP3", "WAV"],
+            "Image": ["GIF", "JPG", "PNG", "AVI", "Generic", "HDV", "MP4", "Quicktime"],
+            "Other": ["Website", "PDF", "TXT", "Word"],
+            "Tactile": ["AI", "OBJ", "STL"]
+        }
+    },
+    "languages": {
+        "applies_to": ["btis_resource_file"],
+        "plural": "Languages",
+        "singular": "Language",
+        "hierarchical": false,
+        "terms": ["All Languages", "English", "Spanish", "French", "German"],
+        "allow_empty": true,
+        "terms_meta": {
+            "All Languages": { "code": "all"},
+            "English":       { "code": "en"},
+            "Spanish":       { "code": "sp"},
+            "French":        { "code": "fr"},
+            "German":        { "code": "de"}
+        }
+    },
+    "licenses": {
+        "applies_to": ["btis_resource_file"],
+        "plural": "Licenses",
+        "singular": "License",
+        "hierarchical": false,
+        "allow_empty": true,
+        "terms": ["CC:BY 4.0", "CC:BY", "CC:BY-NC", "CC:BY-NC-ND", "CC:BY-NC-SA", "CC:BY-ND", "CC:BY-SA", "DCMP Membership", "GNU-GPL", "OER"]
+    },
+    "file_types": {
+        "applies_to": ["btis_resource_file"],
+        "plural": "Types",
+        "singular": "Type",
+        "hierarchical": false,
+        "terms": ["2D Tactile Graphic", "3D Model", "Audio File", "Image", "Lesson Plan", "Manipulative", "Text Document", "URL", "Video", "Handmade Object"]
+    },
+    "subjects": {
+        "applies_to": ["btis_resource"],
+        "plural": "Subjects",
+        "singular": "Subject",
+        "hierarchical": true,
+        "terms": {
+            "Science": ["Biology", "Chemistry", "Physics", "Environment", "Earth", "Astronomy", "Algebra 1", "Algebra 2", "Calculus", "Statistics"],
+            "Engineering": null,
+            "Technology": ["Circuits", "Computer Programming"]
+        }
+    }
+}

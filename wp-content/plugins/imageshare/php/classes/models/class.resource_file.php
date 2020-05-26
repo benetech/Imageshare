@@ -11,14 +11,6 @@ class ResourceFile {
     const type = 'btis_resource_file';
     const default_license = 'GNU-GPL';
 
-    const language_mapping = [
-        'all' => 'All languages',
-        'en' => 'English',
-        'es' => 'Spanish',
-        'fr' => 'French',
-        'de' => 'German',
-    ];
-
     public static function create($args) {
         $existing = get_posts([
             'post_type' => self::type,
@@ -84,8 +76,26 @@ class ResourceFile {
 
     public static function language_codes_to_term_ids($language_codes) {
         $term_ids = array_map(function ($lc) {
-            $lang = self::language_mapping[$lc];
-            return self::get_taxonomy_term_id('languages', $lang);
+            // is this a language code?
+            if (1 === preg_match('/^[a-z]{2}$/', $lc)) {
+                //look up by language meta code
+                $terms = get_terms([
+                    'number' => 1,
+                    'hide_empty' => false,
+                    'meta_query' => [[
+                       'key' => 'code',
+                       'value' => $lc,
+                       'compare' => '='
+                    ]],
+                    'taxonomy'  => 'languages',
+                ]);
+
+                if (count($terms)) {
+                    return $terms[0]->term_id;
+                }
+            }
+
+            return self::get_taxonomy_term_id('languages', $lc);
         }, $language_codes);
 
         return $term_ids;

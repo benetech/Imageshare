@@ -28,7 +28,7 @@
                     "type": "string"
                 },
                 "subject": {
-                    "enum": ["Biology", "Chemistry", "Physics", "Environment", "Earth", "Astronomy", "Algebra 1", "Algebra 2", "Calculus", "Statistics", "Engineering", "Circuits", "Computer Programming"]
+                    "enum": [{{ terms.subjects | map(t => "\"#{t}\"") | join(', ') | raw }}]
                 },
                 "tags": {
                     "type": "array",
@@ -56,27 +56,28 @@
                     "format": "uri"
                 },
                 "format": {
-                    "enum": ["AAC", "MP3", "WAV", "GIF", "JPG", "PNG", "AVI", "Generic", "HDV", "MP4", "Quicktime", "Website", "PDF", "TXT", "Word", "AI", "OBJ", "STL"]
+                    "enum": [{{ terms.file_formats | map(t => "\"#{t}\"") | join(', ') | raw }}]
                 },
                 "display_name": {
                     "type": "string"
                 },
                 "type": {
-                    "type": "string"
+                    "enum": [{{ terms.file_types | map(t => "\"#{t}\"") | join(', ') | raw }}]
                 },
                 "license": {
-                    "enum": ["CC:BY 4.0", "CC:BY", "CC:BY-NC", "CC:BY-NC-ND", "CC:BY-NC-SA", "CC:BY-ND", "CC:BY-SA", "DCMP Membership", "GNU-GPL", "OER", ""]
+                    "enum": [{{ terms.licenses | map(t => "\"#{t}\"") | join(', ') | raw }}]
                 },
                 "accommodations": {
                     "type": "array",
                     "items": {
-                        "enum": ["Closed Captioning", "High Contrast Audio", "Sign Language", "Transcript", "Leveled Content", "Braille", "Textured", "Audio Description", "Image Description", "Labels", "Sonification", "Tactile Graphics with Braille", "Tactile Graphics with Text", "Tactile Model"]
-                    }
+                        "enum": [{{ terms.a11y_accs | map(t => "\"#{t}\"") | join(', ') | raw }}]
+                    },
+                    "uniqueItems": true
                 },
                 "languages": {
                     "type": "array",
                     "items": {
-                        "enum": ["all", "en", "es", "fr", "de"]
+                        "enum": [{{ terms.languages | map(t => "\"#{t}\"") | join(', ') | raw }}]
                     },
                     "uniqueItems": true
                 },

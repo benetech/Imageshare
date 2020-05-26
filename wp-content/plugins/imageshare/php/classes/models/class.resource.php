@@ -2,6 +2,12 @@
 
 namespace Imageshare\Models;
 
+require_once imageshare_php_file('classes/class.logger.php');
+
+use Imageshare\Logger;
+use \ImageShare\Views\View;
+use Swaggest\JsonSchema\Schema;
+
 class Resource {
 
     const type = 'btis_resource';
@@ -48,6 +54,54 @@ class Resource {
         if (!empty($post_id)) {
             $this->get_post($post_id);
         }
+    }
+
+    public static function validate($records) {
+        $template = View::load('import.schema.json.twig');
+        $taxonomies = json_decode(file_get_contents(imageshare_asset_file('taxonomies.json')));
+        $terms = [];
+        foreach ($taxonomies as $taxonomy => $definition) {
+            $terms[$taxonomy] = [];
+
+            // meta values are meta-lookup keys for a particular term
+            // such as "en" for "English"
+            if (property_exists($definition, 'terms_meta')) {
+                foreach ($definition->terms_meta as $term => $meta) {
+                    foreach ($meta as $key => $value) {
+                        array_push($terms[$taxonomy], $value);
+                    }
+                }
+            }
+
+            if (is_array($definition->terms)) {
+                $terms[$taxonomy] = array_merge($terms[$taxonomy], $definition->terms);
+                if (property_exists($definition, 'allow_empty') && $definition->allow_empty) {
+                    array_push($terms[$taxonomy], "");
+                }
+                continue;
+            }
+
+            $leafs = [];
+            foreach ($definition->terms as $key => $value) {
+                // no children
+                if ($value === null) {
+                    array_push($leafs, $key);
+                    continue;
+                }
+
+                $leafs = array_merge($leafs, $value);
+            }
+
+            $terms[$taxonomy] = array_merge($terms[$taxonomy], $leafs);
+
+            if (property_exists ($definition, 'allow_empty') && $definition->allow_empty) {
+                array_push($terms[$taxonomy], "");
+            }
+        };
+
+        $schema_json = $template->render(['terms' => $terms]);
+        $schema = Schema::import(json_decode($schema_json));
+        $schema->in($records);
     }
 
     public static function i18n(string $text) {

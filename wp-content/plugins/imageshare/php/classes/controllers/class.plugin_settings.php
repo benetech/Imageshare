@@ -12,8 +12,6 @@ use ImageShare\Views\PluginSettings as View;
 use ImageShare\Models\Resource as ResourceModel;
 use ImageShare\Models\ResourceFile as ResourceFileModel;
 
-use Swaggest\JsonSchema\Schema;
-
 class PluginSettings {
     const i18n_ns    = 'imageshare';
     const capability = 'manage_options';
@@ -47,7 +45,7 @@ class PluginSettings {
             }
 
             try {
-                $this->validate($records);
+                ResourceModel::validate($records);
             } catch (\Exception $validation_error) {
                 Logger::log('Validation exception: ' . $validation_error->getMessage());
                 return ['resources' => [], 'errors' => [$validation_error->getMessage()]];
@@ -55,12 +53,6 @@ class PluginSettings {
 
             return $this->create_resources($records);
         }
-    }
-
-    private function validate($records) {
-        $schema_json = file_get_contents(imageshare_asset_file('import.schema.json'));
-        $schema = Schema::import(json_decode($schema_json));
-        $schema->in($records);
     }
 
     private function create_resources($records) {

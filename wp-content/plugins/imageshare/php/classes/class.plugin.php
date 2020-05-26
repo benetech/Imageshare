@@ -27,34 +27,7 @@ class Plugin {
     private $version;
     private $is_admin;
 
-    const TAXONOMY_HIERARCHY = array(
-        'a11y_accs' => array(
-            'Auditive'  => array('Closed Captioning', 'High Contrast Audio', 'Sign Language', 'Transcript'),
-            'Cognitive' => array('Leveled Content'),
-            'Tactile'   => array('Braille', 'Textured'),
-            'Visual'    => array('Audio Description', 'Image Description', 'Labels', 'Sonification', 'Tactile Graphics with Braille', 'Tactile Graphics with Text', 'Tactile Model')
-        ),
-        'file_formats' => array(
-            'Audio'     => array('AAC', 'MP3', 'WAV'),
-            'Image'     => array('GIF', 'JPG', 'PNG', 'AVI', 'Generic', 'HDV', 'MP4', 'Quicktime'),
-            'Other'     => array('Website', 'PDF', 'TXT', 'Word'),
-            'Tactile'   => array('AI', 'OBJ', 'STL')
-        ),
-        'languages' => array(
-            'All Languages',
-            'English',
-            'Spanish',
-            'French',
-            'German'
-        ),
-        'licenses'          => array('CC:BY 4.0', 'CC:BY', 'CC:BY-NC', 'CC:BY-NC-ND', 'CC:BY-NC-SA', 'CC:BY-ND', 'CC:BY-SA', 'DCMP Membership', 'GNU-GPL', 'OER'),
-        'file_types'        => array('2D Tactile Graphic', '3D Model', 'Audio File', 'Image', 'Lesson Plan', 'Manipulative', 'Text Document', 'URL', 'Video', 'Handmade Object'),
-        'subjects'          => array(
-            'Science'       => array('Biology', 'Chemistry', 'Physics', 'Environment', 'Earth', 'Astronomy', 'Algebra 1', 'Algebra 2', 'Calculus', 'Statistics'),
-            'Engineering',
-            'Technology' => array('Circuits', 'Computer Programming')
-        )
-    );
+    private $taxonomy_json;
 
     public function __construct(string $file, string $version, bool $is_admin = false) {
         if(get_option('imageshare_plugin_is_activated', null) !== null) {
@@ -90,12 +63,26 @@ class Plugin {
             return;
         }
 
+        $this->load_taxonomy_data();
         $this->register_taxonomies();
         $this->register_taxonomy_terms();
 
         Logger::log("Activating plugin");
         $this->is_activated = true;
         add_option('imageshare_plugin_is_activated', $this->is_activated);
+    }
+
+    private function load_taxonomy_data() {
+        $file = imageshare_asset_file('taxonomies.json');
+        if ($contents = file_get_contents($file)) {
+            $json = json_decode($contents);
+            if ($json === null) {
+                throw new \Exception("Unable to decode taxonomy json.");
+            }
+            $this->taxonomy_json = $json;
+        } else {
+            throw new \Exception("Unable to load taxonomy data.");
+        }
     }
 
     public function deactivate() {
@@ -109,6 +96,7 @@ class Plugin {
     }
 
     public function init() {
+        $this->load_taxonomy_data();
         $this->register_taxonomies();
         $this->register_custom_post_types();
         $this->load_controllers();
@@ -137,115 +125,36 @@ class Plugin {
     }
 
     private function register_taxonomies() {
-        $this->register_accessibility_accommodations_taxonomy();
-        $this->register_file_types_taxonomy();
-        $this->register_languages_taxonomy();
-        $this->register_licenses_taxonomy();
-        $this->register_file_formats_taxonomy();
-        $this->register_subjects_taxonomy();
-    }
-
-    private function register_accessibility_accommodations_taxonomy() {
-        register_taxonomy('a11y_accs', array('btis_resource_file'), array(
-            'label' => self::i18n('Accessibility Accomodations'),
-            'labels' => array(
-                'singular_name' => self::i18n('Accessibility Accomodation')
-            ),
-            'hierarchical' => true
-        ));
-    }
-
-    private function register_file_types_taxonomy() {
-        register_taxonomy('file_types', array('btis_resource_file'), array(
-            'label' => self::i18n('Types'),
-            'labels' => array(
-                'singular_name' => self::i18n('Type')
-            ),
-            'hierarchical' => true
-        ));
-    }
-
-    private function register_languages_taxonomy() {
-        register_taxonomy('languages', array('btis_resource_file'), array(
-            'label' => self::i18n('Languages'),
-            'labels' => array(
-                'singular_name' => self::i18n('Language')
-            ),
-            'hierarchical' => false
-        ));
-    }
-
-    private function register_licenses_taxonomy() {
-        register_taxonomy('licenses', array('btis_resource_file'), array(
-            'label' => self::i18n('Licenses'),
-            'labels' => array(
-                'singular_name' => self::i18n('License')
-            ),
-            'hierarchical' => false
-        ));
-    }
- 
-    private function register_file_formats_taxonomy() {
-         register_taxonomy('file_formats', array('btis_resource_file'), array(
-            'label' => self::i18n('Formats'),
-            'labels' => array(
-                'singular_name' => self::i18n('Format')
-            ),
-            'hierarchical' => false
-        ));
-    }
-
-    private function register_subjects_taxonomy() {
-        register_taxonomy('subjects', array('btis_resource'), array(
-            'label' => self::i18n('Subjects'),
-            'labels' => array(
-                'singular_name' => self::i18n('Subject')
-            ),
-            'hierarchical' => false
-        ));
+        $json = $this->taxonomy_json;
+        foreach ($json as $taxonomy => $definition) {
+            register_taxonomy(
+                $taxonomy,
+                $definition->applies_to,
+                [
+                    'label' => self::i18n($definition->plural),
+                    'labels' => [
+                        'singular_name' => self::i18n($definition->singular)
+                    ],
+                    'hierarchical' => $definition->hierarchical
+                ]
+            );
+        }
     }
 
     private function register_taxonomy_terms() {
-        foreach(array_keys(self::TAXONOMY_HIERARCHY) as $taxonomy) {
-            $values = self::TAXONOMY_HIERARCHY[$taxonomy];
+        $json = $this->taxonomy_json;
 
+        foreach ($json as $taxonomy => $definition) {
             Logger::log("Generating taxonomy {$taxonomy}");
 
-            foreach (array_keys($values) as $value) {
-                if (is_string($value)) {
-                    Logger::log("Inserting term {$value} into hierarchical taxonomy {$taxonomy}");
+            $terms = $definition->terms;
+            $terms_meta = (property_exists($definition, 'terms_meta'))
+                ? $definition->terms_meta
+                : (object) [];
 
-                    $term = wp_insert_term(
-                        $value,
-                        $taxonomy,
-                        ['slug' => join('-', ['imageshare', $value])]
-                    );
-
-                    if (is_wp_error($term)) {
-                        Logger::log(sprintf(__('Error creating term %s in taxonomy %s', 'imageshare'), $value, $taxonomy));
-                        Logger::log($term->get_error_message());
-                    }
-
-                    foreach($values[$value] as $child_term_value) {
-                        Logger::log("Inserting term {$child_term_value} (child term of {$value}) into taxonomy {$taxonomy}");
-
-                        $child_term = wp_insert_term(
-                            $child_term_value, 
-                            $taxonomy,
-                            [
-                                'parent' => $term['term_id'], 
-                                'slug'   => join('-', ['imageshare', $value, $child_term_value])
-                            ]
-                        );
-
-                        if (is_wp_error($child_term)) {
-                            Logger::log(sprintf(__('Error creating child term %s of term %s in taxonomy %s', 'imageshare'), $child_term_value, $value, $taxonomy));
-                            Logger::log($child_term->get_error_message());
-                        }
-                    }
-                } else {
-                    $term_value = $values[$value];
-
+            // flat hierarchy
+            if (is_array($terms)) {
+                foreach ($terms as $term_value) {
                     Logger::log("Inserting term {$term_value} into taxonomy {$taxonomy}");
 
                     $term = wp_insert_term(
@@ -258,8 +167,68 @@ class Plugin {
                         Logger::log(sprintf(__('Error creating term %s in taxonomy %s', 'imageshare'), $term_value, $taxonomy));
                         Logger::log($term->get_error_message());
                     }
+
+                    if (property_exists($terms_meta, $term_value)) {
+                        foreach ($terms_meta->$term_value as $key => $value) {
+                            add_term_meta($term['term_id'], $key, $value, true);
+                        }
+                    }
                 }
+
+                continue;
             }
+
+            foreach ($terms as $parent => $children) {
+                Logger::log("Inserting term {$parent} into hierarchical taxonomy {$taxonomy}");
+
+                $term = wp_insert_term(
+                    $parent,
+                    $taxonomy,
+                    ['slug' => join('-', ['imageshare', $parent])]
+                );
+
+                if (is_wp_error($term)) {
+                    Logger::log(sprintf(__('Error creating term %s in taxonomy %s', 'imageshare'), $value, $taxonomy));
+                    Logger::log($term->get_error_message());
+                }
+
+                if (property_exists($terms_meta, $parent)) {
+                    foreach ($terms_meta->$parent as $key => $value) {
+                        add_term_meta($term['term_id'], $key, $value, true);
+                    }
+                }
+
+
+                if ($children === null) {
+                    // this term has no children
+                    continue;
+                }
+
+                foreach($children as $child_term_value) {
+                    Logger::log("Inserting term {$child_term_value} (child term of {$parent}) into taxonomy {$taxonomy}");
+
+                    $child_term = wp_insert_term(
+                        $child_term_value, 
+                        $taxonomy,
+                        [
+                            'parent' => $term['term_id'], 
+                            'slug'   => join('-', ['imageshare', $parent, $child_term_value])
+                        ]
+                    );
+
+                    if (is_wp_error($child_term)) {
+                        Logger::log(sprintf(__('Error creating child term %s of term %s in taxonomy %s', 'imageshare'), $child_term_value, $parent, $taxonomy));
+                        Logger::log($child_term->get_error_message());
+                    }
+
+                    if (property_exists($terms_meta, $child_term_value)) {
+                        foreach ($terms_meta->$child_term_value as $key => $value) {
+                            add_term_meta($child_term['term_id'], $key, $value, true);
+                        }
+                    }
+
+                }
+            } 
         }
     }
 
