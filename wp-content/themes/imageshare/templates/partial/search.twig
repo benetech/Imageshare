@@ -1,11 +1,11 @@
 <section aria-labelledby="main-search">
-  <h2 id="main-search" class="h2">Search</h2>
+  <h2 id="main-search" class="h2">{{ 'Search' | i18n }}</h2>
   <p class="main-description">
-    Library of 5,074 accessible STEM media resources.
+    {{ 'Library of 5,074 accessible STEM media resources.' | i18n }}
   </p>
   <form role="search" class="search-form">
     <label for="search" class="search-label"
-      >Search collections or resources</label
+      >{{ 'Search collections or resources' | i18n }}</label
     >
     <div class="controls">
       <div class="input-wrapper">
@@ -16,7 +16,7 @@
           aria-describedby="desc"
         />
         <div id="desc" class="description">
-          Try searching “geology” or “heart”.
+          {{ 'Try searching “geology” or “heart”.' | i18n }}
         </div>
       </div>
       <button
@@ -25,12 +25,12 @@
         class="advanced-btn"
         aria-expanded="false"
       >
-        <span>Advanced Search</span>
+        <span>{{ 'Advanced Search' | i18n }}</span>
         <span class="bracket" aria-hidden="true"></span>
       </button>
       <div class="submit-btn-wrapper">
         <button type="submit" class="submit-btn">
-          <span>Search Library</span>
+          <span>{{ 'Search Library' | i18n }}</span>
         </button>
       </div>
     </div>
@@ -41,9 +41,9 @@
         role="list"
       >
         <li class="refinement">
-          <label for="subject1">Subject 1</label>
+          <label for="subject1">{{ 'Subject 1' | i18n }}</label>
           <select id="subject1" name="subject1">
-            <option value="">--choose an option--</option>
+            <option value="">--{{ 'choose an option' | i18n }}--</option>
             <option value="first">First</option>
             <option value="second">Second</option>
           </select>
@@ -55,7 +55,7 @@
       </ul>
       <div class="submit-btn-wrapper">
         <button type="submit" class="submit-btn">
-          <span>Search Library</span>
+          <span>{{ 'Search Library' | i18n }}</span>
         </button>
       </div>
     </div>

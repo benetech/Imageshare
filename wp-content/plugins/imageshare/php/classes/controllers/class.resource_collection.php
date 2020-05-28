@@ -13,7 +13,7 @@ class ResourceCollection {
     public function __construct() {
     }
 
-    public function get_popular_categories($number = 5) {
+    public function get_popular_collections($number = 5) {
         return array();
     }
 }
