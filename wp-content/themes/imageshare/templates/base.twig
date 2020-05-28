@@ -1,0 +1,86 @@
+{% block html_head_container %}
+
+{% include 'html-header.twig' %}
+  {% block head %}
+  {% endblock %}
+  </head>
+{% endblock %}
+
+  <body data-template="base.twig">
+    <div class="app grid home">
+      <div class="app-inner">
+        <header class="header">
+          <div class="header-inner width-12/12">
+            <a href="#main-heading" class="skip-link">Skip to Main Content</a>
+            <a href="/" class="logo">
+              <img
+                class="logo-img"
+                src="{{ site.theme.link }}/assets/img/imageshare.png"
+                alt="Imageshare, A Benetech Initiative Logo"
+              />
+            </a>
+          </div>
+        </header>
+        <main class="main">
+          <div class="main-inner width-12/12">
+          {% if title %}
+            <div class="h1-wrapper">
+              <h1 class="h1" id="main-heading">
+                {{ title }}
+              </h1>
+            {% if title_description %}
+              <div class="h1-description">
+                {{ title_description }}
+              </div>
+            {% endif %}
+            </div>
+          {% endif %}
+          
+          {% block content %}
+            <h2 style="color: red">No content?</h2>
+          {% endblock %}
+          </div>
+        </main>
+    {% block footer %}
+      <footer class="footer">
+        {% include 'footer.twig' %}
+      </footer>
+      {{ function('wp_footer') }}
+    {% endblock %}
+      </div>
+    </div>
+    <div
+      id="announcement"
+      aria-live="polite"
+      aria-atomic="true"
+      class="sr-only"
+    ></div>
+    <script src="{{ site.theme.link }}/assets/js/vendor/modernizr-3.8.0.min.js"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      window.jQuery ||
+        document.write(
+          '<script src="{{ site.theme.link }}/assets/js/vendor/jquery-3.4.1.min.js"><\/script>'
+        );
+    </script>
+    <script src="{{ site.theme.link }}/assets/js/plugins.js"></script>
+    <script src="{{ site.theme.link }}/assets/js/main.js"></script>
+
+    <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
+    <script>
+      window.ga = function () {
+        ga.q.push(arguments);
+      };
+      ga.q = [];
+      ga.l = +new Date();
+      ga("create", "UA-XXXXX-Y", "auto");
+      ga("set", "transport", "beacon");
+      ga("send", "pageview");
+    </script>
+    <script src="https://www.google-analytics.com/analytics.js" async></script>
+  </body>
+</html>

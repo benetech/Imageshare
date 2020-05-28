@@ -1,0 +1,64 @@
+<section aria-labelledby="main-search">
+  <h2 id="main-search" class="h2">Search</h2>
+  <p class="main-description">
+    Library of 5,074 accessible STEM media resources.
+  </p>
+  <form role="search" class="search-form">
+    <label for="search" class="search-label"
+      >Search collections or resources</label
+    >
+    <div class="controls">
+      <div class="input-wrapper">
+        <input
+          id="search"
+          type="text"
+          class="search-input"
+          aria-describedby="desc"
+        />
+        <div id="desc" class="description">
+          Try searching “geology” or “heart”.
+        </div>
+      </div>
+      <button
+        id="advanced-btn"
+        type="button"
+        class="advanced-btn"
+        aria-expanded="false"
+      >
+        <span>Advanced Search</span>
+        <span class="bracket" aria-hidden="true"></span>
+      </button>
+      <div class="submit-btn-wrapper">
+        <button type="submit" class="submit-btn">
+          <span>Search Library</span>
+        </button>
+      </div>
+    </div>
+    <div class="refinements-wrapper">
+      <ul
+        class="refinements"
+        aria-labelledby="advanced-btn"
+        role="list"
+      >
+        <li class="refinement">
+          <label for="subject1">Subject 1</label>
+          <select id="subject1" name="subject1">
+            <option value="">--choose an option--</option>
+            <option value="first">First</option>
+            <option value="second">Second</option>
+          </select>
+        </li>
+        <li class="refinement">
+          <label for="subject2">Subject 2</label>
+          <input id="subject2" type="number" name="subject2" />
+        </li>
+      </ul>
+      <div class="submit-btn-wrapper">
+        <button type="submit" class="submit-btn">
+          <span>Search Library</span>
+        </button>
+      </div>
+    </div>
+  </form>
+</section>
+

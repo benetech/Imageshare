@@ -1,0 +1,95 @@
+{% extends "base.twig" %}
+
+{% block content %}
+    {% include "partial/search.twig" %}
+    <section aria-labelledby="collections">
+      <h2 class="h2 collections-heading" id="collections">
+        Browse Collections
+      </h2>
+      <ul
+        class="collections grid"
+        aria-labelledby="collections"
+        role="list"
+      >
+        <li
+          class="collection background205d9c width-3/12 width-6/12@medium width-12/12@small"
+        >
+          <a href="#" class="collection-link">
+            <img class="collection-img" src="./img/earth.png" alt="" />
+            <div class="collection-heading">Geology</div>
+            <div class="collection-description">Middle School</div>
+          </a>
+        </li>
+        <li
+          class="collection background9c5120 width-3/12 width-6/12@medium width-12/12@small"
+        >
+          <a href="#" class="collection-link">
+            <img class="collection-img" src="./img/earth.png" alt="" />
+            <div class="collection-heading">Geology</div>
+            <div class="collection-description">Middle School</div>
+          </a>
+        </li>
+        <li
+          class="collection background209c98 width-3/12 width-6/12@medium width-12/12@small"
+        >
+          <a href="#" class="collection-link">
+            <img class="collection-img" src="./img/earth.png" alt="" />
+            <div class="collection-heading">Geology</div>
+            <div class="collection-description">Middle School</div>
+          </a>
+        </li>
+        <li
+          class="collection background66209c width-3/12 width-6/12@medium width-12/12@small"
+        >
+          <a href="#" class="collection-link">
+            <img class="collection-img" src="./img/earth.png" alt="" />
+            <div class="collection-heading">Geology</div>
+            <div class="collection-description">Middle School</div>
+          </a>
+        </li>
+        <li
+          class="collection background9c2e20 width-3/12 width-6/12@medium width-12/12@small"
+        >
+          <a href="#" class="collection-link">
+            <img class="collection-img" src="./img/earth.png" alt="" />
+            <div class="collection-heading">Geology</div>
+            <div class="collection-description">Middle School</div>
+          </a>
+        </li>
+        <li
+          class="collection background9c2072 width-3/12 width-6/12@medium width-12/12@small"
+        >
+          <a href="#" class="collection-link">
+            <img class="collection-img" src="./img/earth.png" alt="" />
+            <div class="collection-heading">Geology</div>
+            <div class="collection-description">Middle School</div>
+          </a>
+        </li>
+        <li
+          class="collection background7d9c20 width-3/12 width-6/12@medium width-12/12@small"
+        >
+          <a href="#" class="collection-link">
+            <img class="collection-img" src="./img/earth.png" alt="" />
+            <div class="collection-heading">Geology</div>
+            <div class="collection-description">Middle School</div>
+          </a>
+        </li>
+        <li
+          class="collection background20779c width-3/12 width-6/12@medium width-12/12@small"
+        >
+          <a href="#" class="collection-link">
+            <img class="collection-img" src="./img/earth.png" alt="" />
+            <div class="collection-heading">Geology</div>
+            <div class="collection-description">Middle School</div>
+          </a>
+        </li>
+      </ul>
+      <div class="see-more-collections width-12/12">
+        <a href="#">See More Collections</a>
+      </div>
+    </section>
+
+
+  <h2>{{ foo }}</h2>
+<!--  <h2>{{ imageshare.controllers.resource_collection.get_popular_categories() }}</h2> -->
+{% endblock %}
