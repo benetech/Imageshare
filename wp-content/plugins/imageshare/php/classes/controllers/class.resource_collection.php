@@ -14,6 +14,6 @@ class ResourceCollection {
     }
 
     public function get_popular_collections($number = 5) {
-        return array();
+        return Model::get_popular($number);
     }
 }

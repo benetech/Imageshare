@@ -36,6 +36,18 @@ class ResourceCollection {
         );
     }
 
+    public static function get_popular(int $number) {
+        $posts = get_posts([
+            'post_type' => self::type,
+            'numberposts' => $number,
+            'post_status' => 'publish'
+        ]);
+
+        return array_map(function ($post) {
+            return self::from_post($post);
+        }, $posts);
+    }
+
     public static function manage_columns(array $columns) {
         $columns['description'] = self::i18n('Description');
         $columns['contributor'] = self::i18n('Contributor');
@@ -68,7 +80,8 @@ class ResourceCollection {
     public static function from_post(\WP_Post $post) {
         $wrapped = new ResourceCollection();
         $wrapped->post = $post;
-        return $wrapped->load_custom_attributes();
+        $wrapped->load_custom_attributes();
+        return $wrapped;
     }
 
     private function get_post($post_id) {
@@ -81,13 +94,15 @@ class ResourceCollection {
             $this->id = $this->post->ID;
             $this->post_id = $this->post->ID;
             $this->title = $this->post->post_title;
-
-            $this->_metadata = get_metadata('post', $this->post_id);
+            $this->permalink = get_permalink($this->post->ID);
 
             // post metadata
             $this->description = get_post_meta($this->post_id, 'description', true);
             $this->contributor = get_post_meta($this->post_id, 'contributor', true);
             $this->resource_ids = get_post_meta($this->post_id, 'resources', true);
+
+            $thumbnail_id = get_post_meta($this->post_id, 'thumbnail', true);
+            $this->thumbnail = wp_get_attachment_image_src($thumbnail_id)[0];
 
             return $this->id;
         }
