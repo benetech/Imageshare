@@ -179,6 +179,13 @@ class Resource {
         return $this->load_custom_attributes();
     }
 
+    public static function from_post(\WP_Post $post) {
+        $wrapped = new Resource();
+        $wrapped->post = $post;
+        $wrapped->load_custom_attributes();
+        return $wrapped;
+    }
+
     public function load_custom_attributes() {
         if (!empty($this->post)) {
             $this->id = $this->post->ID;

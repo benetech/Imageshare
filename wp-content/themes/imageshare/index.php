@@ -14,6 +14,7 @@
  */
 
 $context = Timber::context();
+$context['search_terms'] = $imageshare->controllers->search->get_available_terms();
 
 if (($_GET['page'] ?? null) === 'search') {
     $context['results'] = $imageshare->controllers->search->query([
@@ -26,7 +27,6 @@ if (($_GET['page'] ?? null) === 'search') {
     return Timber::render( array( 'page-search.twig'), $context );
 }
 
-$context['search_terms'] = $imageshare->controllers->search->get_available_terms();
 $context['collections'] = $imageshare->controllers->resource_collection->get_featured_collections(8);
 
 $templates = array( 'index.twig' );

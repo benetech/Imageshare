@@ -51,8 +51,14 @@ class Search {
 
         $matching = get_posts($query_args);
 
-        Logger::log($matching);
+        return array_reduce($matching, function ($carry, $match) {
+            if ($match->post_type === ResourceModel::type) {
+                array_push($carry, ResourceModel::from_post($match));
+            } else if ($match->post_parent) {
+                array_push($carry, new ResourceModel($match->post_parent));
+            }
 
-        return $matching;
+            return $carry;
+        }, []);
     }
 }

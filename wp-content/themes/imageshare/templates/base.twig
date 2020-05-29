@@ -7,7 +7,7 @@
 {% endblock %}
 
   <body data-template="base.twig">
-    <div class="app grid home">
+    <div class="app grid {{ is_home ? 'home' : 'not_home' }}">
       <div class="app-inner">
         <header class="header">
           <div class="header-inner width-12/12">
@@ -26,11 +26,11 @@
           {% if title %}
             <div class="h1-wrapper">
               <h1 class="h1" id="main-heading">
-                {{ title }}
+                {{ title | i18n }}
               </h1>
             {% if title_description %}
               <div class="h1-description">
-                {{ title_description }}
+                {{ title_description | i18n }}
               </div>
             {% endif %}
             </div>
