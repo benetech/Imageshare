@@ -66,6 +66,30 @@
                 "min": "",
                 "max": "",
                 "return_format": "id"
+            },
+            {
+                "key": "field_5ecfa5fd25b03",
+                "label": "Thumbnail",
+                "name": "thumbnail",
+                "type": "image",
+                "instructions": "",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "return_format": "url",
+                "preview_size": "medium",
+                "library": "uploadedTo",
+                "min_width": "",
+                "min_height": "",
+                "min_size": "",
+                "max_width": "",
+                "max_height": "",
+                "max_size": "",
+                "mime_types": ""
             }
         ],
         "location": [
@@ -111,8 +135,8 @@
             },
             {
                 "key": "field_5ea189233edd3",
-                "label": "Subject(s)",
-                "name": "subjects",
+                "label": "Subject",
+                "name": "subject",
                 "type": "taxonomy",
                 "instructions": "",
                 "required": 1,
@@ -123,32 +147,13 @@
                     "id": ""
                 },
                 "taxonomy": "subjects",
-                "field_type": "checkbox",
+                "field_type": "select",
+                "allow_null": 0,
                 "add_term": 0,
                 "save_terms": 1,
                 "load_terms": 1,
                 "return_format": "id",
-                "multiple": 0,
-                "allow_null": 0
-            },
-            {
-                "key": "field_5ea189663edd5",
-                "label": "Contributor",
-                "name": "contributor",
-                "type": "text",
-                "instructions": "",
-                "required": 1,
-                "conditional_logic": 0,
-                "wrapper": {
-                    "width": "",
-                    "class": "",
-                    "id": ""
-                },
-                "default_value": "",
-                "placeholder": "",
-                "prepend": "",
-                "append": "",
-                "maxlength": ""
+                "multiple": 0
             },
             {
                 "key": "field_5ea189733edd6",
@@ -211,7 +216,22 @@
         "style": "seamless",
         "label_placement": "top",
         "instruction_placement": "label",
-        "hide_on_screen": "",
+        "hide_on_screen": [
+            "permalink",
+            "the_content",
+            "excerpt",
+            "discussion",
+            "comments",
+            "revisions",
+            "slug",
+            "author",
+            "format",
+            "page_attributes",
+            "featured_image",
+            "categories",
+            "tags",
+            "send-trackbacks"
+        ],
         "active": true,
         "description": ""
     },
@@ -239,10 +259,10 @@
                 "maxlength": ""
             },
             {
-                "key": "field_5ea1814f9e00f",
-                "label": "Type",
-                "name": "resource_type",
-                "type": "taxonomy",
+                "key": "field_5ed0e6ea197d0",
+                "label": "URI",
+                "name": "uri",
+                "type": "url",
                 "instructions": "",
                 "required": 1,
                 "conditional_logic": 0,
@@ -251,19 +271,13 @@
                     "class": "",
                     "id": ""
                 },
-                "taxonomy": "resource_types",
-                "field_type": "radio",
-                "allow_null": 0,
-                "add_term": 0,
-                "save_terms": 1,
-                "load_terms": 1,
-                "return_format": "id",
-                "multiple": 0
+                "default_value": "",
+                "placeholder": ""
             },
             {
-                "key": "field_5ea1819e9e010",
-                "label": "File Type",
-                "name": "file_type",
+                "key": "field_5ea1814f9e00f",
+                "label": "Type",
+                "name": "type",
                 "type": "taxonomy",
                 "instructions": "",
                 "required": 1,
@@ -274,7 +288,7 @@
                     "id": ""
                 },
                 "taxonomy": "file_types",
-                "field_type": "radio",
+                "field_type": "select",
                 "allow_null": 0,
                 "add_term": 0,
                 "save_terms": 1,
@@ -283,9 +297,9 @@
                 "multiple": 0
             },
             {
-                "key": "field_5ea181bd9e011",
-                "label": "Grade(s)",
-                "name": "grades",
+                "key": "field_5ea1819e9e010",
+                "label": "Format",
+                "name": "format",
                 "type": "taxonomy",
                 "instructions": "",
                 "required": 1,
@@ -295,36 +309,14 @@
                     "class": "",
                     "id": ""
                 },
-                "taxonomy": "grade_ranges",
-                "field_type": "checkbox",
+                "taxonomy": "file_formats",
+                "field_type": "select",
+                "allow_null": 0,
                 "add_term": 0,
                 "save_terms": 1,
                 "load_terms": 1,
                 "return_format": "id",
-                "multiple": 0,
-                "allow_null": 0
-            },
-            {
-                "key": "field_5ea189483edd4",
-                "label": "License",
-                "name": "license",
-                "type": "taxonomy",
-                "instructions": "",
-                "required": 1,
-                "conditional_logic": 0,
-                "wrapper": {
-                    "width": "",
-                    "class": "",
-                    "id": ""
-                },
-                "taxonomy": "licenses",
-                "field_type": "radio",
-                "add_term": 0,
-                "save_terms": 1,
-                "load_terms": 1,
-                "return_format": "id",
-                "multiple": 0,
-                "allow_null": 0
+                "multiple": 0
             },
             {
                 "key": "field_5ea181e49e012",
@@ -340,7 +332,7 @@
                     "id": ""
                 },
                 "taxonomy": "languages",
-                "field_type": "radio",
+                "field_type": "select",
                 "allow_null": 0,
                 "add_term": 0,
                 "save_terms": 1,
@@ -369,6 +361,27 @@
                 "return_format": "id",
                 "multiple": 0,
                 "allow_null": 0
+            },
+            {
+                "key": "field_5ed0e715197d1",
+                "label": "Length (minutes)",
+                "name": "length_minutes",
+                "type": "number",
+                "instructions": "",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "default_value": "",
+                "placeholder": "",
+                "prepend": "",
+                "append": "",
+                "min": 0,
+                "max": 9999,
+                "step": ""
             }
         ],
         "location": [
@@ -385,7 +398,22 @@
         "style": "seamless",
         "label_placement": "top",
         "instruction_placement": "label",
-        "hide_on_screen": "",
+        "hide_on_screen": [
+            "permalink",
+            "the_content",
+            "excerpt",
+            "discussion",
+            "comments",
+            "revisions",
+            "slug",
+            "author",
+            "format",
+            "page_attributes",
+            "featured_image",
+            "categories",
+            "tags",
+            "send-trackbacks"
+        ],
         "active": true,
         "description": ""
     }
