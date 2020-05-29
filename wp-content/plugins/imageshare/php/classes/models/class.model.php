@@ -42,5 +42,15 @@ class Model {
             return $carry;
         }, []);
     }
+
+    public static function get_taxonomy_term_id($taxonomy, $term_name) {
+        $term = get_term_by('name', $term_name, $taxonomy);
+
+        if ($term === false) {
+            throw new \Exception(sprintf(__('Term %s was not found in taxonomy %s', 'imageshare'), $term_name, $taxonomy));
+        }
+
+        return $term->term_id;
+    }
 }
 

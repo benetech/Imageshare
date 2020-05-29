@@ -22,17 +22,13 @@ class Resource {
             throw new \Exception(sprintf(__('A Resource with unique title "%s" already exists', 'imageshare'), $args['title']));
         }
 
+        $subject  = Model::get_taxonomy_term_id('subjects', $args['subject']);
+
         $post_data = [
             'post_type' => self::type,
             'post_title' => $args['title'],
             'comment_status' => 'closed',
-            'post_category' => [],
-            'meta_input' => [
-                'description' => $args['description'],
-                'source' => $args['source'],
-                'subject' => $args['subject'],
-                'files' => [],
-            ]
+            'post_category' => []
         ];
 
         $post_id = wp_insert_post($post_data, true);
@@ -44,6 +40,11 @@ class Resource {
 
         wp_set_post_terms($post_id, $args['tags']);
 
+        update_field('description', $args['description'], $post_id);
+        update_field('source', $args['source'], $post_id);
+        update_field('subject', $subject, $post_id);
+        update_field('files', [], $post_id);
+
         // TODO create thumbnail attachment
 
         return $post_id;
@@ -52,7 +53,7 @@ class Resource {
     public static function associate_resource_file($resource_id, $resource_file_id) {
         $files = get_post_meta($resource_id, 'files', true);
         array_push($files, $resource_file_id);
-        update_post_meta($resource_id, 'files', $files);
+        update_field('files', $files, $resource_id);
     }
 
     public function __construct($post_id = null) {
@@ -187,12 +188,25 @@ class Resource {
             // post metadata
             $this->description = get_post_meta($this->post_id, 'description', true);
             $this->source      = get_post_meta($this->post_id, 'source', true);
-            $this->subject     = get_post_meta($this->post_id, 'subject', true); 
             $this->file_ids    = get_post_meta($this->post_id, 'files', true);
+            $this->subject     = $this->get_meta_term_name('subject', 'subjects'); 
 
             return $this->id;
         }
 
         return null;
     }
+
+    private function get_meta_term_name(string $meta_key, string $taxonomy) {
+        $term_id = get_post_meta($this->post_id, $meta_key, true);
+        $term = get_term($term_id, $taxonomy);
+
+        if ($parent_id = $term->parent) {
+            $parent_term = get_term($parent_id);
+            return join(' - ', [$parent_term->name, $term->name]);
+        }
+
+        return $term->name;
+    }
+
 }

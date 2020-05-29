@@ -35,9 +35,9 @@ class ResourceFile {
             : self::default_license
         ;
 
-        $format  = self::get_taxonomy_term_id('file_formats', $args['format']);
-        $type    = self::get_taxonomy_term_id('file_types', $args['type']);
-        $license = self::get_taxonomy_term_id('licenses', $license);
+        $format  = Model::get_taxonomy_term_id('file_formats', $args['format']);
+        $type    = Model::get_taxonomy_term_id('file_types', $args['type']);
+        $license = Model::get_taxonomy_term_id('licenses', $license);
         $accommodations = self::accommodations_to_term_ids($args['accommodations']);
         $languages = self::language_codes_to_term_ids($args['languages']);
 
@@ -51,16 +51,7 @@ class ResourceFile {
             'post_title' => $args['title'],
             'comment_status' => 'closed',
             'post_category' => [],
-            'tags_input' => [],
-            'meta_input' => [
-                'uri' => $args['uri'],
-                'length_minutes' => $length,
-                'type' => $type,
-                'format' => $format,
-                'license' => $license,
-                'accommodations' => $accommodations,
-                'languages' => $languages
-            ]
+            'tags_input' => []
         ];
 
         $post_id = wp_insert_post($post_data, true);
@@ -70,6 +61,14 @@ class ResourceFile {
             throw new \Exception(sprintf(__('Unable to create resource file "%s"', 'imageshare'), $args['title']));
         }
 
+        update_field('uri', $args['uri'], $post_id);
+        update_field('length_minutes', $length, $post_id);
+        update_field('type', $type, $post_id);
+        update_field('format', $format, $post_id);
+        update_field('license', $license, $post_id);
+        update_field('accommodations', $accommodations, $post_id);
+        update_field('languages', $languages, $post_id);
+
         // TODO create thumbnail attachment
 
         return $post_id;
@@ -77,7 +76,7 @@ class ResourceFile {
 
     public static function accommodations_to_term_ids($accommodations) {
         return array_map(function ($acc) {
-            return self::get_taxonomy_term_id('a11y_accs', $acc);
+            return Model::get_taxonomy_term_id('a11y_accs', $acc);
         }, $accommodations);
     }
 
@@ -102,20 +101,10 @@ class ResourceFile {
                 }
             }
 
-            return self::get_taxonomy_term_id('languages', $lc);
+            return Model::get_taxonomy_term_id('languages', $lc);
         }, $language_codes);
 
         return $term_ids;
-    }
-
-    public static function get_taxonomy_term_id($taxonomy, $term_name) {
-        $term = get_term_by('name', $term_name, $taxonomy);
-
-        if ($term === false) {
-            throw new \Exception(sprintf(__('Term %s was not found in taxonomy %s', 'imageshare'), $term_name, $taxonomy));
-        }
-
-        return $term->term_id;
     }
 
     public function __construct($post_id = null) {
