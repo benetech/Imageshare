@@ -36,7 +36,7 @@ class ResourceCollection {
         );
     }
 
-    public static function get_popular(int $number) {
+    public static function get_featured(int $number) {
         $posts = get_posts([
             'post_type' => self::type,
             'numberposts' => $number,

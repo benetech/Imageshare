@@ -13,9 +13,25 @@
  * @since   Timber 0.1
  */
 
-$context          = Timber::context();
-$templates        = array( 'index.twig' );
+$context = Timber::context();
+
+if (($_GET['page'] ?? null) === 'search') {
+    $context['results'] = $imageshare->controllers->search->query([
+        'query'         => $_GET['q'] ?? '',
+        'subject'       => $_GET['subject'] ?? null,
+        'type'          => $_GET['type'] ?? null,
+        'accommodation' => $_get['acc'] ?? null
+    ]);
+
+    return Timber::render( array( 'page-search.twig'), $context );
+}
+
+$context['search_terms'] = $imageshare->controllers->search->get_available_terms();
+$context['collections'] = $imageshare->controllers->resource_collection->get_featured_collections(8);
+
+$templates = array( 'index.twig' );
 if ( is_home() ) {
     array_unshift( $templates, 'front-page.twig', 'home.twig' );
 }
+
 Timber::render( $templates, $context );

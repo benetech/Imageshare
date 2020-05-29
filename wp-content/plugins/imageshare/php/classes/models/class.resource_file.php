@@ -2,14 +2,21 @@
 
 namespace Imageshare\Models;
 
-require_once imageshare_php_file('classes/class.logger.php');
-
 use Imageshare\Logger;
+use Imageshare\Models\Model;
 
 class ResourceFile {
 
     const type = 'btis_resource_file';
     const default_license = 'GNU-GPL';
+
+    public static function available_accessibility_accommodations() {
+        return Model::get_hierarchical_terms('a11y_accs');
+    }
+
+    public static function available_types() {
+        return Model::get_terms('file_types');
+    }
 
     public static function create($args) {
         $existing = get_posts([

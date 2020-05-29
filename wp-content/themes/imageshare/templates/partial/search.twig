@@ -4,6 +4,7 @@
     {{ 'Library of 5,074 accessible STEM media resources.' | i18n }}
   </p>
   <form role="search" class="search-form">
+    <input type="hidden" name="page" value="search">
     <label for="search" class="search-label"
       >{{ 'Search collections or resources' | i18n }}</label
     >
@@ -11,6 +12,7 @@
       <div class="input-wrapper">
         <input
           id="search"
+          name="q"
           type="text"
           class="search-input"
           aria-describedby="desc"
@@ -41,16 +43,31 @@
         role="list"
       >
         <li class="refinement">
-          <label for="subject1">{{ 'Subject 1' | i18n }}</label>
-          <select id="subject1" name="subject1">
-            <option value="">--{{ 'choose an option' | i18n }}--</option>
-            <option value="first">First</option>
-            <option value="second">Second</option>
+          <label for="subject">{{ 'Subject' | i18n }}</label>
+          <select id="subject" name="subject">
+            <option value="">--{{ 'choose a subject' | i18n }}--</option>
+          {% for id, terms in search_terms.subjects %}
+            <option value="{{ id }}">{{ terms | map(t => t | i18n) | join(' — ') }}</option>
+          {% endfor %}
           </select>
         </li>
         <li class="refinement">
-          <label for="subject2">Subject 2</label>
-          <input id="subject2" type="number" name="subject2" />
+          <label for="type">{{ 'Type' | i18n }}</label>
+          <select id="type" name="type">
+            <option value="">--{{ 'choose a type' | i18n }}--</option>
+          {% for id, term in search_terms.types %}
+            <option value="{{ id }}">{{ term | i18n }}</option>
+          {% endfor %}
+          </select>
+        </li>
+        <li class="refinement">
+          <label for="acc">{{ 'Accommodation' | i18n }}</label>
+          <select id="acc" name="acc">
+            <option value="">--{{ 'choose an accommodation' | i18n }}--</option>
+          {% for id, terms in search_terms.accommodations %}
+            <option value="{{ id }}">{{ terms | map(t => t | i18n) | join(' — ') }}</option>
+          {% endfor %}
+          </select>
         </li>
       </ul>
       <div class="submit-btn-wrapper">

@@ -1,8 +1,9 @@
 {% extends "base.twig" %}
 
+{% set title = 'Imageshare - Home' %}
+
 {% block content %}
     {% include "partial/search.twig" %}
-    {% set collections = imageshare.controllers.resource_collection.get_popular_collections(8) %}
 
     <section aria-labelledby="collections">
       <h2 class="h2 collections-heading" id="collections">

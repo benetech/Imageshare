@@ -10,6 +10,7 @@ require_once imageshare_php_file('classes/models/class.resource_file.php');
 
 require_once imageshare_php_file('classes/controllers/class.resource_collection.php');
 require_once imageshare_php_file('classes/controllers/class.plugin_settings.php');
+require_once imageshare_php_file('classes/controllers/class.search.php');
 
 use Imageshare\Logger;
 
@@ -19,6 +20,7 @@ use Imageshare\Models\ResourceFile;
 
 use Imageshare\Controllers\ResourceCollection as ResourceCollectionController;
 use Imageshare\Controllers\PluginSettings as PluginSettingsController;
+use Imageshare\Controllers\Search as SearchController;
 
 class Plugin {
     private $is_activated = false;
@@ -51,6 +53,7 @@ class Plugin {
     private function load_controllers() {
         $this->controllers = (object) array();
         $this->controllers->resource_collection = new ResourceCollectionController();
+        $this->controllers->search = new SearchController();
 
         if ($this->is_admin) {
             $this->controllers->plugin_settings = new PluginSettingsController();

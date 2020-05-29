@@ -13,7 +13,7 @@ class ResourceCollection {
     public function __construct() {
     }
 
-    public function get_popular_collections($number = 5) {
-        return Model::get_popular($number);
+    public function get_featured_collections($number = 5) {
+        return Model::get_featured($number);
     }
 }

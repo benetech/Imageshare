@@ -2,15 +2,20 @@
 
 namespace Imageshare\Models;
 
-require_once imageshare_php_file('classes/class.logger.php');
+require_once imageshare_php_file('classes/models/class.model.php');
 
+use Imageshare\Views\View;
 use Imageshare\Logger;
-use \ImageShare\Views\View;
 use Swaggest\JsonSchema\Schema;
+use Imageshare\Models\Model;
 
 class Resource {
 
     const type = 'btis_resource';
+
+    public static function available_subjects() {
+        return Model::get_hierarchical_terms('subjects');
+    }
 
     public static function create($args) {
         if (post_exists($args['title'], '', '', self::type)) {
