@@ -179,14 +179,7 @@
                 "type": "textarea",
                 "instructions": "",
                 "required": 0,
-                "conditional_logic": [
-                    [
-                        {
-                            "field": "field_5ed116693aabe",
-                            "operator": "!=empty"
-                        }
-                    ]
-                ],
+                "conditional_logic": 0,
                 "wrapper": {
                     "width": "",
                     "class": "",
@@ -313,7 +306,6 @@
             "page_attributes",
             "featured_image",
             "categories",
-            "tags",
             "send-trackbacks"
         ],
         "active": true,

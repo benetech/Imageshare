@@ -115,7 +115,17 @@ class Plugin {
         return "{$ns}\Models\\{$model}"; 
     }
 
+    public static function remove_edit_metaboxes() {
+        $box_ids = ['a11y_accsdiv', 'tagsdiv-languages', 'tagsdiv-file_types', 'file_formatsdiv', 'tagsdiv-licenses'];
+        foreach ($box_ids as $id) {
+            remove_meta_box($id, ResourceFile::type, 'side');
+        }
+        
+        remove_meta_box('subjectsdiv', Resource::type, 'side');
+    }
+
     private function setup_filters_and_hooks() {
+        add_action('add_meta_boxes', array($this, 'remove_edit_metaboxes'));
         add_action('admin_enqueue_scripts', array($this, 'admin_enqueue_styles'));
 
         add_filter('manage_btis_collection_posts_columns', array(self::model('ResourceCollection'), 'manage_columns'), 10, 1);

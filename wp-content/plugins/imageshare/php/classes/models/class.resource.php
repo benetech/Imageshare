@@ -117,14 +117,11 @@ class Resource {
     public static function typedef() {
         return array(
             'label' => self::i18n('Resources'),
-            'labels' => array(
-                'singular_name' => self::i18n('Resource')
-            ),
+            'labels' => ['singular_name' => self::i18n('Resource')],
             'description' => self::i18n('A collection of one or more representations of a subject.'),
             'capability_type' => 'post',
-            'supports' => array(
-                'title'
-            ),
+            'supports' => ['title'],
+            'taxonomies' => ['post_tag'],
             'public' => true
         );
     }
