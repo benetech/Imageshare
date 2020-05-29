@@ -79,7 +79,7 @@ class PluginSettings {
     private function create_resource($record) {
         $resource_id = ResourceModel::create([
             'title'         => $record->unique_name,
-            'thumbnail_uri' => $record->featured_image_URI,
+            'thumbnail_src' => $record->featured_image_URI,
             'thumbnail_alt' => $record->featured_image_alt,
             'source'        => $record->source,
             'description'   => $record->description,

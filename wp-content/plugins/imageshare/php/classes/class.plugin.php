@@ -60,6 +60,11 @@ class Plugin {
         }
     }
 
+    public static function admin_enqueue_styles() {
+        $file = dirname(plugin_dir_url(__FILE__), 2) . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'admin.css';
+        wp_enqueue_style('imageshare-admin-css', $file, [], false, 'screen, print');
+    }
+
     public function activate() {
         if ($this->is_activated) {
             Logger::log("Plugin already active");
@@ -111,6 +116,8 @@ class Plugin {
     }
 
     private function setup_filters_and_hooks() {
+        add_action('admin_enqueue_scripts', array($this, 'admin_enqueue_styles'));
+
         add_filter('manage_btis_collection_posts_columns', array(self::model('ResourceCollection'), 'manage_columns'), 10, 1);
         add_action('manage_btis_collection_posts_custom_column', array(self::model('ResourceCollection'), 'manage_custom_column'), 10, 2);
 

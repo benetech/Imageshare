@@ -4,6 +4,48 @@
         "title": "btis_collection",
         "fields": [
             {
+                "key": "field_5ed1157484009",
+                "label": "Featured image url",
+                "name": "thumbnail_url",
+                "type": "url",
+                "instructions": "",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "default_value": "",
+                "placeholder": ""
+            },
+            {
+                "key": "field_5ed115918400a",
+                "label": "Featured image description",
+                "name": "thumbnail_alt",
+                "type": "text",
+                "instructions": "",
+                "required": 1,
+                "conditional_logic": [
+                    [
+                        {
+                            "field": "field_5ed1157484009",
+                            "operator": "!=empty"
+                        }
+                    ]
+                ],
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "default_value": "",
+                "placeholder": "",
+                "prepend": "",
+                "append": "",
+                "maxlength": ""
+            },
+            {
                 "key": "field_5ea1751151360",
                 "label": "Description",
                 "name": "description",
@@ -115,10 +157,52 @@
         "title": "btis_resource",
         "fields": [
             {
+                "key": "field_5ed116693aabe",
+                "label": "Featured image url",
+                "name": "thumbnail_url",
+                "type": "url",
+                "instructions": "",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "default_value": "",
+                "placeholder": ""
+            },
+            {
+                "key": "field_5ed116853aabf",
+                "label": "Featured image description",
+                "name": "thumbnail_alt",
+                "type": "textarea",
+                "instructions": "",
+                "required": 0,
+                "conditional_logic": [
+                    [
+                        {
+                            "field": "field_5ed116693aabe",
+                            "operator": "!=empty"
+                        }
+                    ]
+                ],
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "default_value": "",
+                "placeholder": "",
+                "maxlength": "",
+                "rows": "",
+                "new_lines": ""
+            },
+            {
                 "key": "field_5ea189173edd2",
                 "label": "Description",
                 "name": "description",
-                "type": "text",
+                "type": "textarea",
                 "instructions": "",
                 "required": 1,
                 "conditional_logic": 0,
@@ -129,9 +213,9 @@
                 },
                 "default_value": "",
                 "placeholder": "",
-                "prepend": "",
-                "append": "",
-                "maxlength": ""
+                "maxlength": "",
+                "rows": "",
+                "new_lines": ""
             },
             {
                 "key": "field_5ea189233edd3",

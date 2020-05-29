@@ -69,8 +69,6 @@ class ResourceFile {
         update_field('accommodations', $accommodations, $post_id);
         update_field('languages', $languages, $post_id);
 
-        // TODO create thumbnail attachment
-
         return $post_id;
     }
 

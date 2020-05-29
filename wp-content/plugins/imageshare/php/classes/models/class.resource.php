@@ -40,12 +40,12 @@ class Resource {
 
         wp_set_post_terms($post_id, $args['tags']);
 
+        update_field('thumbnail_src', $args['thumbnail_src'], $post_id);
+        update_field('thumbnail_alt', $args['thumbnail_alt'], $post_id);
         update_field('description', $args['description'], $post_id);
         update_field('source', $args['source'], $post_id);
         update_field('subject', $subject, $post_id);
         update_field('files', [], $post_id);
-
-        // TODO create thumbnail attachment
 
         return $post_id;
     }
@@ -123,14 +123,14 @@ class Resource {
             'description' => self::i18n('A collection of one or more representations of a subject.'),
             'capability_type' => 'post',
             'supports' => array(
-                'title',
-                'thumbnail'
+                'title'
             ),
             'public' => true
         );
     }
 
     public static function manage_columns(array $columns) {
+        $columns['thumbnail'] = self::i18n('Thumbnail');
         $columns['description'] = self::i18n('Description');
         $columns['source'] = self::i18n('Source');
         $columns['subject'] = self::i18n('Subject');
@@ -144,6 +144,10 @@ class Resource {
         $post = new Resource($post_id);
 
         switch ($column_name) {
+            case 'thumbnail':
+                echo "<img src=\"{$post->thumbnail_src}\" alt=\"{$post->thumbnail_alt}\"/>";
+                break;
+
             case 'description':
                 $description = strlen($post->description) > 125
                     ? substr($post->description, 0, 125) . "..."
@@ -193,6 +197,9 @@ class Resource {
             $this->title = $this->post->post_title;
 
             // post metadata
+            $this->thumbnail_src = get_post_meta($this->post_id, 'thumbnail_src', true);
+            $this->thumbnail_alt = get_post_meta($this->post_id, 'thumbnail_alt', true);
+
             $this->description = get_post_meta($this->post_id, 'description', true);
             $this->source      = get_post_meta($this->post_id, 'source', true);
             $this->file_ids    = get_post_meta($this->post_id, 'files', true);
