@@ -208,6 +208,21 @@ class Resource {
         return null;
     }
 
+    public function get_index_data() {
+        $term_names = array_map(function ($term) {
+            return $term->name;
+        }, wp_get_post_terms($this->post_id));
+
+        return array_reduce([
+            $this->thumbnail_alt, $this->source, $this->description, $this->subject, $term_names
+        ], function ($carry, $item) {
+            if (is_array($item)) {
+                return array_merge($carry, $item);
+            }
+            return array_merge($carry, [$item]);
+        }, []);
+    }
+
     private function get_meta_term_name(string $meta_key, string $taxonomy) {
         $term_id = get_post_meta($this->post_id, $meta_key, true);
         $term = get_term($term_id, $taxonomy);

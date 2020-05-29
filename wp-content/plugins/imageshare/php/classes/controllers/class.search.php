@@ -9,6 +9,29 @@ use Imageshare\Models\ResourceFile as ResourceFileModel;
 class Search {
 
     public function __construct() {
+        add_filter('wpfts_index_post', [$this, 'index_post'], 3, 2);
+    }
+
+    public function index_post($index, $post) {
+        switch ($post->post_type) {
+            case (ResourceModel::type):
+                $resource = ResourceModel::from_post($post);
+                $index['post_title'] = $resource->title;
+                $index['post_content'] = '';
+                $index['resource_data'] = implode(' ', $resource->get_index_data());
+                break;
+            case (ResourceFileModel::type):
+                $resource_file = ResourceFileModel::from_post($post);
+                $index['post_content'] = '';
+                $index['resource_file_data'] = implode(' ', $resource_file->get_index_data());
+                break;
+            default:
+                $index['post_title'] = $post->post_title;
+                $index['post_content'] = strip_tags($post->post_content);
+                break;
+        }
+
+        return $index;
     }
 
     public static function get_available_terms() {
@@ -22,43 +45,52 @@ class Search {
     public function query($args) {
         $query_args = [
             'numberposts'   => -1,
-            'post_type'     => [ResourceModel::type, ResourceFileModel::type],
+            'post_type'     => [ResourceModel::type],
             'post_status'   => 'publish',
-            's'             => $args['query'],
-            'tax_query'     => []
         ];
 
+        $query = [$args['query']];
+
         if ($args['subject'] !== null) {
-            array_push($query_args, [
-                'taxonomy' => 'subjects',
-                'terms' => $args['subject'],
-            ]);
+            $term = get_term($args['subject']);
+            if (!is_wp_error($term)) {
+                array_push($query, $term->name);
+            }
         }
 
         if ($args['type'] !== null) {
-            array_push($query_args, [
-                'taxonomy' => 'file_types',
-                'terms' => $args['type'],
-            ]);
+            $term = get_term($args['type']);
+            if (!is_wp_error($term)) {
+                array_push($query, $term->name);
+            }
         }
 
         if ($args['accommodation'] !== null) {
-            array_push($query_args, [
-                'taxonomy' => 'a11y_accs',
-                'terms' => $args['accommodation'],
-            ]);
+            $term = get_term($args['accommodation']);
+            if (!is_wp_error($term)) {
+                array_push($query, $term->name);
+            }
         }
 
-        $matching = get_posts($query_args);
+        $query_args['s'] = implode(' ', $query);
 
-        return array_reduce($matching, function ($carry, $match) {
-            if ($match->post_type === ResourceModel::type) {
-                array_push($carry, ResourceModel::from_post($match));
-            } else if ($match->post_parent) {
-                array_push($carry, new ResourceModel($match->post_parent));
+        $wpq = new \WP_Query([
+            'fields' => '*',
+            'wpfts_disable' => 0,
+            'wpfts_nocache' => 1,
+            's' => implode(' ', $query)
+        ]);
+
+        $results = [];
+
+        while ($wpq->have_posts()) {
+            $wpq->the_post();
+            $post = $wpq->post;
+            if ($post->post_type === ResourceModel::type) {
+                array_push($results, ResourceModel::from_post($post));
             }
+        }
 
-            return $carry;
-        }, []);
+        return $results;
     }
 }
