@@ -93,6 +93,16 @@ class Plugin {
         }
     }
 
+    public function on_wp() {
+        global $wp_query;
+
+        // return 404 when querying a ResourceFile post
+        if ($wp_query->query_vars['post_type'] === ResourceFile::type && $wp_query->is_singular) {
+            $wp_query->set_404();
+            status_header(404);
+        }
+    }
+
     public function deactivate() {
         Logger::log("Deactivating plugin");
         delete_option('imageshare_plugin_is_activated');
@@ -108,6 +118,8 @@ class Plugin {
         $this->register_taxonomies();
         $this->register_custom_post_types();
         $this->load_controllers();
+
+        add_action('wp', [$this, 'on_wp']);
     }
 
     public static function model(string $model) {
