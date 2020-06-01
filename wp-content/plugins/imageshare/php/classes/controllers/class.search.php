@@ -31,6 +31,7 @@ class Search {
             case (ResourceFileModel::type):
                 $resource_file = ResourceFileModel::from_post($post);
                 if (!$resource_file->is_created) {
+                    Logger::log("Post {$post->ID} is not ready, skipping");
                     return $index;
                 }
 
@@ -57,7 +58,91 @@ class Search {
         ];
     }
 
+    public function get_resources_including_file($resource_file_id, $exclude_post_ids) {
+        return get_posts([
+            'numberposts'   => -1,
+            'post_type'     => [ResourceModel::type],
+            'post_status'   => 'publish',
+            'meta_key'      => 'resource_file_id',
+            'meta_value'    => $resource_file_id,
+            'post__not_in'  => $exclude_post_ids
+        ]);
+    }
+
+    public function query_terms_only($args) {
+        $tax_query = ['relation' => 'AND'];
+
+        if ($args['subject'] !== null) {
+            $term = get_term($args['subject']);
+            if (!is_wp_error($term)) {
+                array_push($tax_query, [
+                    'taxonomy' => 'subjects',
+                    'field' => 'term_id',
+                    'include_children' => true,
+                    'terms' => $term->term_id
+                ]);
+            }
+        }
+
+        if ($args['type'] !== null) {
+            $term = get_term($args['type']);
+            if (!is_wp_error($term)) {
+                array_push($tax_query, [
+                    'taxonomy' => 'file_types',
+                    'field' => 'term_id',
+                    'include_children' => false,
+                    'terms' => $term->term_id
+                ]);
+            }
+        }
+
+        if ($args['accommodation'] !== null) {
+            $term = get_term($args['accommodation']);
+            if (!is_wp_error($term)) {
+                array_push($tax_query, [
+                    'taxonomy' => 'a11y_accs',
+                    'field' => 'term_id',
+                    'include_children' => true,
+                    'terms' => $term->term_id
+                ]);
+            }
+        }
+
+        $posts = get_posts([
+            'numberposts'   => -1,
+            'post_type'     => [ResourceModel::type, ResourceFileModel::type],
+            'post_status'   => 'publish',
+            'tax_query'     => $tax_query
+        ]);
+
+        // TODO sort all this out with a custom SQL query
+
+        $post_ids = array_reduce($posts, function ($carry, $post) {
+            if ($post->post_type === ResourceModel::type) {
+                array_push($carry, $post->ID);
+                return $carry;
+            }
+
+            return $carry;
+        }, []);
+
+        return array_reduce($posts, function ($carry, $post) use ($post_ids) {
+            if ($post->post_type === ResourceModel::type) {
+                array_push($carry, $post);
+                return $carry;
+            }
+
+            $posts = self::get_resources_including_file($post->ID, array_merge(wp_list_pluck($carry, 'ID'), $post_ids));
+
+            return array_merge($carry, $posts);
+        }, []);
+    }
+
     public function query($args) {
+        if (!strlen(trim($args['query']))) {
+            return self::query_terms_only($args);
+        }
+
         $query_args = [
             'numberposts'   => -1,
             'post_type'     => [ResourceModel::type],

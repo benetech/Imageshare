@@ -103,6 +103,20 @@ class Plugin {
         }
     }
 
+    private function set_acf_hooks_and_filters() {
+        add_filter('acf/update_value', [$this, 'on_acf_update_value'], 10, 3);
+    }
+
+    public function on_acf_update_value($value, $post_id, $field) {
+        $post = get_post($post_id);
+
+        if ($post->post_type === Resource::type) {
+            return Resource::from_post($post)->acf_update_value($field, $value);
+        }
+
+        return $value;
+    }
+
     public function deactivate() {
         Logger::log("Deactivating plugin");
         delete_option('imageshare_plugin_is_activated');
@@ -118,6 +132,7 @@ class Plugin {
         $this->register_taxonomies();
         $this->register_custom_post_types();
         $this->load_controllers();
+        $this->set_acf_hooks_and_filters();
 
         add_action('wp', [$this, 'on_wp']);
     }

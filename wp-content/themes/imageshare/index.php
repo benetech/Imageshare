@@ -21,7 +21,7 @@ if (($_GET['page'] ?? null) === 'search') {
         'query'         => $_GET['q'] ?? '',
         'subject'       => $_GET['subject'] ?? null,
         'type'          => $_GET['type'] ?? null,
-        'accommodation' => $_get['acc'] ?? null
+        'accommodation' => $_GET['acc'] ?? null
     ]);
 
     return Timber::render( array( 'page-search.twig'), $context );

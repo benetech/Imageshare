@@ -192,6 +192,21 @@ class Resource {
         }
     }
 
+    public function acf_update_value($field, $value) {
+        switch($field['name']) {
+            case 'files':
+            // also store resource file ids as flat database records for meta search
+            // use $this->post->ID as the resource might not be finished creating
+                delete_post_meta($this->post->ID, 'resource_file_id');
+                foreach ($value as $file_id) {
+                    add_post_meta($this->post->ID, 'resource_file_id', $file_id);
+                }
+            break;
+        }
+
+        return $value;
+    }
+
     private function get_post($post_id) {
         $this->post = get_post($post_id);
         return $this->load_custom_attributes();
