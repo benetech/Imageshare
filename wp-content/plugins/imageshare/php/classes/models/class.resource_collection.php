@@ -40,7 +40,11 @@ class ResourceCollection {
         $posts = get_posts([
             'post_type' => self::type,
             'numberposts' => $number,
-            'post_status' => 'publish'
+            'post_status' => 'publish',
+            'meta_key' => 'is_featured',
+            'meta_value' => 1,
+            'meta_compare' => '==='            
+
         ]);
 
         return array_map(function ($post) {
@@ -52,6 +56,7 @@ class ResourceCollection {
         $columns['description'] = self::i18n('Description');
         $columns['contributor'] = self::i18n('Contributor');
         $columns['size'] = self::i18n('Size');
+        $columns['featured'] = self::i18n('Featured');
         return $columns;
     }
 
@@ -73,6 +78,10 @@ class ResourceCollection {
 
             case 'contributor':
                 echo $post->contributor;
+                break;
+
+            case 'featured':
+                echo $post->is_featured ? self::i18n('Yes') : self::i18n('No');
                 break;
         }
     }
@@ -96,10 +105,11 @@ class ResourceCollection {
             $this->title = $this->post->post_title;
             $this->permalink = get_permalink($this->post->ID);
 
-            // post metadata
-            $this->description = get_post_meta($this->post_id, 'description', true);
-            $this->contributor = get_post_meta($this->post_id, 'contributor', true);
+            $this->description  = get_post_meta($this->post_id, 'description', true);
+            $this->contributor  = get_post_meta($this->post_id, 'contributor', true);
             $this->resource_ids = get_post_meta($this->post_id, 'resources', true);
+
+            $this->is_featured = get_post_meta($this->post_id, 'is_featured', true) === 1;
 
             $thumbnail_id = get_post_meta($this->post_id, 'thumbnail', true);
             $this->thumbnail = wp_get_attachment_image_src($thumbnail_id)[0];
