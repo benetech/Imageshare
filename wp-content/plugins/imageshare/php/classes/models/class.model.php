@@ -3,6 +3,24 @@
 namespace Imageshare\Models;
 
 class Model {
+    public static function get_meta_term_name(string $post_id, string $meta_key, string $taxonomy) {
+        $term_id = get_post_meta($post_id, $meta_key, true);
+
+        $term = get_term($term_id, $taxonomy);
+
+        if (is_wp_error($term)) {
+            error_log(sprintf('Unable to get term %s with term_id %d in taxonomy %s', $meta_key, $term_id, $taxonomy));
+            return '';
+        }
+
+        if ($parent_id = $term->parent) {
+            $parent_term = get_term($parent_id);
+            return join(' - ', [$parent_term->name, $term->name]);
+        }
+
+        return $term->name;
+    }
+
     public static function get_hierarchical_terms($taxonomy) {
         $terms = get_terms([
             'taxonomy' => $taxonomy,
@@ -51,6 +69,16 @@ class Model {
         }
 
         return $term->term_id;
+    }
+
+    public static function mark_created($post_id) {
+        // mark post as created
+        // this is done so the search indexing hook doesn't cause problems
+        add_post_meta($post_id, 'created', true, true);
+    }
+
+    public static function is_created($post_id) {
+        return get_post_meta($post_id, 'created', true);
     }
 }
 

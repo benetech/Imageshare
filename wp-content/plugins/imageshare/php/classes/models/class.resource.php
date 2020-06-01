@@ -18,24 +18,30 @@ class Resource {
     }
 
     public static function create($args) {
-        if (post_exists($args['title'], '', '', self::type)) {
-            throw new \Exception(sprintf(__('A Resource with unique title "%s" already exists', 'imageshare'), $args['title']));
+        $is_update = false;
+        $subject = Model::get_taxonomy_term_id('subjects', $args['subject']);
+
+        if ($post_id = post_exists($args['title'], '', '', self::type)) {
+            Logger::log(sprintf(__('A Resource with unique title "%s" already exists, updating', 'imageshare'), $args['title']));
+            $is_update = true;
+        } else {
+            $post_data = [
+                'post_type' => self::type,
+                'post_title' => $args['title'],
+                'comment_status' => 'closed',
+                'post_category' => []
+            ];
+
+            $post_id = wp_insert_post($post_data, true);
         }
-
-        $subject  = Model::get_taxonomy_term_id('subjects', $args['subject']);
-
-        $post_data = [
-            'post_type' => self::type,
-            'post_title' => $args['title'],
-            'comment_status' => 'closed',
-            'post_category' => []
-        ];
-
-        $post_id = wp_insert_post($post_data, true);
 
         if (is_wp_error($post_id)) {
             // the original WP_Error for inserting a post is empty for some reason
             throw new \Exception(sprintf(__('Unable to create resource "%s"', 'imageshare'), $args['title']));
+        }
+
+        if (!$is_update) {
+            Logger::log(sprintf('New resource created, %s (%s)', $post_id, $args['title']));
         }
 
         wp_set_post_terms($post_id, $args['tags']);
@@ -45,13 +51,24 @@ class Resource {
         update_field('description', $args['description'], $post_id);
         update_field('source', $args['source'], $post_id);
         update_field('subject', $subject, $post_id);
-        update_field('files', [], $post_id);
 
-        return $post_id;
+        if (!$is_update) {
+            // don't strip existing file associations when updating an existing resource
+            update_field('files', [], $post_id);
+
+            Model::mark_created($post_id);
+        }
+
+        return [$post_id, $is_update];
     }
 
     public static function associate_resource_file($resource_id, $resource_file_id) {
         $files = get_post_meta($resource_id, 'files', true);
+
+        if (in_array($resource_file_id, $files)) {
+            return;
+        }
+
         array_push($files, $resource_file_id);
         update_field('files', $files, $resource_id);
     }
@@ -183,7 +200,13 @@ class Resource {
     public static function from_post(\WP_Post $post) {
         $wrapped = new Resource();
         $wrapped->post = $post;
-        $wrapped->load_custom_attributes();
+        $wrapped->is_created = false;
+
+        if (Model::is_created($post->ID)) {
+            $wrapped->is_created = true;
+            $wrapped->load_custom_attributes();
+        }
+
         return $wrapped;
     }
 
@@ -200,7 +223,8 @@ class Resource {
             $this->description = get_post_meta($this->post_id, 'description', true);
             $this->source      = get_post_meta($this->post_id, 'source', true);
             $this->file_ids    = get_post_meta($this->post_id, 'files', true);
-            $this->subject     = $this->get_meta_term_name('subject', 'subjects'); 
+
+            $this->subject     = Model::get_meta_term_name($this->post_id, 'subject', 'subjects'); 
 
             return $this->id;
         }
@@ -222,17 +246,4 @@ class Resource {
             return array_merge($carry, [$item]);
         }, []);
     }
-
-    private function get_meta_term_name(string $meta_key, string $taxonomy) {
-        $term_id = get_post_meta($this->post_id, $meta_key, true);
-        $term = get_term($term_id, $taxonomy);
-
-        if ($parent_id = $term->parent) {
-            $parent_term = get_term($parent_id);
-            return join(' - ', [$parent_term->name, $term->name]);
-        }
-
-        return $term->name;
-    }
-
 }

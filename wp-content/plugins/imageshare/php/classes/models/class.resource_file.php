@@ -19,16 +19,7 @@ class ResourceFile {
     }
 
     public static function create($args) {
-        $existing = get_posts([
-            'post_type' => self::type,
-            'meta_key' => 'uri',
-            'meta_value' => $args['uri'],
-            'meta_compare' => '==='            
-        ]);
-
-        if (count($existing)) {
-            throw new \Exception(sprintf(__('A ResourceFile with URI "%s" already exists', 'imageshare'), $args['uri']));
-        }
+        $is_update = false;
 
         $license = strlen($args['license'])
             ? $args['license']
@@ -46,19 +37,36 @@ class ResourceFile {
             : '0'
         ;
 
-        $post_data = [
+        $existing = get_posts([
             'post_type' => self::type,
-            'post_title' => $args['title'],
-            'comment_status' => 'closed',
-            'post_category' => [],
-            'tags_input' => []
-        ];
+            'meta_key' => 'uri',
+            'meta_value' => $args['uri'],
+            'meta_compare' => '==='
+        ]);
 
-        $post_id = wp_insert_post($post_data, true);
+        if (count($existing)) {
+            Logger::log(sprintf(__('A ResourceFile with URI "%s" already exists, updating', 'imageshare'), $args['uri']));
+            $post_id = $existing[0]->ID;
+            $is_update = true;
+        } else {
+            $post_data = [
+                'post_type' => self::type,
+                'post_title' => $args['title'],
+                'comment_status' => 'closed',
+                'post_category' => [],
+                'tags_input' => []
+            ];
+
+            $post_id = wp_insert_post($post_data, true);
+        }
 
         if (is_wp_error($post_id)) {
             // the original WP_Error for inserting a post is empty for some reason
             throw new \Exception(sprintf(__('Unable to create resource file "%s"', 'imageshare'), $args['title']));
+        }
+
+        if (!$is_update) {
+            Logger::log(sprintf('New resource file created, %s (%s)', $post_id, $args['uri']));
         }
 
         update_field('uri', $args['uri'], $post_id);
@@ -69,7 +77,11 @@ class ResourceFile {
         update_field('accommodations', $accommodations, $post_id);
         update_field('languages', $languages, $post_id);
 
-        return $post_id;
+        if (!$is_update) {
+            Model::mark_created($post_id);
+        }
+
+        return [$post_id, $is_update];
     }
 
     public static function accommodations_to_term_ids($accommodations) {
@@ -186,7 +198,13 @@ class ResourceFile {
     public static function from_post(\WP_Post $post) {
         $wrapped = new ResourceFile();
         $wrapped->post = $post;
-        $wrapped->load_custom_attributes();
+        $wrapped->is_created = false;
+
+        if (Model::is_created($post->ID)) {
+            $wrapped->is_created = true;
+            $wrapped->load_custom_attributes();
+        }
+
         return $wrapped;
     }
 
@@ -197,10 +215,10 @@ class ResourceFile {
 
             $this->uri = get_post_meta($this->post_id, 'uri', true);
             $this->length_minutes = get_post_meta($this->post_id, 'length_minutes', true);
-            $this->license = $this->get_meta_term_name('license', 'licenses');
+            $this->license = Model::get_meta_term_name($this->post_id, 'license', 'licenses');
 
-            $this->type = $this->get_meta_term_name('type', 'file_types');
-            $this->format = $this->get_meta_term_name('format', 'file_formats');
+            $this->type = Model::get_meta_term_name($this->post_id, 'type', 'file_types');
+            $this->format = Model::get_meta_term_name($this->post_id, 'format', 'file_formats');
 
             // TODO map language to ISO name
             $this->languages = $this->get_languages();
@@ -243,18 +261,6 @@ class ResourceFile {
 
             return $term->name;
         }, $accommodations);
-    }
-
-    private function get_meta_term_name(string $meta_key, string $taxonomy) {
-        $term_id = get_post_meta($this->post_id, $meta_key, true);
-        $term = get_term($term_id, $taxonomy);
-
-        if ($parent_id = $term->parent) {
-            $parent_term = get_term($parent_id);
-            return join(' - ', [$parent_term->name, $term->name]);
-        }
-
-        return $term->name;
     }
 
 }

@@ -13,23 +13,38 @@ class Search {
     }
 
     public function index_post($index, $post) {
+        Logger::log("Indexing post {$post->ID}");
+
         switch ($post->post_type) {
             case (ResourceModel::type):
                 $resource = ResourceModel::from_post($post);
+                if (!$resource->is_created) {
+                    Logger::log("Post {$post->ID} is not ready, skipping");
+                    return $index;
+                }
+
                 $index['post_title'] = $resource->title;
                 $index['post_content'] = '';
                 $index['resource_data'] = implode(' ', $resource->get_index_data());
                 break;
+
             case (ResourceFileModel::type):
                 $resource_file = ResourceFileModel::from_post($post);
+                if (!$resource_file->is_created) {
+                    return $index;
+                }
+
                 $index['post_content'] = '';
                 $index['resource_file_data'] = implode(' ', $resource_file->get_index_data());
                 break;
+
             default:
                 $index['post_title'] = $post->post_title;
                 $index['post_content'] = strip_tags($post->post_content);
                 break;
         }
+
+        Logger::log("Post {$post->ID} ({$post->post_type}) added to index");
 
         return $index;
     }

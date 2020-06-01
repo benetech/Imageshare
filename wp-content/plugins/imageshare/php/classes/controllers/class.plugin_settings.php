@@ -65,8 +65,20 @@ class PluginSettings {
             Logger::log("Creating resource for \"{$key}\"");
 
             try {
-                $resource = $this->create_resource($value);
-                array_push($result['resources'], sprintf(__('Resource created: %s', 'imageshare'), $key));
+                [$resource, $is_update, $files] = $this->create_resource($value);
+
+                array_push($result['resources'], $is_update
+                    ? sprintf(__('Resource updated: %s', 'imageshare'), $key)
+                    : sprintf(__('Resource created: %s', 'imageshare'), $key)
+                );
+
+                foreach ($files as $file) {
+                    [$name, $is_update] = $file;
+                    array_push($result['resources'], $is_update
+                        ? sprintf(__('File updated: %s', 'imageshare'), $name)
+                        : sprintf(__('File associated: %s', 'imageshare'), $name)
+                    );
+                }
             } catch (\Exception $error) {
                 Logger::log("Error creating resource: " . $error->getMessage());
                 array_push($result['errors'], "({$key}) {$error->getMessage()}");
@@ -77,7 +89,7 @@ class PluginSettings {
     }
 
     private function create_resource($record) {
-        $resource_id = ResourceModel::create([
+        [$resource_id, $is_update] = ResourceModel::create([
             'title'         => $record->unique_name,
             'thumbnail_src' => $record->featured_image_URI,
             'thumbnail_alt' => $record->featured_image_alt,
@@ -87,9 +99,11 @@ class PluginSettings {
             'tags'          => $record->tags
         ]);
 
+        $files = [];
+
         foreach ($record->files as $file) {
             try {
-                $file_id = ResourceFileModel::create([
+                [$file_id, $is_update] = ResourceFileModel::create([
                     'title'          => $file->display_name,
                     'uri'            => $file->URI,
                     'type'           => $file->type,
@@ -100,19 +114,22 @@ class PluginSettings {
                     'length_minutes' => $file->length_minutes
                 ]);
 
-                ResourceModel::associate_resource_file($resource_id, $file_id);
+                if (!$is_update) {
+                    ResourceModel::associate_resource_file($resource_id, $file_id);
+                }
+
+                array_push($files, [$file->display_name, $is_update]);
             } catch (Exception $error) {
                 Logger::log("Error creating resource file: " . $error->getMessage());
             }
         }
 
-        return $resource_id;
+        return [$resource_id, $is_update, $files];
     }
 
     public function render_settings_page() {
         if (isset($_POST['is_update'])) {
             $parse_result = $this->handle_form_submit();
-            Logger::log($parse_result);
             $rendered = View::render(['result' => $parse_result]);
         } else {
             $rendered = View::render();
