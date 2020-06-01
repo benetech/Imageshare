@@ -93,6 +93,14 @@ class Plugin {
         }
     }
 
+    public function add_action_links($links) {
+        $settings_links = array(
+            sprintf('<a href="%s">%s</a>', admin_url('options-general.php?page=imageshare_settings'), self::i18n('Settings')),
+        );
+
+        return array_merge($links, $settings_links);
+    }
+
     public function on_wp() {
         global $wp_query;
 
@@ -134,6 +142,7 @@ class Plugin {
         $this->load_controllers();
         $this->set_acf_hooks_and_filters();
 
+        add_filter('plugin_action_links_' . plugin_basename($this->file), [$this, 'add_action_links']);
         add_action('wp', [$this, 'on_wp']);
     }
 
