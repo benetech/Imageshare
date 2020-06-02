@@ -3,7 +3,7 @@
 namespace Imageshare\Models;
 
 class Model {
-    public static function get_meta_term_name(string $post_id, string $meta_key, string $taxonomy) {
+    public static function get_meta_term_name(string $post_id, string $meta_key, string $taxonomy, bool $reverse = false) {
         $term_id = get_post_meta($post_id, $meta_key, true);
 
         $term = get_term($term_id, $taxonomy);
@@ -15,7 +15,7 @@ class Model {
 
         if ($parent_id = $term->parent) {
             $parent_term = get_term($parent_id);
-            return join(' - ', [$parent_term->name, $term->name]);
+            return join(' - ', $reverse ? [$term->name, $parent_term->name] : [$parent_term->name, $term->name]);
         }
 
         return $term->name;
@@ -24,7 +24,7 @@ class Model {
     public static function get_hierarchical_terms($taxonomy) {
         $terms = get_terms([
             'taxonomy' => $taxonomy,
-            'orderby' => 'parent',
+            'orderby' => 'term_group',
             'hide_empty' => false,
         ]);
 
@@ -38,7 +38,7 @@ class Model {
         foreach ($terms as $term) {
             if ($parent_id = $term->parent) {
                 $parent = $id_lookup[$parent_id];
-                $results[$term->term_id] = [$parent->name, $term->name];
+                $results[$term->term_id] = [$term->name, $parent->name];
                 continue;
             }
 
