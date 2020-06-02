@@ -8,6 +8,7 @@ use Imageshare\Views\View;
 use Imageshare\Logger;
 use Swaggest\JsonSchema\Schema;
 use Imageshare\Models\Model;
+use Imageshare\Models\ResourceFile;
 
 class Resource {
 
@@ -230,6 +231,7 @@ class Resource {
             $this->id = $this->post->ID;
             $this->post_id = $this->post->ID;
             $this->title = $this->post->post_title;
+            $this->permalink = get_permalink($this->post->ID);
 
             // post metadata
             $this->thumbnail_src = get_post_meta($this->post_id, 'thumbnail_src', true);
@@ -239,12 +241,32 @@ class Resource {
             $this->source      = get_post_meta($this->post_id, 'source', true);
             $this->file_ids    = get_post_meta($this->post_id, 'files', true);
 
-            $this->subject     = Model::get_meta_term_name($this->post_id, 'subject', 'subjects'); 
+            $this->subject     = Model::get_meta_term_name($this->post_id, 'subject', 'subjects', true);
 
             return $this->id;
         }
 
         return null;
+    }
+
+    public function collections() {
+        if (isset($this->_collections)) {
+            return $this->_collections;
+        }
+
+        return $this->_collections = ResourceCollection::containing($this->post_id);
+    }
+
+    public function files() {
+        if (isset($this->_files)) {
+            return $this->_files;
+        }
+
+        return $this->_files = array_reduce($this->file_ids, function ($carry, $file_id) {
+            $resource_file = new ResourceFile($file_id);
+            array_push($carry, $resource_file);
+            return $carry;
+        }, []);
     }
 
     public function get_index_data() {
