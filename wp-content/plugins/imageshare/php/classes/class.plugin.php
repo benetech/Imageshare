@@ -11,6 +11,7 @@ require_once imageshare_php_file('classes/models/class.resource_file.php');
 require_once imageshare_php_file('classes/controllers/class.resource_collection.php');
 require_once imageshare_php_file('classes/controllers/class.plugin_settings.php');
 require_once imageshare_php_file('classes/controllers/class.search.php');
+require_once imageshare_php_file('classes/controllers/class.post.php');
 
 use Imageshare\Logger;
 
@@ -21,6 +22,7 @@ use Imageshare\Models\ResourceFile;
 use Imageshare\Controllers\ResourceCollection as ResourceCollectionController;
 use Imageshare\Controllers\PluginSettings as PluginSettingsController;
 use Imageshare\Controllers\Search as SearchController;
+use Imageshare\Controllers\Post as PostController;
 
 class Plugin {
     private $is_activated = false;
@@ -54,6 +56,7 @@ class Plugin {
         $this->controllers = (object) array();
         $this->controllers->resource_collection = new ResourceCollectionController();
         $this->controllers->search = new SearchController();
+        $this->controllers->post = new PostController();
 
         if ($this->is_admin) {
             $this->controllers->plugin_settings = new PluginSettingsController();
@@ -120,6 +123,10 @@ class Plugin {
 
         if ($post->post_type === Resource::type) {
             return Resource::from_post($post)->acf_update_value($field, $value);
+        }
+
+        if ($post->post_type === ResourceCollection::type) {
+            return ResourceCollection::from_post($post)->acf_update_value($field, $value);
         }
 
         return $value;
