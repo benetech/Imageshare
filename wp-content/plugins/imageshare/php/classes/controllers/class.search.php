@@ -5,6 +5,7 @@ namespace Imageshare\Controllers;
 use Imageshare\Logger;
 use Imageshare\Models\Resource as ResourceModel;
 use Imageshare\Models\ResourceFile as ResourceFileModel;
+use Imageshare\Models\ResourceCollection as ResourceCollectionModel;
 
 class Search {
 
@@ -37,6 +38,12 @@ class Search {
 
                 $index['post_content'] = '';
                 $index['resource_file_data'] = implode(' ', $resource_file->get_index_data());
+                break;
+
+             case (ResourceCollectionModel::type):
+                $resource_collection = ResourceCollectionModel::from_post($post);
+                $index['post_content'] = '';
+                $index['resource_collection_data'] = implode(' ', $resource_collection->get_index_data());
                 break;
 
             default:

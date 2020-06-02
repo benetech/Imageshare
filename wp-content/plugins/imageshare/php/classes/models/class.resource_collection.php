@@ -163,5 +163,13 @@ class ResourceCollection {
         return $value;
     }
 
+    public function get_index_data() {
+
+        $resource_indices = array_map(function ($resource) {
+            return $resource->get_index_data();
+        }, $this->resources());
+
+        return Model::flatten([$resource_indices, $this->description, $this->contributor]);
+    }
 
 }

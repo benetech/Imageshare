@@ -274,13 +274,6 @@ class Resource {
             return $term->name;
         }, wp_get_post_terms($this->post_id));
 
-        return array_reduce([
-            $this->thumbnail_alt, $this->source, $this->description, $this->subject, $term_names
-        ], function ($carry, $item) {
-            if (is_array($item)) {
-                return array_merge($carry, $item);
-            }
-            return array_merge($carry, [$item]);
-        }, []);
+        return Model::flatten($this->thumbnail_alt, $this->source, $this->description, $this->subject, $term_names);
     }
 }

@@ -3,6 +3,12 @@
 namespace Imageshare\Models;
 
 class Model {
+    public static function flatten(array $arr) {
+        return array_reduce($arr, function ($c, $a) {
+            return is_array($a) ? array_merge($c, Model::flatten($a)) : array_merge($c, [$a]);
+        }, []);
+    }
+
     public static function get_meta_term_name(string $post_id, string $meta_key, string $taxonomy, bool $reverse = false) {
         $term_id = get_post_meta($post_id, $meta_key, true);
 

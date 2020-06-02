@@ -233,16 +233,8 @@ class ResourceFile {
     }
 
     public function get_index_data() {
-        return array_reduce([
-            $this->license, $this->type, $this->format, $this->languages, $this->accommodations
-        ], function ($carry, $item) {
-            if (is_array($item)) {
-                return array_merge($carry, $item);
-            }
-            return array_merge($carry, [$item]);
-        }, []);
+        return Model::flatten($this->license, $this->type, $this->format, $this->languages, $this->accommodations);
     }
-
 
     private function get_languages() {
         $languages = get_post_meta($this->post_id, 'languages', true);
