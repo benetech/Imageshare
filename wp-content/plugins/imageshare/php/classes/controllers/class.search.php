@@ -59,14 +59,16 @@ class Search {
     }
 
     public function get_resources_including_file($resource_file_id, $exclude_post_ids) {
-        return get_posts([
+        return array_map(function ($post) {
+            return ResourceModel::from_post($post);
+        }, get_posts([
             'numberposts'   => -1,
             'post_type'     => [ResourceModel::type],
             'post_status'   => 'publish',
             'meta_key'      => 'resource_file_id',
             'meta_value'    => $resource_file_id,
             'post__not_in'  => $exclude_post_ids
-        ]);
+        ]));
     }
 
     public function query_terms_only($args) {
@@ -128,7 +130,7 @@ class Search {
 
         return array_reduce($posts, function ($carry, $post) use ($post_ids) {
             if ($post->post_type === ResourceModel::type) {
-                array_push($carry, $post);
+                array_push($carry, ResourceModel::from_post($post));
                 return $carry;
             }
 
