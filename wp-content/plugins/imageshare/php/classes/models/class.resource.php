@@ -53,6 +53,14 @@ class Resource {
         update_field('source', $args['source'], $post_id);
         update_field('subject', $subject, $post_id);
 
+        if ($args['downloadable'] && strlen($args['download_uri'])) {
+            update_field('is_downloadable', 1, $post_id);
+            update_field('download_uri', $args['download_uri'], $post_id);
+        } else {
+            update_field('is_downloadable', 0, $post_id);
+            update_field('download_uri', null, $post_id);
+        }
+
         if (!$is_update) {
             // don't strip existing file associations when updating an existing resource
             update_field('files', [], $post_id);
@@ -274,6 +282,6 @@ class Resource {
             return $term->name;
         }, wp_get_post_terms($this->post_id));
 
-        return Model::flatten($this->thumbnail_alt, $this->source, $this->description, $this->subject, $term_names);
+        return Model::flatten([$this->thumbnail_alt, $this->source, $this->description, $this->subject, $term_names]);
     }
 }

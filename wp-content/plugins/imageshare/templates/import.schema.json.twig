@@ -37,6 +37,14 @@
                     },
                     "uniqueItems": true
                 },
+                "downloadable": {
+                    "type": "boolean"
+                },
+                "URI": {
+                    "type": "string",
+                    "format": "uri-reference",
+                    "default": ""
+                },
                 "files": {
                     "type": "array",
                     "items": {
@@ -46,7 +54,7 @@
                 }
             },
             "additionalProperties": false,
-            "minProperties": 7
+            "minProperties": 9
         },
         "resource_file": {
             "type": "object",

@@ -41,7 +41,8 @@ class PluginSettings {
             $records = json_decode($json_data);
 
             if ($records === null) {
-                return new \WP_Error('imageshare', __('Unable to load records from supplied file.', 'imageshare'));
+                $error = __('Unable to load records from supplied file.', 'imageshare');
+                return ['resources' => [], 'errors' => [$error]];
             }
 
             try {
@@ -96,7 +97,9 @@ class PluginSettings {
             'source'        => $record->source,
             'description'   => $record->description,
             'subject'       => $record->subject,
-            'tags'          => $record->tags
+            'tags'          => $record->tags,
+            'downloadable'  => $record->downloadable,
+            'download_uri'  => $record->URI ?? ''
         ]);
 
         $files = [];

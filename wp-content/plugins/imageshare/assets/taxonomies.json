@@ -18,7 +18,7 @@
         "hierarchical": true,
         "terms": {
             "Audio": ["AAC", "MP3", "WAV"],
-            "Image": ["GIF", "JPG", "PNG", "AVI", "Generic", "HDV", "MP4", "Quicktime"],
+            "Image": ["GIF", "JPG", "PNG", "AVI", "Generic", "HDV", "MP4", "Quicktime", "Streaming"],
             "Other": ["Website", "PDF", "TXT", "Word"],
             "Tactile": ["AI", "OBJ", "STL"]
         }

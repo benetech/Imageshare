@@ -233,7 +233,7 @@ class ResourceFile {
     }
 
     public function get_index_data() {
-        return Model::flatten($this->license, $this->type, $this->format, $this->languages, $this->accommodations);
+        return Model::flatten([$this->license, $this->type, $this->format, $this->languages, $this->accommodations]);
     }
 
     private function get_languages() {
