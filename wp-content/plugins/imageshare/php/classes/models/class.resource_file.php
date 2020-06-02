@@ -212,6 +212,8 @@ class ResourceFile {
         if (!empty($this->post)) {
             $this->id = $this->post->ID;
             $this->post_id = $this->post->ID;
+            $this->title = $this->post->post_title;
+            $this->permalink = get_permalink($this->post->ID);
 
             $this->uri = get_post_meta($this->post_id, 'uri', true);
             $this->length_minutes = get_post_meta($this->post_id, 'length_minutes', true);
@@ -220,7 +222,6 @@ class ResourceFile {
             $this->type = Model::get_meta_term_name($this->post_id, 'type', 'file_types');
             $this->format = Model::get_meta_term_name($this->post_id, 'format', 'file_formats');
 
-            // TODO map language to ISO name
             $this->languages = $this->get_languages();
 
             $this->accommodations = $this->get_accommodations();
@@ -242,6 +243,7 @@ class ResourceFile {
         }, []);
     }
 
+
     private function get_languages() {
         $languages = get_post_meta($this->post_id, 'languages', true);
         return array_map(function ($term_id) {
@@ -256,7 +258,7 @@ class ResourceFile {
 
             if ($parent_id = $term->parent) {
                 $parent_term = get_term($parent_id);
-                return join(' - ', [$parent_term->name, $term->name]);
+                return join(' - ', [$term->name, $parent_term->name]);
             }
 
             return $term->name;
