@@ -32,7 +32,8 @@ class ResourceCollection {
                 'title',
             ),
             'public' => true,
-            'show_ui' => true
+            'show_ui' => true,
+            'has_archive' => 'collections'
         );
     }
 
@@ -86,6 +87,20 @@ class ResourceCollection {
         }
     }
 
+    public static function containing($resource_id) {
+        $posts = get_posts([
+            'numberposts'   => -1,
+            'post_type'     => [ResourceCollection::type],
+            'post_status'   => 'publish',
+            'meta_key'      => 'resource_id',
+            'meta_value'    => $resource_id
+        ]);
+
+        return array_map(function ($post) {
+            return ResourceCollection::from_post($post);
+        }, $posts);
+    }
+
     public static function from_post(\WP_Post $post) {
         $wrapped = new ResourceCollection();
         $wrapped->post = $post;
@@ -109,7 +124,7 @@ class ResourceCollection {
             $this->contributor  = get_post_meta($this->post_id, 'contributor', true);
             $this->resource_ids = get_post_meta($this->post_id, 'resources', true);
 
-            $this->is_featured = get_post_meta($this->post_id, 'is_featured', true) === 1;
+            $this->is_featured = get_post_meta($this->post_id, 'is_featured', true) == 1;
 
             $thumbnail_id = get_post_meta($this->post_id, 'thumbnail', true);
             $this->thumbnail = wp_get_attachment_image_src($thumbnail_id)[0];
@@ -119,5 +134,34 @@ class ResourceCollection {
         
         return null;
     }
+
+    public function resources() {
+        if (isset($this->_resources)) {
+            return $this->_resources;
+        }
+
+        return $this->_resources = array_reduce($this->resource_ids, function ($carry, $resource_id) {
+            $resource_file = new Resource($resource_id);
+            array_push($carry, $resource_file);
+            return $carry;
+        }, []);
+
+    }
+
+    public function acf_update_value($field, $value) {
+        switch($field['name']) {
+            case 'resources':
+            // also store resource ids as flat database records for meta search
+            // use $this->post->ID as the resource might not be finished creating
+                delete_post_meta($this->post->ID, 'resource_id');
+                foreach ($value as $file_id) {
+                    add_post_meta($this->post->ID, 'resource_id', $file_id);
+                }
+            break;
+        }
+
+        return $value;
+    }
+
 
 }
