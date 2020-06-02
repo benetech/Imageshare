@@ -28,6 +28,7 @@ if (($_GET['page'] ?? null) === 'search') {
 }
 
 $context['collections'] = $imageshare->controllers->resource_collection->get_featured_collections(8);
+$context['collection_archive_href'] = get_post_type_archive_link('btis_collection');
 
 $templates = array( 'index.twig' );
 if ( is_home() ) {

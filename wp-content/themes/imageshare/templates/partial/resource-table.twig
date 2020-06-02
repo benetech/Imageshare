@@ -1,0 +1,36 @@
+<table
+  class="resources"
+  aria-labelledby="resources-heading"
+  aria-describedby="main-description"
+>
+  <thead class="resources-headings">
+    <tr>
+      <th scope="col">{{ 'Resource' | i18n }}</th>
+      <th scope="col">{{ 'Name' | i18n }}</th>
+      <th scope="col">{{ 'Description' | i18n }}</th>
+      <th scope="col">{{ 'Source' | i18n }}</th>
+    </tr>
+  </thead>
+  <tbody class="resources-data">
+  {% for result in results %}
+    <tr>
+      <td>
+         <img
+            class="resource-img"
+            src="{{ result.thumbnail_src }}"
+            alt="{{ result.thumbnail_alt | i18n }}"
+          />
+      </td>
+      <td>
+        <a href="{{ result.permalink }}" class="resource-link">{{ result.title | i18n }}</a>
+      </td>
+      <td>
+        <p>{{ result.description | i18n }}</p>
+      </td>
+      <td>{{ result.source | i18n }}</td>
+    </tr>
+    <tr>
+  {% endfor %}
+  </tbody>
+</table>
+

@@ -47,7 +47,7 @@
           <select id="subject" name="subject">
             <option value="">--{{ 'choose a subject' | i18n }}--</option>
           {% for id, terms in search_terms.subjects %}
-            <option value="{{ id }}">{{ terms | map(t => t | i18n) | join(' — ') }}</option>
+            <option value="{{ id }}">{{ terms | map(t => t | i18n) | join(' - ') }}</option>
           {% endfor %}
           </select>
         </li>
@@ -65,7 +65,7 @@
           <select id="acc" name="acc">
             <option value="">--{{ 'choose an accommodation' | i18n }}--</option>
           {% for id, terms in search_terms.accommodations %}
-            <option value="{{ id }}">{{ terms | map(t => t | i18n) | join(' — ') }}</option>
+            <option value="{{ id }}">{{ terms | map(t => t | i18n) | join(' - ') }}</option>
           {% endfor %}
           </select>
         </li>

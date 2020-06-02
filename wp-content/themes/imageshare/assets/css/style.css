@@ -617,6 +617,7 @@ label {
 }
 .resource-img {
   width: 100%;
+  max-width: 8em;
 }
 .resource-link {
   font-weight: bold;

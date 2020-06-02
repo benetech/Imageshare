@@ -1,0 +1,30 @@
+{% extends "base.twig" %}
+
+{% set page_title = 'Collections | Imageshare' %}
+
+{% block content %}
+  <div class="main-inner width-12/12">
+    <section aria-labelledby="collections">
+      <h2 class="h2 collections-heading" id="collections">
+        {{ 'Collections' | i18n }}
+      </h2>
+      <ul
+        class="collections grid"
+        aria-labelledby="collections"
+        role="list"
+      >
+      {% for collection in posts %}
+        <li
+          class="collection background66209c width-3/12 width-6/12@medium width-12/12@small"
+        >
+          <a href="{{ collection.permalink }}" class="collection-link">
+            <img class="collection-img" src="{{ collection.thumbnail }}" alt="" />
+            <div class="collection-heading">{{ collection.title | e }}</div>
+            <div class="collection-description">{{ collection.description | e }}</div>
+          </a>
+        </li>
+      {% endfor %}
+      </ul>
+    </section>
+  </div>
+{% endblock %}

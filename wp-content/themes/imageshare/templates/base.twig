@@ -10,6 +10,7 @@
     <div class="app grid {{ is_home ? 'home' : 'not_home' }}">
       <div class="app-inner">
         <header class="header">
+        {% block header %}
           <div class="header-inner width-12/12">
             <a href="#main-heading" class="skip-link">Skip to Main Content</a>
             <a href="/" class="logo">
@@ -20,26 +21,12 @@
               />
             </a>
           </div>
+        {% endblock %}
         </header>
         <main class="main">
-          <div class="main-inner width-12/12">
-          {% if title %}
-            <div class="h1-wrapper">
-              <h1 class="h1" id="main-heading">
-                {{ title | i18n }}
-              </h1>
-            {% if title_description %}
-              <div class="h1-description">
-                {{ title_description | i18n }}
-              </div>
-            {% endif %}
-            </div>
-          {% endif %}
-          
-          {% block content %}
-            <h2 style="color: red">No content?</h2>
-          {% endblock %}
-          </div>
+            {% block content %}
+                No main content.
+            {% endblock %}
         </main>
     {% block footer %}
       <footer class="footer">

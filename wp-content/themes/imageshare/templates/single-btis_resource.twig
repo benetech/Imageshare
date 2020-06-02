@@ -1,0 +1,131 @@
+{% extends "base.twig" %}
+
+{% set page_title = post.title %}
+
+{% block header %}
+  <div class="header-inner">
+    <a href="#main-heading" class="skip-link">Skip to Main Content</a>
+    <a href="/" class="logo">
+      <img
+        class="logo-img"
+        src="img/imageshare.png"
+        alt="Imageshare, A Benetech Initiativve Logo"
+      />
+    </a>
+    <nav aria-label="Page" class="main-navigation">
+      <h2 id="main-navigation-heading" class="sr-only">
+        Page Navigation
+      </h2>
+      <ul
+        class="grid main-navigation-list"
+        role="list"
+        aria-labelledby="main-navigation-heading"
+      >
+        <li class="left width-9/12">
+          <a href="#" class="back-link"
+            ><span aria-hidden="true" class="lsaquo">&lsaquo;</span
+            ><span class="txt">Go back to search results</span></a
+          >
+        </li>
+        <li class="right width-3/12">
+          <a href="#" class="">Report Issue</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+{% endblock %}
+
+{% block content %}
+  <div class="main-inner grid">
+    <div class="width-9/12">
+      <h1 id="main-heading" class="h1">
+        {{ post.title | i18n | e }}
+      </h1>
+      <p class="description-txt">
+        {{ post.description | i18n | e }}
+      </p>
+      <dl class="resource-details">
+        <div>
+            <dd>{{ 'Subject' | i18n }}</dd>
+            <dt>{{ post.subject | i18n | e }}</dt>
+        </div>
+      {% if post.tags %}
+        <div>
+            <dd>{{ 'Keywords' | i18n }}</dd>
+            <dt>{{ post.tags | join(', ') }}</dt>
+        </div>
+      {% endif %}
+      </dl>
+    {% if post.download_link %}
+      <button type="submit" class="download-btn">
+        {{ 'Download all files' | i18n }} ({{ post.files | length }}) 
+      </button>
+    {% endif %}
+
+      <section>
+        <h2 resource-section>{{ 'Files' | i18n }} <span class="counter">{{ post.files | length }}</span></h2>
+        <table class="resource_files">
+          <thead class="resources-headings">
+            <tr>
+              <th scope="col">{{ 'Image' | i18n }}</th>
+              <th scope="col">{{ 'Name' | i18n }}</th>
+              <th scope="col">{{ 'Description' | i18n }}</th>
+            </tr>
+          </thead>
+          <tbody class="resources-data">
+          {% for file in post.files %}
+            <tr>
+              <td>
+                 <img
+                    class="resource-img"
+                    src="{{ result.thumbnail_src }}"
+                    alt="{{ result.thumbnail_alt | i18n }}"
+                  />
+              </td>
+              <td>
+                {{ file.title | i18n | e }}</a>
+              </td>
+              <td>
+                <p>{{ result.description | i18n }}</p>
+              </td>
+            </tr>
+            <tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </section>
+
+    {% if post.collections | length > 0 %}
+      <section>
+        <h2>{{ 'Collections' | i18n }} <span class="counter">{{ post.collections | length }}</span></h3>
+          <ul
+            class="collections"
+            aria-labelledby="collections-tabpanel-heading"
+          >
+
+          {% for collection in post.collections %}
+            <li class="collections-item">
+              <div class="collections-content">
+                <h3 class="h3 collections-name">
+                  <a href="{{ collection.permalink }}">{{ collection.title | e }}</a>
+                </h3>
+                <img
+                  class="collections-img"
+                  src="./img/resource.png"
+                  alt=""
+                />
+                <p class="collections-author">
+                  {{ 'by' | i18n }} <strong>{{ collection.contributor | e }}</strong>
+                </p>
+              </div>
+            </li>
+        {% endfor %}
+          </ul>
+      </section>
+    {% endif %}
+    </div>
+  </div>
+
+
+{% endblock %}
+

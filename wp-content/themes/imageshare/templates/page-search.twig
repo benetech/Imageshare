@@ -3,6 +3,7 @@
 {% set title = '%d resources found' | i18n | format(results | length) %}
 
 {% block content %}
+  <div class="main-inner width-12/12">
     {% if results | length > 0 %}
         {% include "partial/search.twig" %}
         <h2 id="resources-heading" class="sr-only">{{ 'Resources' | i18n }}</h2>
@@ -20,50 +21,10 @@
             <button type="submit">Update</button>
           </form>
         </div>
-        <table
-          class="resources"
-          aria-labelledby="resources-heading"
-          aria-describedby="main-description"
-        >
-          <thead class="resources-headings">
-            <tr>
-              <th scope="col">{{ 'Resource' | i18n }}</th>
-              <th scope="col">{{ 'Name' | i18n }}</th>
-              <th scope="col">{{ 'Description' | i18n }}</th>
-              <th scope="col">{{ 'Source' | i18n }}</th>
-            </tr>
-          </thead>
-          <tbody class="resources-data">
-          {% for result in results %}
-            <tr>
-              <td>
-                <a
-                  href="{{ result.permalink }}"
-                  role="img"
-                  aria-label="{{ result.title | i18n }}"
-                  tabindex="-1"
-                >
-                  <img
-                    class="resource-img"
-                    src="{{ result.thumbnail_src }}"
-                    alt="{{ result.thumbnail_alt | i18n }}"
-                  />
-                </a>
-              </td>
-              <td>
-                <a href="{{ result.permalink }}" class="resource-link">{{ result.title | i18n }}</a>
-              </td>
-              <td>
-                <p>{{ result.description | i18n }}</p>
-              </td>
-              <td>{{ result.source | i18n }}</td>
-            </tr>
-            <tr>
-          {% endfor %}
-          </tbody>
-        </table>
+        {{ include('partial/resource-table.twig', {results: results}, with_context = false) }}
     {% else %}
         <div>{{ 'No results matched your query.' | i18n }}</div>
         {% include "partial/search.twig" %}
     {% endif %}
+  </div>
 {% endblock %}
