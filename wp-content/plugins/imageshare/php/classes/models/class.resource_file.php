@@ -243,7 +243,7 @@ class ResourceFile {
         }, $languages);
     }
 
-    private function get_accommodations() {
+    public function get_accommodations() {
         $accommodations = get_post_meta($this->post_id, 'accommodations', true);
         return array_map(function ($term_id) {
             $term = get_term($term_id, 'a11y_accs');

@@ -277,11 +277,54 @@ class Resource {
         }, []);
     }
 
-    public function get_index_data() {
+    public function get_index_data($specific = null) {
+        if ($specific === 'subject') {
+            return [Model::as_search_term('subject', $this->subject)];
+        }
+
+        if ($specific === 'type') {
+            return array_unique(Model::flatten(array_map(function ($type) {
+                return Model::as_search_term('type', $type);
+            }, $this->get_resource_file_types())));
+        }
+
+        if ($specific === 'accommodation') {
+            return array_unique(Model::flatten(array_map(function ($accommodation) {
+                return Model::as_search_term('accommodation', $accommodation);
+            }, Model::flatten($this->get_resource_file_accommodations()))));
+        }
+
         $term_names = array_map(function ($term) {
             return $term->name;
         }, wp_get_post_terms($this->post_id));
 
-        return Model::flatten([$this->thumbnail_alt, $this->source, $this->description, $this->subject, $term_names]);
+        return Model::flatten([
+            Model::as_search_term('subject', $this->subject),
+            $this->thumbnail_alt,
+            $this->source,
+            $this->description,
+            $this->subject,
+            $term_names,
+
+            array_map(function ($accommodation) {
+                return Model::as_search_term('accommodation', $accommodation);
+            }, Model::flatten($this->get_resource_file_accommodations())),
+
+            array_map(function ($type) {
+                return Model::as_search_term('type', $type);
+            }, $this->get_resource_file_types())
+        ]);
+    }
+
+    public function get_resource_file_types() {
+        return array_map(function ($resource_file) {
+            return $resource_file->type;
+        }, $this->files());
+    }
+
+    public function get_resource_file_accommodations() {
+        return array_map(function ($resource_file) {
+            return $resource_file->get_accommodations();
+        }, $this->files());
     }
 }

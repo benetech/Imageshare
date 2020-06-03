@@ -163,7 +163,28 @@ class ResourceCollection {
         return $value;
     }
 
-    public function get_index_data() {
+    public function get_index_data($specific = null) {
+        if ($specific === 'subject') {
+            return array_unique(Model::flatten(array_map(function ($resource) {
+                return Model::as_search_term('subject', $resource->subject);
+            }, $this->resources())));
+        }
+
+        if ($specific === 'type') {
+            return array_unique(Model::flatten(array_map(function ($resource) {
+                return array_map(function ($type) {
+                    return Model::as_search_term('type', $type);
+                }, $resource->get_resource_file_types());
+            }, $this->resources())));
+        }
+
+        if ($specific === 'accommodation') {
+            return array_unique(Model::flatten(array_map(function ($resource) {
+                return array_map(function ($accommodation) {
+                    return Model::as_search_term('accommodation', $accommodation);
+                }, Model::flatten($resource->get_resource_file_accommodations()));
+            }, $this->resources())));
+        }
 
         $resource_indices = array_map(function ($resource) {
             return $resource->get_index_data();

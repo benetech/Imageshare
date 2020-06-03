@@ -1,10 +1,10 @@
 {% extends "base.twig" %}
 
-{% set title = '%d resources found' | i18n | format(results | length) %}
+{% set title = '%d resources found' | i18n | format(results.resources | length) %}
 
 {% block content %}
   <div class="main-inner width-12/12">
-    {% if results | length > 0 %}
+    {% if results.resources | length > 0 %}
         {% include "partial/search.twig" %}
         <h2 id="resources-heading" class="sr-only">{{ 'Resources' | i18n }}</h2>
         <div class="grid">
@@ -21,7 +21,7 @@
             <button type="submit">Update</button>
           </form>
         </div>
-        {{ include('partial/resource-table.twig', {results: results}, with_context = false) }}
+        {{ include('partial/resource-table.twig', {results: results.resources}, with_context = false) }}
     {% else %}
         <div>{{ 'No results matched your query.' | i18n }}</div>
         {% include "partial/search.twig" %}

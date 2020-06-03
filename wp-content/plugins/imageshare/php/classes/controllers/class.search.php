@@ -3,6 +3,7 @@
 namespace Imageshare\Controllers;
 
 use Imageshare\Logger;
+use Imageshare\Models\Model as Model;
 use Imageshare\Models\Resource as ResourceModel;
 use Imageshare\Models\ResourceFile as ResourceFileModel;
 use Imageshare\Models\ResourceCollection as ResourceCollectionModel;
@@ -18,6 +19,7 @@ class Search {
 
         switch ($post->post_type) {
             case (ResourceModel::type):
+                $type = ResourceModel::type;
                 $resource = ResourceModel::from_post($post);
                 if (!$resource->is_created) {
                     Logger::log("Post {$post->ID} is not ready, skipping");
@@ -26,7 +28,13 @@ class Search {
 
                 $index['post_title'] = $resource->title;
                 $index['post_content'] = '';
-                $index['resource_data'] = implode(' ', $resource->get_index_data());
+                $index[$type . '_data'] = implode(' ', $resource->get_index_data());
+
+                // subject and keyword-specific relevance clusters
+                $index[$type . '_subject'] = implode(' ', $resource->get_index_data('subject'));
+                $index[$type . '_type'] = implode(' ', $resource->get_index_data('type'));
+                $index[$type . '_accommodation'] = implode(' ', $resource->get_index_data('accommodation'));
+
                 break;
 
             case (ResourceFileModel::type):
@@ -37,13 +45,21 @@ class Search {
                 }
 
                 $index['post_content'] = '';
-                $index['resource_file_data'] = implode(' ', $resource_file->get_index_data());
+                $index[ResourceFileModel::type . '_data'] = implode(' ', $resource_file->get_index_data());
+
                 break;
 
              case (ResourceCollectionModel::type):
                 $resource_collection = ResourceCollectionModel::from_post($post);
+                $type = ResourceCollectionModel::type;
                 $index['post_content'] = '';
-                $index['resource_collection_data'] = implode(' ', $resource_collection->get_index_data());
+                $index[$type . '_data'] = implode(' ', $resource_collection->get_index_data());
+
+                // subject and keyword-specific relevance clusters
+                $index[$type . '_subject'] = implode(' ', $resource_collection->get_index_data('subject'));
+                $index[$type . '_type'] = implode(' ', $resource_collection->get_index_data('type'));
+                $index[$type . '_accommodation'] = implode(' ', $resource_collection->get_index_data('accommodation'));
+
                 break;
 
             default:
@@ -65,139 +81,78 @@ class Search {
         ];
     }
 
-    public function get_resources_including_file($resource_file_id, $exclude_post_ids) {
-        return array_map(function ($post) {
-            return ResourceModel::from_post($post);
-        }, get_posts([
-            'numberposts'   => -1,
-            'post_type'     => [ResourceModel::type],
-            'post_status'   => 'publish',
-            'meta_key'      => 'resource_file_id',
-            'meta_value'    => $resource_file_id,
-            'post__not_in'  => $exclude_post_ids
-        ]));
-    }
-
-    public function query_terms_only($args) {
-        $tax_query = ['relation' => 'AND'];
-
-        if ($args['subject'] !== null) {
-            $term = get_term($args['subject']);
-            if (!is_wp_error($term)) {
-                array_push($tax_query, [
-                    'taxonomy' => 'subjects',
-                    'field' => 'term_id',
-                    'include_children' => true,
-                    'terms' => $term->term_id
-                ]);
-            }
+    public function add_weight(&$weights, $post_type, $term) {
+        $term = get_term($args['type']);
+        if (!is_wp_error($term)) {
+            $weights[$post_type .'_'. $type] = 0.9;
+            array_push($query, Model::as_search_term('type', $term->name));
         }
-
-        if ($args['type'] !== null) {
-            $term = get_term($args['type']);
-            if (!is_wp_error($term)) {
-                array_push($tax_query, [
-                    'taxonomy' => 'file_types',
-                    'field' => 'term_id',
-                    'include_children' => false,
-                    'terms' => $term->term_id
-                ]);
-            }
-        }
-
-        if ($args['accommodation'] !== null) {
-            $term = get_term($args['accommodation']);
-            if (!is_wp_error($term)) {
-                array_push($tax_query, [
-                    'taxonomy' => 'a11y_accs',
-                    'field' => 'term_id',
-                    'include_children' => true,
-                    'terms' => $term->term_id
-                ]);
-            }
-        }
-
-        $posts = get_posts([
-            'numberposts'   => -1,
-            'post_type'     => [ResourceModel::type, ResourceFileModel::type],
-            'post_status'   => 'publish',
-            'tax_query'     => $tax_query
-        ]);
-
-        // TODO sort all this out with a custom SQL query
-
-        $post_ids = array_reduce($posts, function ($carry, $post) {
-            if ($post->post_type === ResourceModel::type) {
-                array_push($carry, $post->ID);
-                return $carry;
-            }
-
-            return $carry;
-        }, []);
-
-        return array_reduce($posts, function ($carry, $post) use ($post_ids) {
-            if ($post->post_type === ResourceModel::type) {
-                array_push($carry, ResourceModel::from_post($post));
-                return $carry;
-            }
-
-            $posts = self::get_resources_including_file($post->ID, array_merge(wp_list_pluck($carry, 'ID'), $post_ids));
-
-            return array_merge($carry, $posts);
-        }, []);
     }
 
     public function query($args) {
-        if (!strlen(trim($args['query']))) {
-            return self::query_terms_only($args);
-        }
+        return [
+            'resources'   => array_map(function ($p) {
+                return ResourceModel::from_post($p);
+            }, self::post_type_query(ResourceModel::type, $args)),
 
-        $query_args = [
-            'numberposts'   => -1,
-            'post_type'     => [ResourceModel::type],
-            'post_status'   => 'publish',
+            'collections' => array_map(function ($p) {
+                return ResourceCollectionModel::from_post($p);
+            }, self::post_type_query(ResourceCollectionModel::type, $args)),
         ];
+    }
 
+    public function post_type_query($type, $args) {
         $query = [$args['query']];
+
+        if (strlen(trim($args['query']))) {
+            $cluster_weights = [
+                'post_title' => 0.7,
+                ($type . '_data') => 0.9
+            ];
+        } else {
+            $cluster_weights = [];
+        }
 
         if ($args['subject'] !== null) {
             $term = get_term($args['subject']);
             if (!is_wp_error($term)) {
-                array_push($query, $term->name);
+                $cluster_weights[$type . '_subject'] = 0.9;
+                array_push($query, Model::as_search_term('subject', $term->name));
             }
         }
 
         if ($args['type'] !== null) {
             $term = get_term($args['type']);
             if (!is_wp_error($term)) {
-                array_push($query, $term->name);
+                $cluster_weights[$type . '_type'] = 0.9;
+                array_push($query, Model::as_search_term('type', $term->name));
             }
         }
 
         if ($args['accommodation'] !== null) {
             $term = get_term($args['accommodation']);
             if (!is_wp_error($term)) {
-                array_push($query, $term->name);
+                $cluster_weights[$type . '_accommodation'] = 0.9;
+                array_push($query, Model::as_search_term('accommodation', $term->name));
             }
         }
 
-        $query_args['s'] = implode(' ', $query);
+        $results = [];
 
         $wpq = new \WP_Query([
+            'post_type' => $type,
+            'post_status' => 'publish',
             'fields' => '*',
             'wpfts_disable' => 0,
             'wpfts_nocache' => 1,
+            'cluster_weights' => $cluster_weights,
             's' => implode(' ', $query)
         ]);
-
-        $results = [];
 
         while ($wpq->have_posts()) {
             $wpq->the_post();
             $post = $wpq->post;
-            if ($post->post_type === ResourceModel::type) {
-                array_push($results, ResourceModel::from_post($post));
-            }
+            array_push($results, $post);
         }
 
         return $results;

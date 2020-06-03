@@ -3,6 +3,14 @@
 namespace Imageshare\Models;
 
 class Model {
+    public static function as_search_term($term, $value) {
+        return
+            preg_replace('/_{2,}/', '_',
+            preg_replace('/[^\w]+/', '',
+            preg_replace('/\s+/', '_', implode('_', [$term, $value]
+        ))));
+    }
+
     public static function flatten(array $arr) {
         return array_reduce($arr, function ($c, $a) {
             return is_array($a) ? array_merge($c, Model::flatten($a)) : array_merge($c, [$a]);
