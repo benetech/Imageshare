@@ -54,10 +54,12 @@
                 }
             },
             "additionalProperties": false,
-            "minProperties": 9
+            "minProperties": 10
         },
         "resource_file": {
             "type": "object",
+            "additionalProperties": false,
+            "minProperties": 9,
             "properties": {
                 "URI": {
                     "type": "string",
@@ -92,10 +94,11 @@
                 "length_minutes": {
                     "type": "string",
                     "pattern": "^[0-9]*$"
+                },
+                "description": {
+                    "type": "string"
                 }
-            },
-            "additionalProperties": false,
-            "minProperties": 8
+            }
         }
     }
 }

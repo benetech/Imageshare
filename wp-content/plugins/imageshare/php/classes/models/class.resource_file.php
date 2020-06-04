@@ -69,6 +69,7 @@ class ResourceFile {
             Logger::log(sprintf('New resource file created, %s (%s)', $post_id, $args['uri']));
         }
 
+        update_field('description', $args['description'], $post_id);
         update_field('uri', $args['uri'], $post_id);
         update_field('length_minutes', $length, $post_id);
         update_field('type', $type, $post_id);
@@ -144,6 +145,7 @@ class ResourceFile {
     }
 
     public static function manage_columns(array $columns) {
+        $columns['description'] = self::i18n('Description');
         $columns['uri'] = self::i18n('URI');
         $columns['type'] = self::i18n('Type');
         $columns['format'] = self::i18n('Format');
@@ -159,6 +161,10 @@ class ResourceFile {
         $post = new ResourceFile($post_id);
 
         switch ($column_name) {
+            case 'description':
+                echo $post->description;
+                break;
+
             case 'uri':
                 echo $post->uri;
                 break;
@@ -215,6 +221,7 @@ class ResourceFile {
             $this->title = $this->post->post_title;
             $this->permalink = get_permalink($this->post->ID);
 
+            $this->description = get_post_meta($this->post_id, 'description', true);
             $this->uri = get_post_meta($this->post_id, 'uri', true);
             $this->length_minutes = get_post_meta($this->post_id, 'length_minutes', true);
             $this->license = Model::get_meta_term_name($this->post_id, 'license', 'licenses');
@@ -233,7 +240,7 @@ class ResourceFile {
     }
 
     public function get_index_data() {
-        return Model::flatten([$this->license, $this->type, $this->format, $this->languages, $this->accommodations]);
+        return Model::flatten([$this->description, $this->license, $this->type, $this->format, $this->languages, $this->accommodations]);
     }
 
     private function get_languages() {

@@ -108,6 +108,7 @@ class PluginSettings {
             try {
                 [$file_id, $is_update] = ResourceFileModel::create([
                     'title'          => $file->display_name,
+                    'description'    => $file->description,
                     'uri'            => $file->URI,
                     'type'           => $file->type,
                     'format'         => $file->format,
