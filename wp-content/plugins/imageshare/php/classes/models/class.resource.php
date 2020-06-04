@@ -248,7 +248,6 @@ class Resource {
             $this->description = get_post_meta($this->post_id, 'description', true);
             $this->source      = get_post_meta($this->post_id, 'source', true);
             $this->file_ids    = get_post_meta($this->post_id, 'files', true);
-
             $this->subject     = Model::get_meta_term_name($this->post_id, 'subject', 'subjects', true);
 
             return $this->id;
@@ -279,7 +278,18 @@ class Resource {
 
     public function get_index_data($specific = null) {
         if ($specific === 'subject') {
-            return [Model::as_search_term('subject', $this->subject)];
+            $subject_term_id = get_post_meta($this->post_id, 'subject', true);
+
+            $term = get_term($subject_term_id, 'subjects');
+
+            $data = [Model::as_search_term('subject', $term->name)];
+
+            if ($parent_id = $term->parent) {
+                $parent_term = get_term($parent_id);
+                array_push($data, Model::as_search_term('subject', $parent_term->name));
+            }
+
+            return $data;
         }
 
         if ($specific === 'type') {

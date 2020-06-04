@@ -28,7 +28,7 @@ class Search {
 
                 $index['post_title'] = $resource->title;
                 $index['post_content'] = '';
-                $index[$type . '_data'] = implode(' ', $resource->get_index_data());
+                $index[$type . '_data'] = implode(' ', array_unique($resource->get_index_data()));
 
                 // subject and keyword-specific relevance clusters
                 $index[$type . '_subject'] = implode(' ', $resource->get_index_data('subject'));
@@ -45,7 +45,7 @@ class Search {
                 }
 
                 $index['post_content'] = '';
-                $index[ResourceFileModel::type . '_data'] = implode(' ', $resource_file->get_index_data());
+                $index[ResourceFileModel::type . '_data'] = implode(' ', array_unique($resource_file->get_index_data()));
 
                 break;
 
@@ -53,7 +53,7 @@ class Search {
                 $resource_collection = ResourceCollectionModel::from_post($post);
                 $type = ResourceCollectionModel::type;
                 $index['post_content'] = '';
-                $index[$type . '_data'] = implode(' ', $resource_collection->get_index_data());
+                $index[$type . '_data'] = implode(' ', array_unique($resource_collection->get_index_data()));
 
                 // subject and keyword-specific relevance clusters
                 $index[$type . '_subject'] = implode(' ', $resource_collection->get_index_data('subject'));
