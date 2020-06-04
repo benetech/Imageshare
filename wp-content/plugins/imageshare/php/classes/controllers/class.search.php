@@ -90,15 +90,31 @@ class Search {
     }
 
     public function query($args) {
-        return [
-            'resources'   => array_map(function ($p) {
+        $resources   = self::post_type_query(ResourceModel::type, $args);
+        $collections = self::post_type_query(ResourceCollectionModel::type, $args);
+
+        if ($args['previous'] !== null && $args['narrow']) {
+            $resources = self::post_type_query(ResourceModel::type,
+                array_merge($args['previous'], ['id_in' => wp_list_pluck($resources, 'ID')])
+            );
+            $collections = self::post_type_query(ResourceCollectionModel::type,
+                array_merge($args['previous'], ['id_in' => wp_list_pluck($collections, 'ID')])
+            );
+        }
+
+        $results = [
+            'resources' => array_map(function ($p) {
                 return ResourceModel::from_post($p);
-            }, self::post_type_query(ResourceModel::type, $args)),
+            }, $resources),
 
             'collections' => array_map(function ($p) {
                 return ResourceCollectionModel::from_post($p);
-            }, self::post_type_query(ResourceCollectionModel::type, $args)),
+            }, $collections)
         ];
+
+        $results['count'] = count($results['resources']) + count($results['collections']);
+
+        return $results;
     }
 
     public function post_type_query($type, $args) {
@@ -146,7 +162,8 @@ class Search {
             'wpfts_disable' => 0,
             'wpfts_nocache' => 1,
             'cluster_weights' => $cluster_weights,
-            's' => implode(' ', $query)
+            's' => implode(' ', $query),
+            'post__in' => $args['id_in'] ?? null
         ]);
 
         while ($wpq->have_posts()) {

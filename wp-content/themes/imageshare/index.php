@@ -17,12 +17,27 @@ $context = Timber::context();
 $context['search_terms'] = $imageshare->controllers->search->get_available_terms();
 
 if (($_GET['page'] ?? null) === 'search') {
-    $context['results'] = $imageshare->controllers->search->query([
+    $context['search_params'] = [
         'query'         => $_GET['q'] ?? '',
         'subject'       => $_GET['subject'] ?? null,
         'type'          => $_GET['type'] ?? null,
         'accommodation' => $_GET['acc'] ?? null
-    ]);
+    ];
+
+    if ($_GET['p_query'] ?? null) {
+        $previous_params = [
+            'query'         => $_GET['p_query'] ?? '',
+            'subject'       => $_GET['p_subject'] ?? null,
+            'type'          => $_GET['p_type'] ?? null,
+            'accommodation' => $_GET['p_acc'] ?? null
+        ];
+    }
+
+    $narrow = $_GET['narrow'] ?? false;
+
+    $context['results'] = $imageshare->controllers->search->query(
+        array_merge(['narrow' => $narrow, 'previous' => $previous_params ?? null], $context['search_params'])
+    );
 
     return Timber::render( array( 'page-search.twig'), $context );
 }
