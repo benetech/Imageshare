@@ -231,7 +231,9 @@ class ResourceFile {
 
             $this->languages = $this->get_languages();
 
-            $this->accommodations = $this->get_accommodations();
+            $this->accommodations = array_map(function ($a) {
+                return join(' - ', $a);
+            }, $this->get_accommodations());
 
             return $this->id;
         }
@@ -257,10 +259,10 @@ class ResourceFile {
 
             if ($parent_id = $term->parent) {
                 $parent_term = get_term($parent_id);
-                return join(' - ', [$term->name, $parent_term->name]);
+                return [$term->name, $parent_term->name];
             }
 
-            return $term->name;
+            return [$term->name];
         }, $accommodations);
     }
 
