@@ -110,9 +110,9 @@ class ResourceFile {
                 'number' => 1,
                 'hide_empty' => false,
                 'meta_query' => [[
-                   'key' => 'term_aliases',
-                   'value' => "(^|.*?,){$lc}(,.*|$)",
-                   'compare' => 'RLIKE'
+                   'key' => 'term_alias',
+                   'value' => $lc,
+                   'compare' => '='
                 ]],
                 'taxonomy'  => 'languages',
             ]);

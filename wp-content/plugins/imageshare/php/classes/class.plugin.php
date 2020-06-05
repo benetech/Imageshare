@@ -6,6 +6,7 @@ require_once imageshare_php_file('classes/class.logger.php');
 
 require_once imageshare_php_file('classes/models/class.resource_collection.php');
 require_once imageshare_php_file('classes/models/class.resource.php');
+require_once imageshare_php_file('classes/models/class.term.php');
 require_once imageshare_php_file('classes/models/class.resource_file.php');
 
 require_once imageshare_php_file('classes/controllers/class.resource_collection.php');
@@ -15,6 +16,7 @@ require_once imageshare_php_file('classes/controllers/class.post.php');
 
 use Imageshare\Logger;
 
+use Imageshare\Models\Term;
 use Imageshare\Models\ResourceCollection;
 use Imageshare\Models\Resource;
 use Imageshare\Models\ResourceFile;
@@ -115,10 +117,16 @@ class Plugin {
     }
 
     private function set_acf_hooks_and_filters() {
-        add_filter('acf/update_value', [$this, 'on_acf_update_value'], 10, 3);
+        add_filter('acf/update_value', [$this, 'on_acf_update_value'], 20, 3);
     }
 
     public function on_acf_update_value($value, $post_id, $field) {
+        $matches = [];
+
+        if (preg_match('/^term_(\d+)$/', $post_id, $matches)) {
+            return Term::update_meta($matches[1], $field, $value);
+        }
+
         $post = get_post($post_id);
 
         if ($post->post_type === Resource::type) {
