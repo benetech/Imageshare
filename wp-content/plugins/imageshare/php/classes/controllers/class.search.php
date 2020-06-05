@@ -174,4 +174,8 @@ class Search {
 
         return $results;
     }
+
+    public function get_published_resource_count() {
+        return wp_count_posts(ResourceModel::type)->publish;
+    }
 }

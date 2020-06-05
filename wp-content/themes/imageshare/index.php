@@ -15,6 +15,7 @@
 
 $context = Timber::context();
 $context['search_terms'] = $imageshare->controllers->search->get_available_terms();
+$context['resource_count'] = $imageshare->controllers->search->get_published_resource_count();
 
 if (($_GET['page'] ?? null) === 'search') {
     $context['search_params'] = [

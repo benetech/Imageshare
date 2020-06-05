@@ -1,7 +1,7 @@
 <section aria-labelledby="main-search">
   <h2 id="main-search" class="h2">{{ 'Search' | i18n }}</h2>
   <p class="main-description">
-    {{ 'Library of 5,074 accessible STEM media resources.' | i18n }}
+    {{ 'Library of %d accessible STEM media resources.' | i18n | format(resource_count) }}
   </p>
   <form role="search" class="search-form">
     <input type="hidden" name="page" value="search">
