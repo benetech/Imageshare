@@ -41,6 +41,14 @@
 
     <section>
         <h3>{{ 'Configure taxonomies' | i18n }}</h3>
+        <dl>
+            <div>
+                <dt>{{ 'Allow empty' | i18n }}:</dt>
+                <dd>
+                    {{ 'Configure whether taxonomies accept an empty string ("") as valid value when importing resources.' | i18n }}
+                </dd>
+            </div>
+        </dl>
         <form method="post">
             <input type="hidden" name="is_taxonomy_update" value="1">
             <input type="hidden" name="wp_nonce" value="{{ wp_nonce | e }}">
