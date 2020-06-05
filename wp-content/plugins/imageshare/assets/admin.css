@@ -11,3 +11,7 @@
 .settings-page form + form {
     margin-top: 1em;
 }
+
+.settings-page dt {
+    font-weight: bold;
+}
