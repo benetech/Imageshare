@@ -53,11 +53,9 @@ class Resource {
         update_field('source', $args['source'], $post_id);
         update_field('subject', $subject, $post_id);
 
-        if ($args['downloadable'] && strlen($args['download_uri'])) {
-            update_field('is_downloadable', 1, $post_id);
+        if (strlen($args['download_uri'])) {
             update_field('download_uri', $args['download_uri'], $post_id);
         } else {
-            update_field('is_downloadable', 0, $post_id);
             update_field('download_uri', null, $post_id);
         }
 
@@ -244,11 +242,11 @@ class Resource {
             // post metadata
             $this->thumbnail_src = get_post_meta($this->post_id, 'thumbnail_src', true);
             $this->thumbnail_alt = get_post_meta($this->post_id, 'thumbnail_alt', true);
-
-            $this->description = get_post_meta($this->post_id, 'description', true);
-            $this->source      = get_post_meta($this->post_id, 'source', true);
-            $this->file_ids    = get_post_meta($this->post_id, 'files', true);
-            $this->subject     = Model::get_meta_term_name($this->post_id, 'subject', 'subjects', true);
+            $this->description   = get_post_meta($this->post_id, 'description', true);
+            $this->source        = get_post_meta($this->post_id, 'source', true);
+            $this->file_ids      = get_post_meta($this->post_id, 'files', true);
+            $this->download_uri  = get_post_meta($this->post_id, 'download_uri', true);
+            $this->subject       = Model::get_meta_term_name($this->post_id, 'subject', 'subjects', true);
 
             return $this->id;
         }

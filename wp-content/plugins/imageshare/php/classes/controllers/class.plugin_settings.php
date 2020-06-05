@@ -98,7 +98,6 @@ class PluginSettings {
             'description'   => $record->description,
             'subject'       => $record->subject,
             'tags'          => $record->tags,
-            'downloadable'  => $record->downloadable,
             'download_uri'  => $record->URI ?? ''
         ]);
 
