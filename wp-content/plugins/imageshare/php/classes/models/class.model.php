@@ -35,11 +35,11 @@ class Model {
         return $term->name;
     }
 
-    public static function get_hierarchical_terms($taxonomy) {
+    public static function get_hierarchical_terms($taxonomy, $hide_empty) {
         $terms = get_terms([
             'taxonomy' => $taxonomy,
             'orderby' => 'term_group',
-            'hide_empty' => false,
+            'hide_empty' => $hide_empty,
         ]);
 
         $id_lookup = array_reduce($terms, function ($carry, $item) {
@@ -62,11 +62,11 @@ class Model {
         return $results;
     }
 
-    public static function get_terms($taxonomy) {
+    public static function get_terms($taxonomy, $hide_empty) {
         $terms = get_terms([
             'taxonomy' => $taxonomy,
             'orderby' => 'name',
-            'hide_empty' => false
+            'hide_empty' => $hide_empty
         ]);
 
         return array_reduce($terms, function ($carry, $item) {

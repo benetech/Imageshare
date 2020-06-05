@@ -75,9 +75,9 @@ class Search {
 
     public static function get_available_terms() {
         return [
-            'subjects'       => ResourceModel::available_subjects(),
-            'accommodations' => ResourceFileModel::available_accessibility_accommodations(),
-            'types'          => ResourceFileModel::available_types()
+            'subjects'       => ResourceModel::available_subjects($hide_empty = true),
+            'accommodations' => ResourceFileModel::available_accessibility_accommodations($hide_empty = true),
+            'types'          => ResourceFileModel::available_types($hide_empty = false)
         ];
     }
 

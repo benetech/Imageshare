@@ -14,8 +14,8 @@ class Resource {
 
     const type = 'btis_resource';
 
-    public static function available_subjects() {
-        return Model::get_hierarchical_terms('subjects');
+    public static function available_subjects($hide_empty = false) {
+        return Model::get_hierarchical_terms('subjects', $hide_empty);
     }
 
     public static function create($args) {

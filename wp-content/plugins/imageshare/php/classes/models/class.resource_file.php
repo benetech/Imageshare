@@ -10,12 +10,12 @@ class ResourceFile {
     const type = 'btis_resource_file';
     const default_license = 'GNU-GPL';
 
-    public static function available_accessibility_accommodations() {
-        return Model::get_hierarchical_terms('a11y_accs');
+    public static function available_accessibility_accommodations($hide_empty = false) {
+        return Model::get_hierarchical_terms('a11y_accs', $hide_empty);
     }
 
-    public static function available_types() {
-        return Model::get_terms('file_types');
+    public static function available_types($hide_empty = false) {
+        return Model::get_terms('file_types', $hide_empty);
     }
 
     public static function create($args) {
