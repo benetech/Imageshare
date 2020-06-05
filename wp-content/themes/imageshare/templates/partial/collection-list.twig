@@ -1,0 +1,15 @@
+<ul>
+{% for collection in results %}
+    <li>
+        <div>
+            <a href="{{ collection.permalink }}">
+                {{ collection.title | e }}
+            </a>
+            {{ '(%d resources)' | i18n | format(collection.resource_ids | length) }}
+        </div>
+        <div>
+            {{ 'created by %s' | i18n | format(collection.contributor | e) }}
+        </div>
+    </li>
+{% endfor %}
+</ul>

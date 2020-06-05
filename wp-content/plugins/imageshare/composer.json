@@ -1,0 +1,6 @@
+{
+    "require": {
+        "twig/twig": "^3.0",
+        "swaggest/json-schema": "^0.12.29"
+    }
+}

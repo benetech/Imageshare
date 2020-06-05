@@ -1,0 +1,45 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CD
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches:
+      - Development
+      - Staging 
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  deploy-dev:
+    if: github.ref == 'refs/heads/Development'
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - run: git fetch --prune --unshallow
+
+    - name: GitHub Action for WP Engine Git Deployment
+      uses: jovrtn/github-action-wpengine-git-deploy@0.1.2
+      env:
+        WPENGINE_SSH_KEY_PRIVATE: ${{ secrets.WPENGINE_SSH_KEY_PRIVATE }}
+        WPENGINE_SSH_KEY_PUBLIC: ${{ secrets.WPENGINE_SSH_KEY_PUBLIC }}
+        WPENGINE_ENVIRONMENT_NAME: imgsdev
+        LOCAL_BRANCH: Development
+
+  deploy-staging:
+    if: github.ref == 'refs/heads/Staging'
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - run: git fetch --prune --unshallow
+
+    - name: GitHub Action for WP Engine Git Deployment
+      uses: jovrtn/github-action-wpengine-git-deploy@0.1.2
+      env:
+        WPENGINE_SSH_KEY_PRIVATE: ${{ secrets.WPENGINE_SSH_KEY_PRIVATE }}
+        WPENGINE_SSH_KEY_PUBLIC: ${{ secrets.WPENGINE_SSH_KEY_PUBLIC }}
+        WPENGINE_ENVIRONMENT_NAME: imgsstaging
+        LOCAL_BRANCH: Staging

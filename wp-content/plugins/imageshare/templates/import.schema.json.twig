@@ -1,0 +1,104 @@
+{
+    "title": "A key/value object, <Key>: <Resource>",
+    "type": "object",
+    "patternProperties": {
+        ".*": {
+            "$ref": "#/definitions/resource"
+        }
+    },
+    "additionalProperties": false,
+    "definitions": {
+        "resource": {
+            "type": "object",
+            "properties": {
+                "unique_name": {
+                    "type": "string"                
+                },
+                "featured_image_URI": {
+                    "type": "string",
+                    "format": "uri-reference"
+                },
+                "featured_image_alt": {
+                    "type": "string"
+                },
+                "source": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "subject": {
+                    "enum": [{{ terms.subjects | map(t => "\"#{t}\"") | join(', ') | raw }}]
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "uniqueItems": true
+                },
+                "URI": {
+                    "type": "string",
+                    "format": "uri-reference",
+                    "default": ""
+                },
+                "files": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/resource_file"
+                    },
+                    "uniqueItems": true
+                }
+            },
+            "additionalProperties": false,
+            "minProperties": 9
+        },
+        "resource_file": {
+            "type": "object",
+            "additionalProperties": false,
+            "minProperties": 10,
+            "properties": {
+                "URI": {
+                    "type": "string",
+                    "format": "uri"
+                },
+                "format": {
+                    "enum": [{{ terms.file_formats | map(t => "\"#{t}\"") | join(', ') | raw }}]
+                },
+                "display_name": {
+                    "type": "string"
+                },
+                "type": {
+                    "enum": [{{ terms.file_types | map(t => "\"#{t}\"") | join(', ') | raw }}]
+                },
+                "license": {
+                    "enum": [{{ terms.licenses | map(t => "\"#{t}\"") | join(', ') | raw }}]
+                },
+                "accommodations": {
+                    "type": "array",
+                    "items": {
+                        "enum": [{{ terms.a11y_accs | map(t => "\"#{t}\"") | join(', ') | raw }}]
+                    },
+                    "uniqueItems": true
+                },
+                "languages": {
+                    "type": "array",
+                    "items": {
+                        "enum": [{{ terms.languages | map(t => "\"#{t}\"") | join(', ') | raw }}]
+                    },
+                    "uniqueItems": true
+                },
+                "length_minutes": {
+                    "type": "string",
+                    "pattern": "^[0-9]*$"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "downloadable": {
+                    "type": "boolean"
+                }
+            }
+        }
+    }
+}
