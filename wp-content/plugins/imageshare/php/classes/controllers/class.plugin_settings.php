@@ -114,7 +114,8 @@ class PluginSettings {
                     'license'        => $file->license,
                     'accommodations' => $file->accommodations,
                     'languages'      => $file->languages,
-                    'length_minutes' => $file->length_minutes
+                    'length_minutes' => $file->length_minutes,
+                    'downloadable'   => $file->downloadable
                 ]);
 
                 if (!$is_update) {
@@ -130,12 +131,56 @@ class PluginSettings {
         return [$resource_id, $is_update, $files];
     }
 
+    private function get_taxonomies() {
+        $json = json_decode(file_get_contents(imageshare_asset_file('taxonomies.json')));
+        $taxonomies = [];
+
+        foreach ($json as $taxonomy => $definition) {
+            array_push($taxonomies, [
+                'term_name' => $taxonomy,
+                'name' => $definition->plural,
+                'settings' => [
+                    'allow_empty' => get_option("taxonomy_{$taxonomy}_allow_empty", 0)
+                ]
+            ]);
+        }
+
+
+        return $taxonomies;
+    }
+
+    private function update_taxonomies() {
+        $json = json_decode(file_get_contents(imageshare_asset_file('taxonomies.json')));
+        $taxonomies = [];
+
+        foreach ($json as $taxonomy => $definition) {
+            $allow_empty = isset($_POST["taxonomy_{$taxonomy}_allow_empty"]) ? 1 : 0;
+            update_option("taxonomy_{$taxonomy}_allow_empty", $allow_empty);
+
+            array_push($taxonomies, [
+                'term_name' => $taxonomy,
+                'name' => $definition->plural,
+                'settings' => [
+                    'allow_empty' => $allow_empty
+                ]
+            ]);
+        }
+
+        return $taxonomies;
+    }
+
     public function render_settings_page() {
-        if (isset($_POST['is_update'])) {
+        if (isset($_POST['is_import'])) {
             $parse_result = $this->handle_form_submit();
-            $rendered = View::render(['result' => $parse_result]);
+            $rendered = View::render([
+                'result' => $parse_result,
+                'taxonomies' => $this->get_taxonomies()
+            ]);
+        } else if (isset($_POST['is_taxonomy_update'])) {
+            $taxonomies = $this->update_taxonomies();
+            $rendered = View::render(['taxonomies' => $taxonomies]);
         } else {
-            $rendered = View::render();
+            $rendered = View::render(['taxonomies' => $this->get_taxonomies()]);
         }
 
         echo $rendered;

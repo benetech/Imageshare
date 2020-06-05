@@ -54,7 +54,10 @@ class ResourceFile {
                 'post_title' => $args['title'],
                 'comment_status' => 'closed',
                 'post_category' => [],
-                'tags_input' => []
+                'tags_input' => [],
+                'meta_input' => [
+                    'importing' => true
+                ]
             ];
 
             $post_id = wp_insert_post($post_data, true);
@@ -77,9 +80,10 @@ class ResourceFile {
         update_field('license', $license, $post_id);
         update_field('accommodations', $accommodations, $post_id);
         update_field('languages', $languages, $post_id);
+        update_field('downloadable', $args['downloadable'], $post_id);
 
         if (!$is_update) {
-            Model::mark_created($post_id);
+            Model::finish_importing($post_id);
         }
 
         return [$post_id, $is_update];
@@ -93,26 +97,31 @@ class ResourceFile {
 
     public static function language_codes_to_term_ids($language_codes) {
         $term_ids = array_map(function ($lc) {
-            // is this a language code?
-            if (1 === preg_match('/^[a-z]{2}$/', $lc)) {
-                //look up by language meta code
-                $terms = get_terms([
-                    'number' => 1,
-                    'hide_empty' => false,
-                    'meta_query' => [[
-                       'key' => 'code',
-                       'value' => $lc,
-                       'compare' => '='
-                    ]],
-                    'taxonomy'  => 'languages',
-                ]);
+            $term = get_term_by('name', $lc, 'languages');
 
-                if (count($terms)) {
-                    return $terms[0]->term_id;
-                }
+            if ($term) {
+               return $term->term_id;
             }
 
-            return Model::get_taxonomy_term_id('languages', $lc);
+            // not found. A language alias?
+
+            //look up by language meta code
+            $terms = get_terms([
+                'number' => 1,
+                'hide_empty' => false,
+                'meta_query' => [[
+                   'key' => 'term_aliases',
+                   'value' => "(^|.*?,){$lc}(,.*|$)",
+                   'compare' => 'RLIKE'
+                ]],
+                'taxonomy'  => 'languages',
+            ]);
+
+            if (count($terms)) {
+                return $terms[0]->term_id;
+            }
+
+            throw new \Exception(sprintf(__('Term %s was not found in taxonomy %s', 'imageshare'), $lc, 'languages'));
         }, $language_codes);
 
         return $term_ids;
@@ -153,6 +162,7 @@ class ResourceFile {
         $columns['accommodations'] = self::i18n('Accommodation(s)');
         $columns['license'] = self::i18n('License');
         $columns['length_minutes'] = self::i18n('Length (minutes)');
+        $columns['downloadable'] = self::i18n('Downloadable');
 
         return $columns;
     }
@@ -193,6 +203,9 @@ class ResourceFile {
                 echo $post->length_minutes;
                 break;
 
+            case 'downloadable':
+                echo $post->downloadable ? self::i18n('Yes') : self::i18n('No');
+                break;
         }
     }
 
@@ -204,10 +217,11 @@ class ResourceFile {
     public static function from_post(\WP_Post $post) {
         $wrapped = new ResourceFile();
         $wrapped->post = $post;
-        $wrapped->is_created = false;
+        $wrapped->is_importing = false;
 
-        if (Model::is_created($post->ID)) {
-            $wrapped->is_created = true;
+        if (Model::is_importing($post->ID)) {
+            $wrapped->is_importing = true;
+        } else {
             $wrapped->load_custom_attributes();
         }
 
@@ -223,6 +237,7 @@ class ResourceFile {
 
             $this->description = get_post_meta($this->post_id, 'description', true);
             $this->uri = get_post_meta($this->post_id, 'uri', true);
+            $this->downloadable = get_post_meta($this->post_id, 'downloadable', true);
             $this->length_minutes = get_post_meta($this->post_id, 'length_minutes', true);
             $this->license = Model::get_meta_term_name($this->post_id, 'license', 'licenses');
 

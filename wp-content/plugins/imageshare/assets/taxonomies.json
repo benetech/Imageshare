@@ -29,13 +29,13 @@
         "singular": "Language",
         "hierarchical": false,
         "terms": ["All Languages", "English", "Spanish", "French", "German"],
-        "allow_empty": true,
-        "terms_meta": {
-            "All Languages": { "code": "all"},
-            "English":       { "code": "en"},
-            "Spanish":       { "code": "sp"},
-            "French":        { "code": "fr"},
-            "German":        { "code": "de"}
+        "meta": {
+            "$self": { "allow_empty": true },
+            "All Languages": { "term_aliases": "all, *" },
+            "English": { "term_aliases": "en, en-US" },
+            "Spanish": { "term_aliases": "es" },
+            "French": { "term_aliases": "fr" },
+            "German": { "term_aliases" : "de" }
         }
     },
     "licenses": {
@@ -43,8 +43,12 @@
         "plural": "Licenses",
         "singular": "License",
         "hierarchical": false,
-        "allow_empty": true,
-        "terms": ["CC:BY 4.0", "CC:BY", "CC:BY-NC", "CC:BY-NC-ND", "CC:BY-NC-SA", "CC:BY-ND", "CC:BY-SA", "DCMP Membership", "GNU-GPL", "OER"]
+        "terms": ["CC:BY 4.0", "CC:BY", "CC:BY-NC", "CC:BY-NC-ND", "CC:BY-NC-SA", "CC:BY-ND", "CC:BY-SA", "DCMP Membership", "GNU-GPL", "OER"],
+        "meta": {
+            "$self": {
+                "allow_empty": true
+            }
+        }
     },
     "file_types": {
         "applies_to": ["btis_resource_file"],

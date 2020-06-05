@@ -30,7 +30,10 @@ class Resource {
                 'post_type' => self::type,
                 'post_title' => $args['title'],
                 'comment_status' => 'closed',
-                'post_category' => []
+                'post_category' => [],
+                'meta_input' => [
+                    'importing' => true
+                ]
             ];
 
             $post_id = wp_insert_post($post_data, true);
@@ -62,8 +65,7 @@ class Resource {
         if (!$is_update) {
             // don't strip existing file associations when updating an existing resource
             update_field('files', [], $post_id);
-
-            Model::mark_created($post_id);
+            Model::finish_importing($post_id);
         }
 
         return [$post_id, $is_update];
@@ -93,41 +95,24 @@ class Resource {
         foreach ($taxonomies as $taxonomy => $definition) {
             $terms[$taxonomy] = [];
 
-            // meta values are meta-lookup keys for a particular term
-            // such as "en" for "English"
-            if (property_exists($definition, 'terms_meta')) {
-                foreach ($definition->terms_meta as $term => $meta) {
-                    foreach ($meta as $key => $value) {
-                        array_push($terms[$taxonomy], $value);
+            if (get_option("taxonomy_{$taxonomy}_allow_empty", false)) {
+                array_push($terms[$taxonomy], "");
+            }
+
+            foreach (get_terms(['taxonomy' => $taxonomy, 'hide_empty' => false]) as $term) {
+                array_push($terms[$taxonomy], $term->name);
+                if ($term_aliases = get_field('term_aliases', "{$taxonomy}_{$term->term_id}")) {
+                    $aliases = array_map(function($a) {
+                        return trim($a);
+                    }, explode(',', $term_aliases));
+
+                    foreach ($aliases as $alias) {
+                        array_push($terms[$taxonomy], $alias);
                     }
                 }
             }
+        }
 
-            if (is_array($definition->terms)) {
-                $terms[$taxonomy] = array_merge($terms[$taxonomy], $definition->terms);
-                if (property_exists($definition, 'allow_empty') && $definition->allow_empty) {
-                    array_push($terms[$taxonomy], "");
-                }
-                continue;
-            }
-
-            $leafs = [];
-            foreach ($definition->terms as $key => $value) {
-                // no children
-                if ($value === null) {
-                    array_push($leafs, $key);
-                    continue;
-                }
-
-                $leafs = array_merge($leafs, $value);
-            }
-
-            $terms[$taxonomy] = array_merge($terms[$taxonomy], $leafs);
-
-            if (property_exists ($definition, 'allow_empty') && $definition->allow_empty) {
-                array_push($terms[$taxonomy], "");
-            }
-        };
 
         $schema_json = $template->render(['terms' => $terms]);
         $schema = Schema::import(json_decode($schema_json));
@@ -222,10 +207,11 @@ class Resource {
     public static function from_post(\WP_Post $post) {
         $wrapped = new Resource();
         $wrapped->post = $post;
-        $wrapped->is_created = false;
+        $wrapped->is_importing = false;
 
-        if (Model::is_created($post->ID)) {
-            $wrapped->is_created = true;
+        if (Model::is_importing($post->ID)) {
+            $wrapped->is_importing = true;
+        } else {
             $wrapped->load_custom_attributes();
         }
 

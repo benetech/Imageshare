@@ -16,7 +16,7 @@
     <section>
         <h3>{{ 'Import resources' | i18n }}</h3>
         <form method="post" enctype="multipart/form-data">
-            <input type="hidden" name="is_update" value="1">
+            <input type="hidden" name="is_import" value="1">
             <input type="hidden" name="wp_nonce" value="{{ wp_nonce | e }}"> 
             <div class="form-group">
                 <label for="record_file">{{ 'Resource file (JSON)' | i18n }}</label>
@@ -25,7 +25,24 @@
 
             <button class="button button-primary">{{ 'Import' | i18n }}</button>
         </form>
+    </section>
 
+    <section>
+        <h3>{{ 'Configure taxonomies' | i18n }}</h3>
+        <form method="post">
+            <input type="hidden" name="is_taxonomy_update" value="1">
+            <input type="hidden" name="wp_nonce" value="{{ wp_nonce | e }}">
+        {% for taxonomy in taxonomies %}
+            {% set id='taxonomy_%s_allow_empty' | format(taxonomy.term_name) | e %}
+            <h4>{{ taxonomy.name | e }}</h4>
+            <div class="form-group">
+                <input type="checkbox" name="{{ id }}" id="{{ id }}" value="1" {{ (taxonomy.settings.allow_empty) ? 'checked="checked"' : '' }}>
+                <label for="taxonomy_{{ taxonomy.term_name | e }}_allow_empty">{{ 'Accept empty value' }}</label>
+            </div>
+        {% endfor %}
+
+            <button class="button button-primary">{{ 'Update' | i18n }}</button>
+        </form>
     </section>
 
 </div>

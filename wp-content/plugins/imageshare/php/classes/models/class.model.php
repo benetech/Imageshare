@@ -85,14 +85,14 @@ class Model {
         return $term->term_id;
     }
 
-    public static function mark_created($post_id) {
-        // mark post as created
+    public static function finish_importing($post_id) {
+        // remove importing flag
         // this is done so the search indexing hook doesn't cause problems
-        add_post_meta($post_id, 'created', true, true);
+        delete_post_meta($post_id, 'importing');
     }
 
-    public static function is_created($post_id) {
-        return get_post_meta($post_id, 'created', true);
+    public static function is_importing($post_id) {
+        return get_post_meta($post_id, 'importing', false);
     }
 }
 

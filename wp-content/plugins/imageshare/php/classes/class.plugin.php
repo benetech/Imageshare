@@ -190,7 +190,7 @@ class Plugin {
     private function register_taxonomies() {
         $json = $this->taxonomy_json;
         foreach ($json as $taxonomy => $definition) {
-            register_taxonomy(
+            $taxonomy = register_taxonomy(
                 $taxonomy,
                 $definition->applies_to,
                 [
@@ -211,9 +211,15 @@ class Plugin {
             Logger::log("Generating taxonomy {$taxonomy}");
 
             $terms = $definition->terms;
-            $terms_meta = (property_exists($definition, 'terms_meta'))
-                ? $definition->terms_meta
+            $terms_meta = (property_exists($definition, 'meta'))
+                ? $definition->meta
                 : (object) [];
+
+            if (property_exists($terms_meta, '$self')) {
+                foreach ($terms_meta->{'$self'} as $key => $value) {
+                    update_option("taxonomy_{$taxonomy}_{$key}", $value);
+                }
+            }
 
             // flat hierarchy
             if (is_array($terms)) {
@@ -229,11 +235,12 @@ class Plugin {
                     if (is_wp_error($term)) {
                         Logger::log(sprintf(__('Error creating term %s in taxonomy %s', 'imageshare'), $term_value, $taxonomy));
                         Logger::log($term->get_error_message());
+                        continue;
                     }
 
                     if (property_exists($terms_meta, $term_value)) {
                         foreach ($terms_meta->$term_value as $key => $value) {
-                            add_term_meta($term['term_id'], $key, $value, true);
+                            update_field($key, $value, "{$taxonomy}_{$term['term_id']}");
                         }
                     }
                 }
@@ -251,13 +258,14 @@ class Plugin {
                 );
 
                 if (is_wp_error($term)) {
-                    Logger::log(sprintf(__('Error creating term %s in taxonomy %s', 'imageshare'), $value, $taxonomy));
+                    Logger::log(sprintf(__('Error creating term %s in taxonomy %s', 'imageshare'), $parent, $taxonomy));
                     Logger::log($term->get_error_message());
+                    continue;
                 }
 
                 if (property_exists($terms_meta, $parent)) {
                     foreach ($terms_meta->$parent as $key => $value) {
-                        add_term_meta($term['term_id'], $key, $value, true);
+                        update_field($key, $value, "{$taxonomy}_{$term['term_id']}");
                     }
                 }
 
@@ -282,11 +290,12 @@ class Plugin {
                     if (is_wp_error($child_term)) {
                         Logger::log(sprintf(__('Error creating child term %s of term %s in taxonomy %s', 'imageshare'), $child_term_value, $parent, $taxonomy));
                         Logger::log($child_term->get_error_message());
+                        continue;
                     }
 
                     if (property_exists($terms_meta, $child_term_value)) {
                         foreach ($terms_meta->$child_term_value as $key => $value) {
-                            add_term_meta($child_term['term_id'], $key, $value, true);
+                            update_field($key, $value, "{$taxonomy}_{$child_term['term_id']}");
                         }
                     }
 

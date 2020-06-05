@@ -21,8 +21,8 @@ class Search {
             case (ResourceModel::type):
                 $type = ResourceModel::type;
                 $resource = ResourceModel::from_post($post);
-                if (!$resource->is_created) {
-                    Logger::log("Post {$post->ID} is not ready, skipping");
+                if ($resource->is_importing) {
+                    Logger::log("Post {$post->ID} is being imported, skipping");
                     return $index;
                 }
 
@@ -39,8 +39,8 @@ class Search {
 
             case (ResourceFileModel::type):
                 $resource_file = ResourceFileModel::from_post($post);
-                if (!$resource_file->is_created) {
-                    Logger::log("Post {$post->ID} is not ready, skipping");
+                if ($resource_file->is_importing) {
+                    Logger::log("Post {$post->ID} is being imported, skipping");
                     return $index;
                 }
 
