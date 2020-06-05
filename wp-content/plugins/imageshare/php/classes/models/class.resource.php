@@ -100,14 +100,14 @@ class Resource {
             }
 
             foreach (get_terms(['taxonomy' => $taxonomy, 'hide_empty' => false]) as $term) {
-                array_push($terms[$taxonomy], $term->name);
+                array_push($terms[$taxonomy], strtolower($term->name));
                 if ($term_aliases = get_field('term_aliases', "{$taxonomy}_{$term->term_id}")) {
                     $aliases = array_map(function($a) {
                         return trim($a);
                     }, explode(',', $term_aliases));
 
                     foreach ($aliases as $alias) {
-                        array_push($terms[$taxonomy], $alias);
+                        array_push($terms[$taxonomy], strtolower($alias));
                     }
                 }
             }
