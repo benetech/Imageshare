@@ -1,4 +1,4 @@
-<div class="wrap">
+<div class="wrap settings-page">
     <h1>{{ 'Imageshare configuration' | i18n }}</h1>
 
     {% if result is defined %}
@@ -24,6 +24,18 @@
             </div>
 
             <button class="button button-primary">{{ 'Import' | i18n }}</button>
+        </form>
+
+    {% if json_schema is defined %}
+        <h4>{{ 'Schema' | i18n }}</h4>
+        <pre>
+                {{ json_schema }}
+        </pre>
+    {% endif %}
+
+        <form method="post">
+            <input type="hidden" name="is_schema_view" value="1">
+            <button class="button">{{ 'View JSON validation schema' | i18n }}</button>
         </form>
     </section>
 

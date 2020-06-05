@@ -88,7 +88,7 @@ class Resource {
         }
     }
 
-    public static function validate($records) {
+    public static function get_schema() {
         $template = View::load('import.schema.json.twig');
         $taxonomies = json_decode(file_get_contents(imageshare_asset_file('taxonomies.json')));
         $terms = [];
@@ -113,8 +113,11 @@ class Resource {
             }
         }
 
+        return $template->render(['terms' => $terms]);
+    }
 
-        $schema_json = $template->render(['terms' => $terms]);
+    public static function validate($records) {
+        $schema_json = self::get_schema();
         $schema = Schema::import(json_decode($schema_json));
         $schema->in($records);
     }

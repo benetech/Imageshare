@@ -1,3 +1,13 @@
 .wp-list-table .column-thumbnail img {
     max-width: 8em;
 }
+
+.settings-page pre {
+    border: 1px solid #000;
+    background-color: #fff;
+    white-space: pre-wrap;
+}
+
+.settings-page form + form {
+    margin-top: 1em;
+}

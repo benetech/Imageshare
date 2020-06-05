@@ -169,8 +169,18 @@ class PluginSettings {
         return $taxonomies;
     }
 
+    private function get_json_schema() {
+        return ResourceModel::get_schema();
+    }
+
     public function render_settings_page() {
-        if (isset($_POST['is_import'])) {
+        if (isset($_POST['is_schema_view'])) {
+            $rendered = View::render([
+                'json_schema' => $this->get_json_schema(),
+                'taxonomies' => $this->get_taxonomies()
+            ]);
+        }
+        else if (isset($_POST['is_import'])) {
             $parse_result = $this->handle_form_submit();
             $rendered = View::render([
                 'result' => $parse_result,
