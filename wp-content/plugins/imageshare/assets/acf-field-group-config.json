@@ -412,8 +412,8 @@
             },
             {
                 "key": "field_5ea181e49e012",
-                "label": "Language",
-                "name": "language",
+                "label": "Languages",
+                "name": "languages",
                 "type": "taxonomy",
                 "instructions": "",
                 "required": 1,
@@ -424,11 +424,33 @@
                     "id": ""
                 },
                 "taxonomy": "languages",
-                "field_type": "select",
-                "allow_null": 0,
+                "field_type": "checkbox",
                 "add_term": 0,
                 "save_terms": 1,
                 "load_terms": 1,
+                "return_format": "id",
+                "multiple": 0,
+                "allow_null": 0
+            },
+            {
+                "key": "field_5eda40016e754",
+                "label": "License",
+                "name": "license",
+                "type": "taxonomy",
+                "instructions": "",
+                "required": 1,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "taxonomy": "licenses",
+                "field_type": "select",
+                "allow_null": 0,
+                "add_term": 0,
+                "save_terms": 0,
+                "load_terms": 0,
                 "return_format": "id",
                 "multiple": 0
             },
@@ -474,6 +496,25 @@
                 "min": 0,
                 "max": 9999,
                 "step": ""
+            },
+            {
+                "key": "field_5eda41fb0d809",
+                "label": "Downloadable",
+                "name": "downloadable",
+                "type": "true_false",
+                "instructions": "",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "message": "",
+                "default_value": 0,
+                "ui": 0,
+                "ui_on_text": "",
+                "ui_off_text": ""
             }
         ],
         "location": [
@@ -508,5 +549,52 @@
         ],
         "active": true,
         "description": ""
+    },
+    {
+        "key": "group_5eda1417d11e4",
+        "title": "Taxonomy metadata",
+        "fields": [
+            {
+                "key": "field_5eda154a36481",
+                "label": "Term aliases",
+                "name": "term_aliases",
+                "type": "text",
+                "instructions": "Comma-separated list of strings that are also valid for this term.\r\nE.g. when editing a term \"English\", the aliases \"en, en-US\" will also suffice.",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "default_value": "",
+                "placeholder": "",
+                "prepend": "",
+                "append": "",
+                "maxlength": ""
+            }
+        ],
+        "location": [
+            [
+                {
+                    "param": "taxonomy",
+                    "operator": "!=",
+                    "value": "category"
+                },
+                {
+                    "param": "taxonomy",
+                    "operator": "!=",
+                    "value": "post_tag"
+                }
+            ]
+        ],
+        "menu_order": 0,
+        "position": "normal",
+        "style": "seamless",
+        "label_placement": "top",
+        "instruction_placement": "label",
+        "hide_on_screen": "",
+        "active": true,
+        "description": "JSON import validation settings"
     }
 ]
