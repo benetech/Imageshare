@@ -77,7 +77,7 @@ class Search {
         return [
             'subjects'       => ResourceModel::available_subjects($hide_empty = true),
             'accommodations' => ResourceFileModel::available_accessibility_accommodations($hide_empty = true),
-            'types'          => ResourceFileModel::available_types($hide_empty = false)
+            'types'          => ResourceFileModel::available_types($hide_empty = true)
         ];
     }
 
