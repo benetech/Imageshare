@@ -19,6 +19,9 @@ if ( file_exists( $composer_autoload ) ) {
     $timber = new Timber\Timber();
 }
 
+// don't render the default title, the theme does this
+remove_action( 'wp_head', '_wp_render_title_tag', 1 );
+
 /**
  * This ensures that Timber is loaded and available as a PHP class.
  * If not, it gives an error message to help direct developers on where to activate

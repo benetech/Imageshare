@@ -1,6 +1,6 @@
 {% extends "base.twig" %}
 
-{% set page_title   = 'Imageshare - Home' %}
+{% set page_title = 'Imageshare - Home' %}
 
 {% block content %}
   <div class="main-inner width-12/12">
@@ -8,12 +8,13 @@
       <h1 class="h1" id="main-heading">
         {{ 'Library of Accessible Educational Resources' | i18n }}
       </h1>
+
       <div class="h1-description">
         {{ 'Find and share accessible materials for your STEM classes.' | i18n }}
       </div>
     </div>
 
-    {% include "partial/search.twig" %}
+    {{ include("partial/search-form.twig", {enclosing_form: true}) }}
 
     <section aria-labelledby="collections">
       <h2 class="h2 collections-heading" id="collections">
@@ -37,7 +38,7 @@
       {% endfor %}
       </ul>
       <div class="see-more-collections width-12/12">
-        <a href="{{ collection_archive_href }}">{{ 'See More Collections' | i18n }}</a>
+        <a href="{{ collection_archive_href }}">{{ 'See more collections' | i18n }}</a>
       </div>
     </section>
   </div>

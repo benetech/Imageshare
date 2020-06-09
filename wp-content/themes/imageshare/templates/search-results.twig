@@ -1,0 +1,118 @@
+{% extends "base.twig" %}
+
+{% set title = '%d resources found' | i18n | format(results.count) %}
+
+{% block search_filter %}
+    {% for term in filter.value %}
+    <li>
+      <input data-filter="{{ filter.id }}" class="search-filter" type="checkbox" id="search-filter-{{ term.term_id }}" checked="checked" value="{{ term.term_id }}">
+      <label for="search-filter-{{ term.term_id }}">{{ '%s: "%s"' | format(filter.name | i18n, term.name | e) }}</label>
+    </li>
+  {% endfor %}
+{% endblock %}
+
+{% block content %}
+  <div class="main-inner width-12/12">
+    <h1 id="main-heading" class="h1">
+      {% if results.total_count == 0 %}
+        {{ 'No results matched your query.' | i18n }}
+      {% else %}
+        {{ '%d results found.' | i18n | format(results.total_count) }}
+      {% endif %}
+     </h1>
+
+  {% if results.total_count > 0 %}
+     {# perhaps use _n() #}
+     <p id="main-description" class="main-description">
+        {{ '%d resource(s) and %d collection(s) matched your query.' | i18n | format(results.resources.posts | length, results.collections.posts | length) }}
+     </p>
+  {% endif %}
+
+    <form role="search" class="search-form">
+
+    {{ include('partial/search-form.twig', {enclosing_form: false}) }}
+
+    {% if results.has_filters %}
+      <div class="grid search-filters">
+        <h2 id="search-filters-heading">{{ 'Search filters' | i18n }}</h2>
+        <ul role="list">
+        {% set filters = [
+            { id: 'subject', name: 'Subject',       value: results.search_filters.subject }, 
+            { id: 'type',    name: 'Type',          value: results.search_filters.type }, 
+            { id: 'acc',     name: 'Accommodation', value: results.search_filters.acc } 
+          ]
+        %}
+
+        {% for filter in filters %}
+          {{ block('search_filter') }}
+        {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+
+    {% if results.resources.posts | length > 0 %}
+        {{ block('resources') }}
+    {% endif %}
+
+    {% if results.collections.posts | length > 0 %}
+        {{ block('collections') }}
+    {% endif %}
+
+    </form>
+  </div>
+{% endblock %}
+
+{% block resources %}
+    {% set paging = results.resources.paging %}
+
+    <h2 id="resources-heading">{{ 'Resources' | i18n }}</h2>
+
+    <div class="grid">
+        <p>
+          {{ 'Showing resources %d to %d of %d' | i18n | format(paging.start, paging.stop, paging.total) }}
+        </p>
+
+      <p class="width-9/12">
+        {{ 'Select a resource below to get more information and link to download this resource.' | i18n }}
+      </p>
+        <label class="resources-per-page-label" for="resources-per-page">{{ 'Results per page' | i18n }}</label>
+        <select id="resources-per-page" name="rs">
+        {% for size in [5, 20, 50, 100] %}
+          <option value="{{ size }}" {{ results.resources.paging.size == size ? 'selected' : ''}}>{{ size }}</option>
+        {% endfor %}
+        </select>
+
+        <label for="resources-page">{{ 'Page' | i18n }}</label>
+        <input type="number" id="resources-page" value="{{ results.resources.paging.page }}" name="rp">
+
+        <button type="submit">{{ 'Update' | i18n }}<span class="sr-only">{{ 'resources' | i18n }}</span></button>
+    </div>
+
+    {{ include('partial/resource-table.twig', {results: results.resources.posts}, with_context = false) }}
+
+{% endblock %}
+
+{% block collections %}
+    <h2 id="collections-heading">{{ 'Collections' | i18n }}</h2>
+    {% set paging = results.collections.paging %}
+
+    <p>
+        {{ 'Showing collections %d to %d of %d' | i18n | format(paging.start, paging.stop, paging.total) }}
+    </p>
+
+    <div class="grid">
+        <label class="collections-per-page-label" for="collections-per-page">{{ 'Results per page' | i18n }}</label>
+        <select id="collections-per-page" name="cs">
+          {% for size in [5, 20, 50, 100] %}
+            <option value="{{ size }}" {{ results.collections.paging.size == size ? 'selected' : ''}}>{{ size }}</option>
+          {% endfor %}
+        </select>
+
+        <label for="collections-page">{{ 'Page' | i18n }}</label>
+        <input type="number" id="collections-page" value="{{ results.collections.paging.page }}" name="cp">
+
+        <button type="submit">{{ 'Update' | i18n }}<span class="sr-only">{{ 'collections' | i18n }}</span></button>
+    </div>
+
+    {{ include('partial/collection-list.twig', {results: results.collections.posts}, with_context = false) }}
+{% endblock %}

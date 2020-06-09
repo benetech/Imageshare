@@ -11,48 +11,27 @@ advancedBtn &&
     }
   });
 
-const filters = document.querySelector(".current-filters");
-filters &&
-  filters.addEventListener(
-    "click",
-    (event) => {
-      let target;
-      event.stopPropagation();
-      if (event.target.nodeName === "SPAN") {
-        target = event.target.parentElement;
-      } else if (event.target.nodeName === "BUTTON") {
-        target = event.target;
-      }
-      const label =
-        "Filter dismissed: " +
-        target.parentElement.querySelector(".filter-txt").innerText.trim();
-      try {
-        if (document.querySelectorAll(".filter-btn").length === 1) {
-          removeElement(target.parentElement);
-          document.getElementById("no-filters").style.display = "inline-block";
-          document.getElementById("filters-heading").focus();
-          filters.remove();
-          announcement(label, "#announcement", 1000);
-          return;
-        }
-      } catch (error) {}
+const filters = document.querySelectorAll("input.search-filter");
+filters && filters.forEach(function (filter) {
+  filter.addEventListener('click', function (event) {
+    const checked = this.checked;
+    const id = filter.dataset.filter;
+    const value = this.value;
+    const fieldName = id + '_' + value;
 
-      try {
-        target.parentElement.nextElementSibling.firstElementChild.focus();
-        removeElement(target.parentElement);
-        announcement(label, "#announcement", 1000);
-        return;
-      } catch (error) {}
-
-      try {
-        target.parentElement.previousElementSibling.firstElementChild.focus();
-        removeElement(target.parentElement);
-        announcement(label, "#announcement", 1000);
-        return;
-      } catch (error) {}
-    },
-    false
-  );
+    if (!checked) {
+        const field = document.querySelector('input[type="hidden"][name="'+ fieldName + '"]');
+        if (field === null) { return; }
+        field.removeAttribute('name');
+        field.setAttribute('_name', fieldName);
+    } else {
+        const field = document.querySelector('input[type="hidden"][_name="'+ fieldName + '"]');
+        if (field === null) { return; }
+        field.removeAttribute('_name');
+        field.setAttribute('name', fieldName);
+    }
+  });
+});
 
 document.querySelectorAll(".tab").forEach((tab, index, arr) => {
   tab.addEventListener("click", (e) => {

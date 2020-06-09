@@ -243,6 +243,10 @@ class Resource {
         return null;
     }
 
+    public static function get_subject_name_by_term_id($term_id) {
+        return Model::get_taxonomy_term_name($term_id, 'subjects');
+    }
+
     public function collections() {
         if (isset($this->_collections)) {
             return $this->_collections;

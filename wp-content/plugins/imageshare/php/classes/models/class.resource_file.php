@@ -256,6 +256,14 @@ class ResourceFile {
         return null;
     }
 
+    public static function get_type_name_by_term_id($term_id) {
+        return Model::get_taxonomy_term_name($term_id, 'file_types');
+    }
+
+    public static function get_accommodation_name_by_term_id($term_id) {
+        return Model::get_taxonomy_term_name($term_id, 'accommodations');
+    }
+
     public function get_index_data() {
         return Model::flatten([$this->description, $this->license, $this->type, $this->format, $this->languages, $this->accommodations]);
     }

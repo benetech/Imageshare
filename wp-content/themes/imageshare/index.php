@@ -17,30 +17,43 @@ $context = Timber::context();
 $context['search_terms'] = $imageshare->controllers->search->get_available_terms();
 $context['resource_count'] = $imageshare->controllers->search->get_published_resource_count();
 
-if (($_GET['page'] ?? null) === 'search') {
-    $context['search_params'] = [
-        'query'         => $_GET['q'] ?? '',
-        'subject'       => $_GET['subject'] ?? null,
-        'type'          => $_GET['type'] ?? null,
-        'accommodation' => $_GET['acc'] ?? null
-    ];
+function multi_param ($var) {
+    $vars = [];
 
-    if ($_GET['p_query'] ?? null) {
-        $previous_params = [
-            'query'         => $_GET['p_query'] ?? '',
-            'subject'       => $_GET['p_subject'] ?? null,
-            'type'          => $_GET['p_type'] ?? null,
-            'accommodation' => $_GET['p_acc'] ?? null
-        ];
+
+    foreach ($_GET as $key => $value) {
+        if (preg_match("/^{$var}(_[0-9]+)?$/", $key)) {
+            if (is_array($value)) {
+                $vars = array_merge($vars, $value);
+            } else if ($value !== null) {
+                array_push($vars, $value);
+            }
+        } 
     }
 
-    $narrow = $_GET['narrow'] ?? false;
+    return $vars;
+}
 
-    $context['results'] = $imageshare->controllers->search->query(
-        array_merge(['narrow' => $narrow, 'previous' => $previous_params ?? null], $context['search_params'])
-    );
+if (($_GET['page'] ?? null) === 'search') {
+    $search_params = [
+        'query'   => $_GET['q'] ?? '',
+        'subject' => array_unique(multi_param('subject')),
+        'type'    => array_unique(multi_param('type')),
+        'acc'     => array_unique(multi_param('acc'))
+    ];
 
-    return Timber::render( array( 'page-search.twig'), $context );
+    $paging = [
+        'rp' => $_GET['rp'] ?? null,
+        'rs' => $_GET['rs'] ?? null,
+        'cp' => $_GET['cp'] ?? null,
+        'cs' => $_GET['cs'] ?? null
+    ];
+
+    $context['results'] = $imageshare->controllers->search->query(array_merge(
+       $paging, $search_params
+    ));
+
+    return Timber::render( array( 'search-results.twig'), $context );
 }
 
 $context['collections'] = $imageshare->controllers->resource_collection->get_featured_collections(8);
