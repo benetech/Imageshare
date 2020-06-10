@@ -107,7 +107,7 @@ class Search {
         $default_size = 20;
         $default_page = 1;
 
-        if (!is_int($page)) {
+        if (!is_numeric($page)) {
             $page = $default_page;
         }
 
@@ -116,7 +116,7 @@ class Search {
         }
 
         $start = ($size * ($page -1) + 1) ?? 1;
-        $stop = ($start + $size - 1) < $amount ?: $amount;
+        $stop = ($start + $size - 1) < $total ? $start + $size -1 : $total;
 
         return [
             'size'  => $size,
