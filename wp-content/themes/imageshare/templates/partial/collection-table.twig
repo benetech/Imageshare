@@ -1,0 +1,28 @@
+<table
+  class="resources"
+  aria-labelledby="collections-heading"
+  aria-describedby="main-description"
+>
+  <thead class="resources-headings">
+    <tr>
+      <th scope="col">{{ 'Name' | i18n }}</th>
+      <th scope="col">{{ 'Contributor' | i18n }}</th>
+      <th scope="col">{{ 'Resources' | i18n }}</th>
+    </tr>
+  </thead>
+  <tbody class="resources-data">
+  {% for result in results %}
+    <tr>
+      <td>
+        <a href="{{ result.permalink }}" class="resource-link">{{ result.title | i18n }}</a>
+      </td>
+      <td>
+        <p>{{ result.contributor | e }}</p>
+      </td>
+      <td>{{ result.resource_ids | length }}</td>
+    </tr>
+    <tr>
+  {% endfor %}
+  </tbody>
+</table>
+

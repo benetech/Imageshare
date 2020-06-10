@@ -10,8 +10,10 @@ p {
   display: block;
 }
 .main {
-  clear: both;
-  margin-top: 40px;
+/*  clear: both;
+  margin-top: 40px; */
+  margin-top: 1em;
+  margin-bottom: 1em;
 }
 table {
   border-spacing: 0;
@@ -92,12 +94,16 @@ button {
   padding-bottom: 0;
 }
 .h1-wrapper {
-  position: absolute;
-  top: 11em;
+/*  position: absolute;
+  top: 11em; */
 }
 /* main */
 .h1-description {
-  margin-top: 20px;
+ /* margin-top: 20px; */
+}
+
+h2#main-search {
+    margin-top: 1em;
 }
 
 /* footer */
@@ -107,6 +113,7 @@ button {
   width: 100vw;
   padding: 60px 0 30px 0;
   border-top: 1px solid #05151f;
+  margin-top: 2em;
 }
 
 .footer a {
@@ -213,7 +220,8 @@ label {
   margin-bottom: 30px;
 }
 .main-description {
-  margin: 15px 0 40px 0;
+  /* margin: 15px 0 40px 0; */
+  margin: 1em 0;
 }
 .controls {
   display: flex;
@@ -541,52 +549,75 @@ label {
   font-size: 1.5em;
   margin-top: -0.25em;
 }
-.main-description {
-  margin: 20px 0 40px 0;
-}
 
-.filters {
-  margin-bottom: 40px;
-}
-
-.filters-heading {
-  font-size: 1em;
-  display: inline-block;
-  margin: 0;
-  padding-bottom: 5px;
-  padding-right: 10px;
-}
-.filter {
-  display: inline-block;
-  margin-right: 10px;
-}
-.current-filters {
+.search-filters ul {
   list-style-type: none;
-  display: inline-block;
-  margin: 0;
-  padding: 0;
+  padding-left: 0;
 }
 
-.filter-btn {
-  border: 1px solid #00275c;
-  color: #ffffff;
+.search-filters li {
+  margin: 0 1em;
+  padding: 1em .5em;
+  background-color: darkblue;
+  border: 1px solid lightskyblue;
+  color: #fff;
   font-weight: bold;
-  border-radius: 1em;
-  padding: 5px 5px 5px 20px;
-  background: #0c4471;
+  border-radius: 10px;
 }
-.filter-close {
-  color: #222222;
-  background: #ffffff;
-  border: 1px solid white;
-  height: 1.1em;
-  width: 1.1em;
-  border-radius: 50%;
-  line-height: 1;
+
+.search-filters li, .search-filters li label {
   display: inline-block;
-  text-shadow: -1px 0 #222222, 0 1px #222222, 1px 0 #222222, 0 -1px #222222;
-  margin-left: 10px;
-  vertical-align: top;
+}
+
+#resources-heading {
+  margin-bottom: .5em;
+}
+
+form.search-form p + p {
+  margin-top: .5em;
+}
+
+table.resources {
+  width: 100%;
+}
+
+.counter {
+  color: #fff;
+  margin: 0 .2em;
+  background-color: darkblue;
+  padding: .2em .5em;
+  border-radius: 6px;
+  font-size: .7em;
+}
+
+dl.resource-details dd {
+  margin-left: 0;
+  font-size: 1.3em;
+  font-weight: bold;
+}
+
+dl.resource-details dd, dl.resource-details dt {
+  display: inline-block;
+  color: #0C4471;
+}
+
+h2.resource-section {
+  color: #0C4471;
+  margin-bottom: .5em;
+}
+
+.paging {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: .5em;
+}
+
+.paging .form-group {
+  margin: 0 .5em;
+}
+
+#resources-page, #collections-page {
+  width: 2em;
 }
 
 .results-per-page {
@@ -627,6 +658,21 @@ label {
 .resources-data ul {
   padding-left: 20px;
 }
+
+.resource_files .no-content {
+  font-style: italic;
+}
+
+.resource_files ul {
+    margin: 0;
+    padding: 0;
+    padding-left: 1em;
+}
+
+.resource_files li + li {
+    margin-top: .5em;
+}
+
 .pagination-list {
   list-style-type: none;
   padding: 0;

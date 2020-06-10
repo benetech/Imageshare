@@ -4,14 +4,16 @@
 
 {% block header %}
   <div class="header-inner">
-    <a href="#main-heading" class="skip-link">Skip to Main Content</a>
-    <a href="/" class="logo">
-      <img
-        class="logo-img"
-        src="img/imageshare.png"
-        alt="Imageshare, A Benetech Initiativve Logo"
-      />
-    </a>
+    <div class="header-inner width-12/12">
+      <a href="/" class="logo">
+        <img
+          class="logo-img"
+          src="{{ site.theme.link }}/assets/img/imageshare.png"
+          alt="Imageshare, A Benetech Initiative Logo"
+        />
+      </a>
+    </div>
+
     <nav aria-label="Page" class="main-navigation">
       <h2 id="main-navigation-heading" class="sr-only">
         Page Navigation
@@ -21,14 +23,14 @@
         role="list"
         aria-labelledby="main-navigation-heading"
       >
-        <li class="left width-9/12">
+<!--        <li class="left width-9/12">
           <a href="#" class="back-link"
             ><span aria-hidden="true" class="lsaquo">&lsaquo;</span
             ><span class="txt">Go back to search results</span></a
           >
-        </li>
+        </li> -->
         <li class="right width-3/12">
-          <a href="#" class="">Report Issue</a>
+          <a href="mailto:report@imageshare.benetech.edu" class="">Report Issue</a>
         </li>
       </ul>
     </nav>
@@ -46,12 +48,12 @@
       </p>
       <dl class="resource-details">
         <div>
-            <dd>{{ 'Subject' | i18n }}</dd>
+            <dd>{{ 'Subject' | i18n }}:</dd>
             <dt>{{ post.subject | i18n | e }}</dt>
         </div>
       {% if post.tags %}
         <div>
-            <dd>{{ 'Keywords' | i18n }}</dd>
+            <dd>{{ 'Keywords' | i18n }}:</dd>
             <dt>{{ post.tags | join(', ') }}</dt>
         </div>
       {% endif %}
@@ -63,33 +65,73 @@
     {% endif %}
 
       <section>
-        <h2 resource-section>{{ 'Files' | i18n }} <span class="counter">{{ post.files | length }}</span></h2>
+        <h2 class="resource-section">{{ 'Files' | i18n }} <span class="counter">{{ post.files | length }}</span></h2>
         <table class="resource_files">
           <thead class="resources-headings">
             <tr>
               <th scope="col">{{ 'Image' | i18n }}</th>
               <th scope="col">{{ 'Name' | i18n }}</th>
               <th scope="col">{{ 'Description' | i18n }}</th>
+              <th scope="col">{{ 'Type' | i18n }}</th>
+              <th scope="col">{{ 'Format' | i18n }}</th>
+              <th scope="col">{{ 'Accommodations' | i18n }}</th>
+              <th scope="col">{{ 'Languages' | i18n }}</th>
+              <th scope="col">{{ 'License' | i18n }}</th>
+              <th scope="col">{{ 'Download' | i18n }}</th>
             </tr>
           </thead>
           <tbody class="resources-data">
           {% for file in post.files %}
             <tr>
               <td>
-                 <img
-                    class="resource-img"
-                    src="{{ result.thumbnail_src }}"
-                    alt="{{ result.thumbnail_alt | i18n }}"
-                  />
+              {% if result.thumbnail_src | length %}
+                <img
+                  class="resource-img"
+                  src="{{ file.thumbnail_src }}"
+                  alt="{{ file.thumbnail_alt | i18n }}"
+                />
+              {% else %}
+                <p class="no-content">({{ 'none' | i18n }})</p>
+              {% endif %}
+              </td>
+
+              <td>
+                {{ file.title | e }}</a>
+              </td>
+
+              <td>
+              {% if file.description | length %}
+                <p>{{ file.description | e }}</p>
+              {% else %}
+                <p class="no-content">({{ 'none' | i18n }})</p>
+              {% endif %}
+              </td>
+
+              <td>{{ file.type | e }}</td>
+              <td>{{ file.format | e }}</td>
+              <td>
+                <ul>
+                {% for a in file.accommodations %}
+                  <li>{{ a | e }}</li>
+                {% endfor %}
+                </ul>
               </td>
               <td>
-                {{ file.title | i18n | e }}</a>
+                <ul>
+                {% for l in file.languages %}
+                  <li>{{ l | e }}</li>
+                {% endfor %}
+                </ul>
               </td>
+              <td>{{ file.license | e }}</td>
               <td>
-                <p>{{ result.description | i18n }}</p>
+              {% if file.downloadable %}
+                <a href="{{ file.uri }}" download="{{ file.uri }}">{{ 'Download %s (%s - %s)' | i18n | format(file.title, file.type, file.format) }}</a>
+              {% else %}
+                <p class="no-content">({{ 'unavailable' | i18n }})</p>
+              {% endif %}
               </td>
             </tr>
-            <tr>
           {% endfor %}
           </tbody>
         </table>
