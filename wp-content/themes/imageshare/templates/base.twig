@@ -9,6 +9,16 @@
     <div class="app grid {{ is_home ? 'home' : 'not_home' }}">
       <div class="app-inner">
         <header class="header">
+
+        {% if is_home %}
+           <a class="skip-link" href="#search">{{ 'Jump directly to search' | i18n }}</a>
+        {% endif %}
+
+        {% if is_search and results.total_count %}
+           {% set target = results.resources.posts | length ? '#resources-heading' : '#collections-heading' %}
+           <a class="skip-link" href="{{ target }}">{{ 'Jump directly to results' | i18n }}</a>
+        {% endif %}
+
         {% block header %}
           <div class="header-inner width-12/12">
             <a href="/" class="logo">

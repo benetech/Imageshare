@@ -67,7 +67,7 @@
 {% block resources %}
     {% set paging = results.resources.paging %}
 
-    <h2 id="resources-heading">{{ 'Resources' | i18n }}</h2>
+    <h2 tabindex="-1" id="resources-heading">{{ 'Resources' | i18n }}</h2>
 
     <div class="paging">
       <div>
@@ -104,9 +104,8 @@
 {% endblock %}
 
 {% block collections %}
-    <h2 id="collections-heading">{{ 'Collections' | i18n }}</h2>
+    <h2 tabindex="-1" id="collections-heading">{{ 'Collections' | i18n }}</h2>
     {% set paging = results.collections.paging %}
-
 
     <div class="paging">
       <p>

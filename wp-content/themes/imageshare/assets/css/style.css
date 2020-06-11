@@ -5,10 +5,28 @@ body {
 p {
   margin: 0;
 }
+
 .skip-link {
   padding-top: 10px;
-  display: block;
+  padding: .5em 2em;
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  height: 1px; 
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+  white-space: nowrap;
 }
+
+.skip-link:focus {
+  height: auto;
+  width: auto;
+  clip: auto;
+  background-color: #fff;
+}
+
 .main {
 /*  clear: both;
   margin-top: 40px; */
@@ -87,12 +105,6 @@ header .logo {
   font-weight: bold;
   margin: 0;
   padding: 20px 0 90px 0;
-}
-.home .header {
-  padding-bottom: 12em;
-}
-.home .header .logo {
-  padding-bottom: 0;
 }
 .h1-wrapper {
 /*  position: absolute;

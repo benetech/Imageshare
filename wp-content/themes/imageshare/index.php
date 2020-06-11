@@ -53,11 +53,14 @@ if (($_GET['page'] ?? null) === 'search') {
        $paging, $search_params
     ));
 
+    $context['is_search'] = true;
+
     return Timber::render( array( 'search-results.twig'), $context );
 }
 
 $context['collections'] = $imageshare->controllers->resource_collection->get_featured_collections(8);
 $context['collection_archive_href'] = get_post_type_archive_link('btis_collection');
+$context['is_home'] = is_home();
 
 $templates = array( 'index.twig' );
 if ( is_home() ) {
