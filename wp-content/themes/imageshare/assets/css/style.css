@@ -50,7 +50,7 @@ button {
   overflow: hidden;
 }
 .main-navigation {
-  float: left;
+  /* float: left; */
   width: 100%;
 }
 .footer-inner,
@@ -61,17 +61,18 @@ button {
 }
 
 /* header */
-.header {
+header {
   background-image: url(../img/header.jpg);
   background-repeat: no-repeat;
   background-position: center 0;
   background-size: cover;
   background-color: #dddddd;
 }
-.header .logo-img {
+header .logo-img {
   width: 300px;
 }
-.header .logo {
+
+header .logo {
   display: block;
   padding: 40px 0 40px 0;
   text-align: left;
@@ -82,7 +83,7 @@ button {
   background-color: #dde8f2;
   border-bottom: 1px solid #dde8f2;
 }
-.header .description {
+.xheader .description {
   font-weight: bold;
   margin: 0;
   padding: 20px 0 90px 0;
@@ -245,7 +246,7 @@ label {
   text-indent: 10px;
   color: #222222;
 }
-.description {
+.xdescription {
   margin: 5px 0 0 10px;
   font-size: 14px;
 }
@@ -391,7 +392,7 @@ label {
   .footer .benetech {
     margin-bottom: 20px;
   }
-  .controls {
+  #search-form .controls {
     flex-direction: column;
     margin: 0;
   }
@@ -504,6 +505,11 @@ label {
   margin: 0;
   padding-bottom: 15px;
 }
+
+li.collection {
+  background-color: #0c4471;
+}
+
 .background205d9c {
   background-color: #205d9c;
 }
@@ -569,10 +575,6 @@ label {
   display: inline-block;
 }
 
-#resources-heading {
-  margin-bottom: .5em;
-}
-
 form.search-form p + p {
   margin-top: .5em;
 }
@@ -588,6 +590,7 @@ table.resources {
   padding: .2em .5em;
   border-radius: 6px;
   font-size: .7em;
+  vertical-align: middle;
 }
 
 dl.resource-details dd {
@@ -606,15 +609,7 @@ h2.resource-section {
   margin-bottom: .5em;
 }
 
-.paging {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: .5em;
-}
 
-.paging .form-group {
-  margin: 0 .5em;
-}
 
 #resources-page, #collections-page {
   width: 2em;
@@ -860,4 +855,182 @@ h2.resource-section {
 
 .accomodations {
   margin-top: 0;
+}
+
+/* resource page */
+
+#resource .details .header {
+  display: flex;
+}
+
+#resource #main-heading ~ * {
+  margin-top: .5em;
+}
+
+#resource .details img {
+  border: 1px solid black;
+  margin-right: .5em;
+}
+
+#resource .header img {
+  max-width: 8em;
+}
+
+#resource h2 {
+  margin-bottom: .2em;
+}
+
+#resource ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+#resource #files li,
+#resource #collections li {
+  border: 1px solid darkblue;
+  padding: .5em;
+}
+
+#resource #files li + li {
+  margin-top: .5em;
+}
+
+#resource #files .header {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-start;
+  margin-bottom: .5em;
+}
+
+#resource h3 {
+  margin: 0;
+  color: #0c4471;
+}
+
+#resource .download {
+  padding: .5em;
+  vertical-align: middle;
+  background-color: darkblue;
+  color: #fff;
+
+  border-radius: 5px;
+}
+
+#resource #files .download {
+  margin: 0 .5em;
+}
+
+#resource #files .header + p {
+  font-style: italic;
+}
+
+#resource #files dl {
+  display: flex;
+  flex-direction: column;
+}
+
+#resource #files dl > div + div {
+  margin-top: .5em;
+}
+
+#resource #files dt,
+#resource #files dd {
+  display: inline-block;
+}
+
+#resource #files dt {
+  font-weight: bold;
+  color: #0c4471;
+}
+
+#resource #files dd {
+  margin-left: 0;
+}
+
+#resource #collections li {
+  display: flex;
+}
+
+#resource #collections img {
+  max-width: 5em;
+  margin-right: .5em;
+  border: 1px solid black;
+}
+
+#resource #collections h3 {
+  margin-bottom: .5em;
+}
+
+/* search results */
+
+.search-results h2 {
+  margin-bottom: .2em;
+}
+
+.search-results ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.search-results li {
+  border: 1px solid darkblue;
+  padding: .5em;
+  overflow: auto;
+}
+
+.search-results li + li {
+  margin-top: .5em;
+}
+
+.search-results .paging {
+  display: flex;
+  justify-content: space-between;
+  padding: .5em;
+  border: 1px solid black;
+  background-color: papayawhip;
+  margin-bottom: .2em;
+}
+
+.search-results .paging .form-group {
+  margin: 0 .5em;
+}
+
+.search-results img {
+  max-width: 8em;
+  max-height: 8em;
+  border: 1px solid #000;
+}
+
+.search-results .source {
+  font-style: italic;
+  margin-top: 1em;
+}
+
+.search-results #resources img {
+  float: left;
+  margin: 0 .5em .2em 0;
+}
+
+.search-results .header h3 {
+  margin: 0;
+  margin-bottom: .5em;
+}
+
+.search-results #collections li {
+  display: flex;
+}
+
+.search-results #collections img {
+  margin-right: .5em;
+  max-width: 5em;
+  max-height: 5em;
+}
+
+/* collection */
+
+#collection .description {
+  margin-top: .2em;
+  font-style: italic;
 }

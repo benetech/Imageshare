@@ -38,136 +38,120 @@
 {% endblock %}
 
 {% block content %}
-  <div class="main-inner grid">
-    <div class="width-9/12">
-      <h1 id="main-heading" class="h1">
-        {{ post.title | i18n | e }}
-      </h1>
-      <p class="description-txt">
-        {{ post.description | i18n | e }}
-      </p>
-      <dl class="resource-details">
-        <div>
-            <dd>{{ 'Subject' | i18n }}:</dd>
-            <dt>{{ post.subject | i18n | e }}</dt>
+  <div id="resource" class="main-inner">
+    <div class="details">
+        <div class="header">
+          <img
+            src="{{ post.thumbnail_src }}"
+            alt="{{ post.thumbnail_alt | e }}"
+          />
+
+          <div>
+          <h1 id="main-heading" class="h1">
+            {{ post.title | i18n | e }}
+          </h1>
+
+          <p class="description">
+            {{ post.description | i18n | e }}
+          </p>
+
+          <p class="source">
+            (Source: {{ post.source }})
+          </p>
+          </div>
+
         </div>
-      {% if post.tags %}
-        <div>
-            <dd>{{ 'Keywords' | i18n }}:</dd>
-            <dt>{{ post.tags | join(', ') }}</dt>
-        </div>
-      {% endif %}
-      </dl>
-    {% if post.download_link %}
-      <button type="submit" class="download-btn">
-        {{ 'Download all files' | i18n }} ({{ post.files | length }}) 
-      </button>
-    {% endif %}
 
-      <section>
-        <h2 class="resource-section">{{ 'Files' | i18n }} <span class="counter">{{ post.files | length }}</span></h2>
-        <table class="resource_files">
-          <thead class="resources-headings">
-            <tr>
-              <th scope="col">{{ 'Image' | i18n }}</th>
-              <th scope="col">{{ 'Name' | i18n }}</th>
-              <th scope="col">{{ 'Description' | i18n }}</th>
-              <th scope="col">{{ 'Type' | i18n }}</th>
-              <th scope="col">{{ 'Format' | i18n }}</th>
-              <th scope="col">{{ 'Accommodations' | i18n }}</th>
-              <th scope="col">{{ 'Languages' | i18n }}</th>
-              <th scope="col">{{ 'License' | i18n }}</th>
-              <th scope="col">{{ 'Download' | i18n }}</th>
-            </tr>
-          </thead>
-          <tbody class="resources-data">
-          {% for file in post.files %}
-            <tr>
-              <td>
-              {% if result.thumbnail_src | length %}
-                <img
-                  class="resource-img"
-                  src="{{ file.thumbnail_src }}"
-                  alt="{{ file.thumbnail_alt | i18n }}"
-                />
-              {% else %}
-                <p class="no-content">({{ 'none' | i18n }})</p>
-              {% endif %}
-              </td>
+          <dl class="resource-details">
+            <div>
+                <dd>{{ 'Subject' | i18n }}:</dd>
+                <dt>{{ post.subject | i18n | e }}</dt>
+            </div>
+          {% if post.tags %}
+            <div>
+                <dd>{{ 'Keywords' | i18n }}:</dd>
+                <dt>{{ post.tags | join(', ') }}</dt>
+            </div>
+          {% endif %}
+          </dl>
+        {% if post.download_uri | length > 5 %}
+          <a href="{{ post.download_uri }}" class="download">
+            {{ 'Download all files' | i18n }} ({{ post.files | length }}) 
+          </a>
+        {% endif %}
+      </div>
 
-              <td>
-                {{ file.title | e }}</a>
-              </td>
-
-              <td>
-              {% if file.description | length %}
-                <p>{{ file.description | e }}</p>
-              {% else %}
-                <p class="no-content">({{ 'none' | i18n }})</p>
-              {% endif %}
-              </td>
-
-              <td>{{ file.type | e }}</td>
-              <td>{{ file.format | e }}</td>
-              <td>
-                <ul>
-                {% for a in file.accommodations %}
-                  <li>{{ a | e }}</li>
-                {% endfor %}
-                </ul>
-              </td>
-              <td>
-                <ul>
-                {% for l in file.languages %}
-                  <li>{{ l | e }}</li>
-                {% endfor %}
-                </ul>
-              </td>
-              <td>{{ file.license | e }}</td>
-              <td>
-              {% if file.downloadable %}
-                <a href="{{ file.uri }}" download="{{ file.uri }}">{{ 'Download %s (%s - %s)' | i18n | format(file.title, file.type, file.format) }}</a>
-              {% else %}
-                <p class="no-content">({{ 'unavailable' | i18n }})</p>
-              {% endif %}
-              </td>
-            </tr>
-          {% endfor %}
-          </tbody>
-        </table>
+    {% if post.files | length > 0 %}
+      <section id="files">
+        <h2>{{ 'Files' | i18n }} <span class="counter">{{ post.files | length }}</span></h2>
+        <ul>
+        {% for file in post.files %}
+          {{ block('file') }}
+        {% endfor %}
+        </ul>
       </section>
+    {% endif %}
 
     {% if post.collections | length > 0 %}
-      <section>
-        <h2>{{ 'Collections' | i18n }} <span class="counter">{{ post.collections | length }}</span></h3>
-          <ul
-            class="collections"
-            aria-labelledby="collections-tabpanel-heading"
-          >
-
-          {% for collection in post.collections %}
-            <li class="collections-item">
-              <div class="collections-content">
-                <h3 class="h3 collections-name">
-                  <a href="{{ collection.permalink }}">{{ collection.title | e }}</a>
-                </h3>
-                <img
-                  class="collections-img"
-                  src="./img/resource.png"
-                  alt=""
-                />
-                <p class="collections-author">
-                  {{ 'by' | i18n }} <strong>{{ collection.contributor | e }}</strong>
-                </p>
-              </div>
-            </li>
+      <section id="collections">
+        <h2>{{ 'Collections' | i18n }} <span class="counter">{{ post.collections | length }}</span></h2>
+        <p>{{ 'This resource is part of one or more collections.' | i18n }}</p>
+        <ul>
+        {% for collection in post.collections %}
+          {{ include('partial/collection-list-item.twig') }}
         {% endfor %}
-          </ul>
+        </ul>
       </section>
     {% endif %}
-    </div>
+
   </div>
+{% endblock %}
 
+{% block file %}
+  <li>
+    <div class="header">
+      {% if file.thumbnail_src | length %}
+        <img
+          class="resource-img"
+          src="{{ file.thumbnail_src }}"
+          alt="{{ file.thumbnail_alt | i18n }}"
+        />
+      {% endif %}
+      <h3 id="file-{{ file.id }}">{{ file.title | e }}</h3>
+      {% if file.downloadable %}
+        <a aria-describedby="file-{{ file.id }}" class="download" href="{{ file.uri }}">{{ 'Download' | i18n }}</a>
+      {% endif %}
+    </div>
+    
+    <p>{{ file.description | e }}</p>
 
+    <dl>
+      <div>
+        <dt>{{ 'Type' | i18n }}:</dt>
+        <dd>{{ file.type | e }}</dd>
+      </div>
+
+      <div>
+        <dt>{{ 'Format' | i18n }}:</dt>
+        <dd>{{ file.format | e }}</dd>
+      </div>
+
+      <div>
+        <dt>{{ 'Accommodations' | i18n }}:</dt>
+        <dd>{{ file.accommodations | join(', ') | e }}</dd>
+      </div>
+
+      <div>
+        <dt>{{ 'Languages' | i18n }}:</dt>
+        <dd>{{ file.languages | join(', ') | e }}</dd>
+      </div>
+
+      <div>
+        <dt>{{ 'License' | i18n }}:</dt>
+        <dd>{{ file.license | e }}</dd>
+      </div>
+
+    </dl>
+  </li>
 {% endblock %}
 

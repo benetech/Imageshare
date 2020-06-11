@@ -1,36 +1,18 @@
-<table
-  class="resources"
-  aria-labelledby="resources-heading"
-  aria-describedby="main-description"
->
-  <thead class="resources-headings">
-    <tr>
-      <th scope="col">{{ 'Resource' | i18n }}</th>
-      <th scope="col">{{ 'Name' | i18n }}</th>
-      <th scope="col">{{ 'Description' | i18n }}</th>
-      <th scope="col">{{ 'Source' | i18n }}</th>
-    </tr>
-  </thead>
-  <tbody class="resources-data">
-  {% for result in results %}
-    <tr>
-      <td>
-         <img
-            class="resource-img"
-            src="{{ result.thumbnail_src }}"
-            alt="{{ result.thumbnail_alt | i18n }}"
-          />
-      </td>
-      <td>
-        <a href="{{ result.permalink }}" class="resource-link">{{ result.title | i18n }}</a>
-      </td>
-      <td>
-        <p>{{ result.description | i18n }}</p>
-      </td>
-      <td>{{ result.source | i18n }}</td>
-    </tr>
-    <tr>
+<ul id="resources" aria-labelledby="{{ aria-labelledby-id }}">
+  {% for resource in results %}
+  <li>
+    <div class="header">
+      <img
+        src="{{ resource.thumbnail_src }}"
+        alt="{{ resource.thumbnail_alt | e }}"
+      />
+      <a href="{{ resource.permalink }}">
+        <h3>{{ resource.title | e }}</h3>
+      </a>
+    </div>
+    <p class="description">{{ resource.description | e }}</p>
+    <p class="source">({{ 'Source: %s' | i18n | format(resource.source) | e }})</p>
+  </li>
   {% endfor %}
-  </tbody>
-</table>
+</ul>
 
