@@ -1,6 +1,6 @@
 {% extends "base.twig" %}
 
-{% set title = '%d resources found' | i18n | format(results.count) %}
+{% set title = '%d resources and %d collections found' | i18n | format(results.resources.total, results.collections.total) %}
 
 {% block search_filter %}
     {% for term in filter.value %}
@@ -24,7 +24,7 @@
   {% if results.total_count > 0 %}
      {# perhaps use _n() #}
      <p id="main-description" class="main-description">
-        {{ '%d resource(s) and %d collection(s) matched your query.' | i18n | format(results.resources.posts | length, results.collections.posts | length) }}
+        {{ '%d resource(s) and %d collection(s) matched your query.' | i18n | format(results.resources.total, results.collections.total) }}
      </p>
   {% endif %}
 

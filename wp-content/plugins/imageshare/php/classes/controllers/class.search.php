@@ -162,6 +162,9 @@ class Search {
         $results['resources']['posts'] = $resources;
         $results['collections']['posts'] = $collections;
 
+        $results['resources']['total'] = $total_resources;
+        $results['collections']['total'] = $total_collections;
+
         $results['has_filters'] =
             count($filters['subject']) ||
             count($filters['type'])    ||
