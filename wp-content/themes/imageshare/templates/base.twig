@@ -10,9 +10,11 @@
       <div class="app-inner">
         <header class="header">
 
+     {# no skip link on home for now 
         {% if is_home %}
            <a class="skip-link" href="#search">{{ 'Jump directly to search' | i18n }}</a>
         {% endif %}
+      #}
 
         {% if is_search and results.total_count %}
            {% set target = results.resources.posts | length ? '#resources-heading' : '#collections-heading' %}

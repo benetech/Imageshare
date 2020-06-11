@@ -1028,6 +1028,7 @@ h2.resource-section {
 .search-results .header h3 {
   margin: 0;
   margin-bottom: .5em;
+  display: inline-block;
 }
 
 .search-results #collections li {
