@@ -22,8 +22,10 @@ class Resource {
         $is_update = false;
         $subject = Model::get_taxonomy_term_id('subjects', $args['subject']);
 
-        if ($post_id = post_exists($args['title'], '', '', self::type)) {
-            Logger::log(sprintf(__('A Resource with unique title "%s" already exists, updating', 'imageshare'), $args['title']));
+        $existing = post_exists($args['title'], '', '', self::type);
+
+        if ($existing && get_post_status($existing) == 'publish') {
+            Logger::log(sprintf(__('A published Resource with unique title "%s" already exists, updating', 'imageshare'), $args['title']));
             $is_update = true;
         } else {
             $post_data = [
