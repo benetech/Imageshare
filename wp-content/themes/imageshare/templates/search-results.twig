@@ -5,7 +5,7 @@
 {% block search_filter %}
     {% for term in filter.value %}
     <li>
-      <input data-filter="{{ filter.id }}" class="search-filter" type="checkbox" id="search-filter-{{ term.term_id }}" checked="checked" value="{{ term.term_id }}">
+      <input name="{{ filter.id }}_{{ loop.index }}" data-filter="{{ filter.id }}" class="search-filter" type="checkbox" id="search-filter-{{ term.term_id }}" checked="checked" value="{{ term.term_id }}">
       <label for="search-filter-{{ term.term_id }}">{{ '%s: "%s"' | format(filter.name | i18n, term.name | e) }}</label>
     </li>
   {% endfor %}

@@ -20,7 +20,6 @@ $context['resource_count'] = $imageshare->controllers->search->get_published_res
 function multi_param ($var) {
     $vars = [];
 
-
     foreach ($_GET as $key => $value) {
         if (preg_match("/^{$var}(_[0-9]+)?$/", $key)) {
             if (is_array($value)) {

@@ -70,11 +70,6 @@
         </button>
       </div>
     </div>
-    {% for filter in ['subject', 'type', 'acc'] %}
-        {% for term in attribute(results.search_filters, filter) %}
-            <input type="hidden" name="{{ filter }}_{{ term.term_id }}" value="{{ term.term_id }}">
-        {% endfor %}
-    {% endfor %}
 
   {{ enclosing_form ? '</form>' : '' }}
 </section>
