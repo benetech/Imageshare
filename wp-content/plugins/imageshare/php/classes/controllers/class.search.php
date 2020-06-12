@@ -192,13 +192,20 @@ class Search {
             $query = [];
         }
 
+        $search_term_prefix = [
+            'subject' => 'subject',
+            'type' => 'type',
+            'acc' => 'accommodation'
+        ];
+
         foreach (['subject', 'type', 'acc'] as $filter) {
             if (count($terms[$filter])) {
                 $cluster_weights[$type . '_' . $filter] = 0.9;
             }
 
             foreach ($terms[$filter] as $term) {
-                array_push($query, Model::as_search_term($filter, $term->name));
+                $prefix = $search_term_prefix[$filter];
+                array_push($query, Model::as_search_term($prefix, $term->name));
             }
         }
 
