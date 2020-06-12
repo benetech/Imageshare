@@ -9,6 +9,7 @@ use Imageshare\Logger;
 use Swaggest\JsonSchema\Schema;
 use Imageshare\Models\Model;
 use Imageshare\Models\ResourceFile;
+use Imageshare\Models\ResourceCollection;
 
 class Resource {
 
@@ -93,8 +94,18 @@ class Resource {
             'meta_compare' => '==='
         ]);
 
+        $collection_ids = [];
+
         foreach ($existing as $resource) {
             wpfts_post_reindex($resource->ID);
+            $collections = ResourceCollection::containing($resource->ID);
+            $collection_ids = array_merge($collection_ids, array_map(function ($r) {
+                return $r->id;
+            }, $collections));
+        }
+
+        foreach (array_unique($collection_ids) as $collection_id) {
+            wpfts_post_reindex($collection_id);
         }
     }
 
