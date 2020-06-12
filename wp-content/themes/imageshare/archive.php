@@ -33,6 +33,7 @@ if ( is_day() ) {
 	$context['title'] = single_cat_title( '', false );
 	array_unshift( $templates, 'archive-' . get_query_var( 'cat' ) . '.twig' );
 } elseif ( is_post_type_archive() ) {
+        clear_last_search();
         $context['title'] = post_type_archive_title( '', false );
         $context['posts'] = $imageshare->controllers->post->get_posts($context['posts']);
 	array_unshift( $templates, 'archive-' . get_post_type() . '.twig' );

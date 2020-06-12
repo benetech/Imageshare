@@ -22,6 +22,22 @@ if ( file_exists( $composer_autoload ) ) {
 // don't render the default title, the theme does this
 remove_action( 'wp_head', '_wp_render_title_tag', 1 );
 
+function get_last_search() {
+    $last =  $_COOKIE['last_search'] ?? null;
+    clear_last_search();
+    return $last;
+}
+
+function track_last_search() {
+    $search_url = '//' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];   
+    setcookie('last_search', $search_url, strtotime('+1 day'));
+}
+
+function clear_last_search() {
+    setcookie('last_search', '', strtotime('+1 day'));
+}
+
+
 /**
  * This ensures that Timber is loaded and available as a PHP class.
  * If not, it gives an error message to help direct developers on where to activate
@@ -65,18 +81,9 @@ class StarterSite extends Timber\Site {
         add_action( 'after_setup_theme', array( $this, 'theme_supports' ) );
         add_filter( 'timber/context', array( $this, 'add_to_context' ) );
         add_filter( 'timber/twig', array( $this, 'add_to_twig' ) );
-        add_action( 'init', array( $this, 'register_post_types' ) );
-        add_action( 'init', array( $this, 'register_taxonomies' ) );
         parent::__construct();
     }
-    /** This is where you can register custom post types. */
-    public function register_post_types() {
 
-    }
-    /** This is where you can register custom taxonomies. */
-    public function register_taxonomies() {
-
-    }
 
     /** This is where you add some context
      *
@@ -86,7 +93,7 @@ class StarterSite extends Timber\Site {
             global $imageshare;
             $context['imageshare'] = $imageshare;
             $context['site'] = $this;
-            $context['is_home'] = is_page('home');
+
 
         return $context;
     }

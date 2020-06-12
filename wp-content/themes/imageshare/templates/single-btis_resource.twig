@@ -13,29 +13,36 @@
         />
       </a>
     </div>
-
-    <nav aria-label="Page" class="main-navigation">
-      <h2 id="main-navigation-heading" class="sr-only">
-        Page Navigation
-      </h2>
-      <ul
-        class="grid main-navigation-list"
-        role="list"
-        aria-labelledby="main-navigation-heading"
-      >
-<!--        <li class="left width-9/12">
-          <a href="#" class="back-link"
-            ><span aria-hidden="true" class="lsaquo">&lsaquo;</span
-            ><span class="txt">Go back to search results</span></a
-          >
-        </li> -->
-        <li class="right width-3/12">
-          <a href="mailto:report@imageshare.benetech.edu" class="">Report Issue</a>
-        </li>
-      </ul>
-    </nav>
   </div>
+
 {% endblock %}
+
+{% block nav %}
+    <nav aria-label="Page" class="main-navigation">
+      <div class="nav-inner">
+          <h2 id="main-navigation-heading" class="sr-only">
+            Page Navigation
+          </h2>
+          <ul
+            role="list"
+            aria-labelledby="main-navigation-heading"
+          >
+          {% if last_search | length %}
+            <li class="left width-9/12">
+              <a href="{{ last_search }}" class="back-link"
+                ><span aria-hidden="true" class="lsaquo">&lsaquo;</span
+                ><span class="txt">Go back to search results</span></a
+              >
+            </li>
+          {% endif %}
+            <li class="right width-3/12">
+              <a href="mailto:report@imageshare.benetech.edu" class="">Report Issue</a>
+            </li>
+          </ul>
+      </div>
+    </nav>
+{% endblock %}
+
 
 {% block content %}
   <div id="resource" class="main-inner">

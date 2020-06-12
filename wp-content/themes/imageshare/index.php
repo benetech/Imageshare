@@ -34,6 +34,8 @@ function multi_param ($var) {
 }
 
 if (($_GET['page'] ?? null) === 'search') {
+    track_last_search();
+
     $search_params = [
         'query'   => $_GET['q'] ?? '',
         'subject' => array_unique(multi_param('subject')),
@@ -56,6 +58,8 @@ if (($_GET['page'] ?? null) === 'search') {
 
     return Timber::render( array( 'search-results.twig'), $context );
 }
+
+clear_last_search();
 
 $context['collections'] = $imageshare->controllers->resource_collection->get_featured_collections(8);
 $context['collection_archive_href'] = get_post_type_archive_link('btis_collection');
