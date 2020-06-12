@@ -1,17 +1,17 @@
 <ul id="resources" aria-labelledby="{{ aria-labelledby-id }}">
   {% for resource in results %}
   <li>
-    <div class="header">
+    <a href="{{ resource.permalink }}">
+      <h3>{{ resource.title | e }}</h3>
+    </a>
+    <div>
       <img
         src="{{ resource.thumbnail_src }}"
         alt="{{ resource.thumbnail_alt | e }}"
       />
-      <a href="{{ resource.permalink }}">
-        <h3>{{ resource.title | e }}</h3>
-      </a>
+      <p class="description">{{ resource.description | e }}</p>
+      <p class="source">({{ 'Source: %s' | i18n | format(resource.source) | e }})</p>
     </div>
-    <p class="description">{{ resource.description | e }}</p>
-    <p class="source">({{ 'Source: %s' | i18n | format(resource.source) | e }})</p>
   </li>
   {% endfor %}
 </ul>
