@@ -4,6 +4,7 @@ namespace Imageshare\Models;
 
 use Imageshare\Logger;
 use Imageshare\Models\Model;
+use Imageshare\Models\Resource as ResourceModel;
 
 class ResourceFile {
 
@@ -88,6 +89,11 @@ class ResourceFile {
         }
 
         return [$post_id, $is_update];
+    }
+
+    public static function on_save_post($post_id, $post, $update) {
+        ResourceModel::reindex_resources_containing_resource_file($post_id);
+        return $post;
     }
 
     public static function accommodations_to_term_ids($accommodations) {

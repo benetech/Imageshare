@@ -83,6 +83,20 @@ class Resource {
         array_push($files, $resource_file_id);
         update_field('files', $files, $resource_id);
     }
+    
+    public static function reindex_resources_containing_resource_file($resource_file_id) {
+        $existing = get_posts([
+            'post_type' => self::type,
+            'post_status' => 'publish',
+            'meta_key' => 'resource_file_id',
+            'meta_value' => $resource_file_id,
+            'meta_compare' => '==='
+        ]);
+
+        foreach ($existing as $resource) {
+            wpfts_post_reindex($resource->ID);
+        }
+    }
 
     public function __construct($post_id = null) {
         if (!empty($post_id)) {
