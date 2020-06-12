@@ -122,7 +122,7 @@ class ResourceCollection {
 
             $this->description  = get_post_meta($this->post_id, 'description', true);
             $this->contributor  = get_post_meta($this->post_id, 'contributor', true);
-            $this->resource_ids = get_post_meta($this->post_id, 'resources', true);
+            $this->resource_ids = $this->get_resource_ids();
 
             $this->is_featured = get_post_meta($this->post_id, 'is_featured', true) == 1;
 
@@ -133,6 +133,14 @@ class ResourceCollection {
         }
         
         return null;
+    }
+
+    private function get_resource_ids() {
+        $resource_ids = get_post_meta($this->post_id, 'resources', true);
+        if (is_array($resource_ids)) {
+            return $resource_ids;
+        }
+        return [];
     }
 
     public function resources() {
