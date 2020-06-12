@@ -158,6 +158,7 @@ class Plugin {
         $this->set_acf_hooks_and_filters();
 
         add_filter('plugin_action_links_' . plugin_basename($this->file), [$this, 'add_action_links']);
+        add_filter('save_post_' . ResourceFile::type, [self::model('ResourceFile'), 'on_save_post'], 3, 10);
         add_action('wp', [$this, 'on_wp']);
     }
 

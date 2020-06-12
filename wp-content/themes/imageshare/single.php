@@ -13,6 +13,8 @@ $context         = Timber::context();
 $timber_post     = Timber::query_post();
 $context['post'] = $imageshare->controllers->post->get_post($timber_post);
 
+$context['last_search'] = get_last_search();
+
 if ( post_password_required( $timber_post->ID ) ) {
     Timber::render( 'single-password.twig', $context );
 } else {

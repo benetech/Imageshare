@@ -1,9 +1,11 @@
-<section aria-labelledby="main-search">
+<section aria-labelledby="main-search" id="search-form">
   <h2 id="main-search" class="h2">{{ 'Search' | i18n }}</h2>
   <p class="main-description">
     {{ 'Library of %d accessible STEM media resources.' | i18n | format(resource_count) }}
   </p>
-  <form role="search" class="search-form">
+
+  {{ enclosing_form ? '<form method="get" class="search-form">' : '' }}
+
     <input type="hidden" name="page" value="search">
     <label for="search" class="search-label"
       >{{ 'Search collections or resources' | i18n }}</label
@@ -16,38 +18,24 @@
           type="text"
           class="search-input"
           aria-describedby="desc"
+          value="{{ results.search_filters.query | e }}"
         />
         <div id="desc" class="description">
           {{ 'Try searching “geology” or “heart”.' | i18n }}
         </div>
       </div>
-    {% if results.count %}
-        <div class="input-wrapper">
-            <label for="narrow-search">{{ 'perform search within current results' | i18n }}</label>
-            <input id="narrow-search" name="narrow" type="checkbox" value="1">
-        </div>
-    {% endif %}
-      <button
-        id="advanced-btn"
-        type="button"
-        class="advanced-btn"
-        aria-expanded="false"
-      >
-        <span>{{ 'Advanced Search' | i18n }}</span>
+      <button id="advanced-btn" type="button" class="advanced-btn" aria-expanded="false">
+        <span>{{ 'Advanced search' | i18n }}</span>
         <span class="bracket" aria-hidden="true"></span>
       </button>
       <div class="submit-btn-wrapper">
         <button type="submit" class="submit-btn">
-          <span>{{ 'Search Library' | i18n }}</span>
+          <span>{{ 'Search library' | i18n }}</span>
         </button>
       </div>
     </div>
     <div class="refinements-wrapper">
-      <ul
-        class="refinements"
-        aria-labelledby="advanced-btn"
-        role="list"
-      >
+      <ul class="refinements" aria-labelledby="advanced-btn" role="list">
         <li class="refinement">
           <label for="subject">{{ 'Subject' | i18n }}</label>
           <select id="subject" name="subject">
@@ -82,11 +70,7 @@
         </button>
       </div>
     </div>
-  {% if search_params %}
-    {% for term, value in search_params %}
-        <input type="hidden" name="p_{{ term }}" value="{{ value }}">
-    {% endfor %}
-  {% endif %}
-  </form>
+
+  {{ enclosing_form ? '</form>' : '' }}
 </section>
 

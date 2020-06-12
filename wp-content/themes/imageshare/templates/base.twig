@@ -1,6 +1,5 @@
 {% block html_head_container %}
-
-{% include 'html-header.twig' %}
+  {% include 'html-header.twig' %}
   {% block head %}
   {% endblock %}
   </head>
@@ -10,9 +9,20 @@
     <div class="app grid {{ is_home ? 'home' : 'not_home' }}">
       <div class="app-inner">
         <header class="header">
+
+     {# no skip link on home for now 
+        {% if is_home %}
+           <a class="skip-link" href="#search">{{ 'Jump directly to search' | i18n }}</a>
+        {% endif %}
+      #}
+
+        {% if is_search and results.total_count %}
+           {% set target = results.resources.posts | length ? '#resources-heading' : '#collections-heading' %}
+           <a class="skip-link" href="{{ target }}">{{ 'Jump directly to results' | i18n }}</a>
+        {% endif %}
+
         {% block header %}
           <div class="header-inner width-12/12">
-            <a href="#main-heading" class="skip-link">Skip to Main Content</a>
             <a href="/" class="logo">
               <img
                 class="logo-img"
@@ -23,25 +33,27 @@
           </div>
         {% endblock %}
         </header>
+
+        {% block nav %} {% endblock %}
+
         <main class="main">
             {% block content %}
                 No main content.
             {% endblock %}
         </main>
+
     {% block footer %}
       <footer class="footer">
         {% include 'footer.twig' %}
       </footer>
       {{ function('wp_footer') }}
     {% endblock %}
+
       </div>
     </div>
-    <div
-      id="announcement"
-      aria-live="polite"
-      aria-atomic="true"
-      class="sr-only"
-    ></div>
+
+    <div id="announcement" aria-live="polite" aria-atomic="true" class="sr-only"></div>
+
     <script src="{{ site.theme.link }}/assets/js/vendor/modernizr-3.8.0.min.js"></script>
     <script
       src="https://code.jquery.com/jquery-3.4.1.min.js"

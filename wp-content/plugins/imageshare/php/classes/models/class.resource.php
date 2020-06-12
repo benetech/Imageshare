@@ -9,6 +9,7 @@ use Imageshare\Logger;
 use Swaggest\JsonSchema\Schema;
 use Imageshare\Models\Model;
 use Imageshare\Models\ResourceFile;
+use Imageshare\Models\ResourceCollection;
 
 class Resource {
 
@@ -22,8 +23,10 @@ class Resource {
         $is_update = false;
         $subject = Model::get_taxonomy_term_id('subjects', $args['subject']);
 
-        if ($post_id = post_exists($args['title'], '', '', self::type)) {
-            Logger::log(sprintf(__('A Resource with unique title "%s" already exists, updating', 'imageshare'), $args['title']));
+        $existing = post_exists($args['title'], '', '', self::type);
+
+        if ($existing && get_post_status($existing) == 'publish') {
+            Logger::log(sprintf(__('A published Resource with unique title "%s" already exists, updating', 'imageshare'), $args['title']));
             $is_update = true;
         } else {
             $post_data = [
@@ -80,6 +83,30 @@ class Resource {
 
         array_push($files, $resource_file_id);
         update_field('files', $files, $resource_id);
+    }
+    
+    public static function reindex_resources_containing_resource_file($resource_file_id) {
+        $existing = get_posts([
+            'post_type' => self::type,
+            'post_status' => 'publish',
+            'meta_key' => 'resource_file_id',
+            'meta_value' => $resource_file_id,
+            'meta_compare' => '==='
+        ]);
+
+        $collection_ids = [];
+
+        foreach ($existing as $resource) {
+            wpfts_post_reindex($resource->ID);
+            $collections = ResourceCollection::containing($resource->ID);
+            $collection_ids = array_merge($collection_ids, array_map(function ($r) {
+                return $r->id;
+            }, $collections));
+        }
+
+        foreach (array_unique($collection_ids) as $collection_id) {
+            wpfts_post_reindex($collection_id);
+        }
     }
 
     public function __construct($post_id = null) {
@@ -241,6 +268,10 @@ class Resource {
         }
 
         return null;
+    }
+
+    public static function get_subject_name_by_term_id($term_id) {
+        return Model::get_taxonomy_term_name($term_id, 'subjects');
     }
 
     public function collections() {

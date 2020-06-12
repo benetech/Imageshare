@@ -4,6 +4,7 @@ namespace Imageshare\Models;
 
 use Imageshare\Logger;
 use Imageshare\Models\Model;
+use Imageshare\Models\Resource as ResourceModel;
 
 class ResourceFile {
 
@@ -39,13 +40,14 @@ class ResourceFile {
 
         $existing = get_posts([
             'post_type' => self::type,
+            'post_status' => 'publish',
             'meta_key' => 'uri',
             'meta_value' => $args['uri'],
             'meta_compare' => '==='
         ]);
 
         if (count($existing)) {
-            Logger::log(sprintf(__('A ResourceFile with URI "%s" already exists, updating', 'imageshare'), $args['uri']));
+            Logger::log(sprintf(__('A published ResourceFile with URI "%s" already exists, updating', 'imageshare'), $args['uri']));
             $post_id = $existing[0]->ID;
             $is_update = true;
         } else {
@@ -87,6 +89,11 @@ class ResourceFile {
         }
 
         return [$post_id, $is_update];
+    }
+
+    public static function on_save_post($post_id, $post, $update) {
+        ResourceModel::reindex_resources_containing_resource_file($post_id);
+        return $post;
     }
 
     public static function accommodations_to_term_ids($accommodations) {
@@ -254,6 +261,14 @@ class ResourceFile {
         }
         
         return null;
+    }
+
+    public static function get_type_name_by_term_id($term_id) {
+        return Model::get_taxonomy_term_name($term_id, 'file_types');
+    }
+
+    public static function get_accommodation_name_by_term_id($term_id) {
+        return Model::get_taxonomy_term_name($term_id, 'accommodations');
     }
 
     public function get_index_data() {

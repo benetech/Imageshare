@@ -77,79 +77,135 @@ class Search {
         return [
             'subjects'       => ResourceModel::available_subjects($hide_empty = true),
             'accommodations' => ResourceFileModel::available_accessibility_accommodations($hide_empty = true),
-            'types'          => ResourceFileModel::available_types($hide_empty = false)
+            'types'          => ResourceFileModel::available_types($hide_empty = true)
         ];
     }
 
-    public function add_weight(&$weights, $post_type, $term) {
-        $term = get_term($args['type']);
-        if (!is_wp_error($term)) {
-            $weights[$post_type .'_'. $type] = 0.9;
-            array_push($query, Model::as_search_term('type', $term->name));
-        }
-    }
-
-    public function query($args) {
-        $resources   = self::post_type_query(ResourceModel::type, $args);
-        $collections = self::post_type_query(ResourceCollectionModel::type, $args);
-
-        if ($args['previous'] !== null && $args['narrow']) {
-            $resources = self::post_type_query(ResourceModel::type,
-                array_merge($args['previous'], ['id_in' => wp_list_pluck($resources, 'ID')])
-            );
-            $collections = self::post_type_query(ResourceCollectionModel::type,
-                array_merge($args['previous'], ['id_in' => wp_list_pluck($collections, 'ID')])
-            );
-        }
-
+    public function get_terms($args) {
         $results = [
-            'resources' => array_map(function ($p) {
-                return ResourceModel::from_post($p);
-            }, $resources),
-
-            'collections' => array_map(function ($p) {
-                return ResourceCollectionModel::from_post($p);
-            }, $collections)
+            'subject' => [],
+            'type' => [],
+            'acc' => []
         ];
 
-        $results['count'] = count($results['resources']) + count($results['collections']);
+        foreach (['subject', 'type', 'acc'] as $filter) {
+            if (self::is_nonempty_array($args[$filter])) {
+                foreach ($args[$filter] as $term_id) {
+                    $term = get_term($term_id);
+                    if (!is_wp_error($term) && $term !== null) {
+                        array_push($results[$filter], $term);
+                    }
+                }
+            }
+        }
 
         return $results;
     }
 
-    public function post_type_query($type, $args) {
-        $query = [$args['query']];
+    public function get_paging($page = 1, $size = 20, $amount = 0, $total = 0) {
+        $valid_size_steps = [5, 20, 50, 100];
+        $default_size = 20;
+        $default_page = 1;
 
-        if (strlen(trim($args['query']))) {
+        if (!is_numeric($page)) {
+            $page = $default_page;
+        }
+
+        if (!in_array($size, $valid_size_steps)) {
+            $size = $default_size;
+        }
+
+        $start = ($size * ($page -1) + 1) ?? 1;
+        $stop = ($start + $size - 1) < $total ? $start + $size -1 : $total;
+
+        return [
+            'size'  => $size,
+            'page'  => $page,
+            'start' => $start,
+            'stop'  => $stop,
+            'total' => $total
+        ];
+    }
+
+    public function query($args) {
+        $query = trim($args['query']);
+        $terms = self::get_terms($args);
+
+        [$resources, $total_resources] = self::post_type_query(
+            ResourceModel::type, $query, $terms, self::get_paging($args['rp'], $args['rs'])
+        );
+
+        [$collections, $total_collections] = self::post_type_query(
+            ResourceCollectionModel::type, $query, $terms, self::get_paging($args['cp'], $args['cs'])
+        );
+
+        $filters = array_merge(['query' => $query], $terms);
+
+        $results = [
+            'resources'   => [],
+            'collections' => [] 
+        ];
+
+        $resources = array_map(function ($p) {
+            return ResourceModel::from_post($p);
+        }, $resources);
+
+        $collections = array_map(function ($p) {
+            return ResourceCollectionModel::from_post($p);
+        }, $collections);
+
+        $results['total_count'] = count($resources) + count($collections);
+
+        $results['resources']['paging'] = self::get_paging($args['rp'], $args['rs'], count($resources), $total_resources);
+        $results['collections']['paging'] = self::get_paging($args['cp'], $args['cs'], count($collections), $total_collections);
+
+        $results['resources']['posts'] = $resources;
+        $results['collections']['posts'] = $collections;
+
+        $results['resources']['total'] = $total_resources;
+        $results['collections']['total'] = $total_collections;
+
+        $results['has_filters'] =
+            count($filters['subject']) ||
+            count($filters['type'])    ||
+            count($filters['acc'])
+        ;
+
+        $results['search_filters'] = $filters;
+
+        return $results;
+    }
+
+    public static function is_nonempty_array($var) {
+        return is_array($var) && count($var) > 0;
+    }
+
+    public function post_type_query($type, $query, $terms, $paging) {
+        if (strlen($query)) {
             $cluster_weights = [
                 'post_title' => 0.7,
                 ($type . '_data') => 0.9
             ];
+            $query = [$query];
         } else {
             $cluster_weights = [];
+            $query = [];
         }
 
-        if ($args['subject'] !== null) {
-            $term = get_term($args['subject']);
-            if (!is_wp_error($term)) {
-                $cluster_weights[$type . '_subject'] = 0.9;
-                array_push($query, Model::as_search_term('subject', $term->name));
+        $search_term_prefix = [
+            'subject' => 'subject',
+            'type' => 'type',
+            'acc' => 'accommodation'
+        ];
+
+        foreach (['subject', 'type', 'acc'] as $filter) {
+            if (count($terms[$filter])) {
+                $cluster_weights[$type . '_' . $filter] = 0.9;
             }
-        }
 
-        if ($args['type'] !== null) {
-            $term = get_term($args['type']);
-            if (!is_wp_error($term)) {
-                $cluster_weights[$type . '_type'] = 0.9;
-                array_push($query, Model::as_search_term('type', $term->name));
-            }
-        }
-
-        if ($args['accommodation'] !== null) {
-            $term = get_term($args['accommodation']);
-            if (!is_wp_error($term)) {
-                $cluster_weights[$type . '_accommodation'] = 0.9;
-                array_push($query, Model::as_search_term('accommodation', $term->name));
+            foreach ($terms[$filter] as $term) {
+                $prefix = $search_term_prefix[$filter];
+                array_push($query, Model::as_search_term($prefix, $term->name));
             }
         }
 
@@ -163,7 +219,8 @@ class Search {
             'wpfts_nocache' => 1,
             'cluster_weights' => $cluster_weights,
             's' => implode(' ', $query),
-            'post__in' => $args['id_in'] ?? null
+            'posts_per_page' => $paging['size'],
+            'paged' => $paging['page']
         ]);
 
         while ($wpq->have_posts()) {
@@ -172,7 +229,7 @@ class Search {
             array_push($results, $post);
         }
 
-        return $results;
+        return [$results, $wpq->found_posts];
     }
 
     public function get_published_resource_count() {

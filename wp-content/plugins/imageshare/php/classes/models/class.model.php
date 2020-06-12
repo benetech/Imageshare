@@ -85,6 +85,16 @@ class Model {
         return $term->term_id;
     }
 
+    public static function get_taxonomy_term_name($term_id, $taxonomy) {
+        $term = get_term($term_id, $taxonomy);
+
+        if ($term === null || is_wp_error($term)) {
+            return null;
+        }
+
+        return $term->name;
+    }
+
     public static function finish_importing($post_id) {
         // remove importing flag
         // this is done so the search indexing hook doesn't cause problems
