@@ -91,7 +91,7 @@
     {% if post.files | length > 0 %}
       <section id="files">
         <h2>{{ 'Files' | i18n }} <span class="counter">{{ post.files | length }}</span></h2>
-        <ul>
+        <ul role="list">
         {% for file in post.files %}
           {{ block('file') }}
         {% endfor %}
@@ -103,7 +103,7 @@
       <section id="collections">
         <h2>{{ 'Collections' | i18n }} <span class="counter">{{ post.collections | length }}</span></h2>
         <p>{{ 'This resource is part of one or more collections.' | i18n }}</p>
-        <ul>
+        <ul role="list">
         {% for collection in post.collections %}
           {{ include('partial/collection-list-item.twig') }}
         {% endfor %}
