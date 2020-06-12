@@ -25,6 +25,7 @@
      {# perhaps use _n() #}
      <p id="main-description" class="main-description">
         {{ '%d resource(s) and %d collection(s) matched your query.' | i18n | format(results.resources.total, results.collections.total) }}
+        <button type="button" hidden id="reset">{{ 'Reset search form' | i18n }}</button>
      </p>
   {% endif %}
 
@@ -33,7 +34,7 @@
     {{ include('partial/search-form.twig', {enclosing_form: false}) }}
 
     {% if results.has_filters %}
-      <div class="search-filters">
+      <div class="search-filters" id="search-filters">
         <h2 id="search-filters-heading">{{ 'Current filters' | i18n }}</h2>
         <ul role="list">
         {% set filters = [

@@ -22,3 +22,17 @@ const announcement = (msg, selector, time) => {
     el.innerHTML = "";
   }, time);
 };
+
+if (resetBtn = document.querySelector('button#reset')) {
+  resetBtn.removeAttribute('hidden');
+  resetBtn.addEventListener("click", (event) => {
+    document.getElementById('search').value = '';
+    if (filters = document.querySelector('#search-filters')) {
+        filters.remove();
+    }
+    document.querySelector('#subject').selectedIndex = 0;
+    document.querySelector('#type').selectedIndex = 0;
+    document.querySelector('#acc').selectedIndex = 0;
+    announcement('Search form has been reset.', '#announcement', 3000);
+  });
+}
