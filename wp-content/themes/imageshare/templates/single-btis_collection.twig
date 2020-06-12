@@ -1,6 +1,6 @@
 {% extends "base.twig" %}
 
-{% set page_title = post.title %}
+{% set page_title = '%s - collection - Imageshare' | i18n | format(post.title) %}
 
 {% block content %}
   <div class="main-inner grid" id="collection">

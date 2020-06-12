@@ -1,6 +1,6 @@
 {% extends "base.twig" %}
 
-{% set page_title = post.title %}
+{% set page_title = '%s - resource - Imageshare' | i18n | format(post.title) %}
 
 {% block header %}
   <div class="header-inner">
@@ -82,7 +82,7 @@
           {% endif %}
           </dl>
         {% if post.download_uri | length > 5 %}
-          <a href="{{ post.download_uri }}" class="download">
+          <a href="{{ post.download_uri }}" class="download" download="{{ post.download_uri | basename }}">
             {{ 'Download all files' | i18n }} ({{ post.files | length }}) 
           </a>
         {% endif %}
@@ -126,7 +126,7 @@
       {% endif %}
       <h3 id="file-{{ file.id }}">{{ file.title | e }}</h3>
       {% if file.downloadable %}
-        <a aria-describedby="file-{{ file.id }}" class="download" href="{{ file.uri }}">{{ 'Download' | i18n }}</a>
+        <a download="{{ file.uri | basename }}" aria-describedby="file-{{ file.id }}" class="download" href="{{ file.uri }}">{{ 'Download' | i18n }}</a>
       {% endif %}
     </div>
     

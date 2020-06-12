@@ -156,6 +156,10 @@ class StarterSite extends Timber\Site {
         return __($text, 'imageshare');
     }
 
+    public function get_basename($f) {
+        return basename($f);
+    }
+
     /** This is where you can add your own functions to twig.
      *
      * @param string $twig get extension.
@@ -163,6 +167,7 @@ class StarterSite extends Timber\Site {
     public function add_to_twig( $twig ) {
         $twig->addExtension( new Twig\Extension\StringLoaderExtension() );
         $twig->addFilter( new Twig\TwigFilter( 'i18n', array( $this, 'i18n' ) ) );
+        $twig->addFilter( new Twig\TwigFilter( 'basename', array( $this, 'get_basename' ) ) );
         return $twig;
     }
 

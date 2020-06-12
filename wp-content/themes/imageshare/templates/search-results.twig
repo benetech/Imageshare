@@ -1,6 +1,6 @@
 {% extends "base.twig" %}
 
-{% set title = '%d resources and %d collections found' | i18n | format(results.resources.total, results.collections.total) %}
+{% set page_title = 'Search results for "%s" - Imageshare' | i18n | format(results.search_filters.query) %}
 
 {% block search_filter %}
     {% for term in filter.value %}
