@@ -942,7 +942,12 @@ h2.resource-section {
 }
 
 #resource #files .download {
+  display: inline-block;
   margin: 0 .5em;
+}
+
+#resource #files .download-all {
+  margin: .5em 0;
 }
 
 #resource #files .header + p {
