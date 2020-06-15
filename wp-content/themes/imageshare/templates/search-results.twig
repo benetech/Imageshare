@@ -24,7 +24,12 @@
   {% if results.total_count > 0 %}
      {# perhaps use _n() #}
      <p id="main-description" class="main-description">
-        {{ '%d resource(s) and %d collection(s) matched your query.' | i18n | format(results.resources.total, results.collections.total) }}
+        {{ '%d %s and %d %s matched your query.' | i18n | format(
+            results.resources.total, 
+            _n('resource', 'resources', results.resources.total),
+            results.collections.total,
+            _n('collection', 'collections', results.collections.total)
+        ) }}
      </p>
   {% endif %}
 
