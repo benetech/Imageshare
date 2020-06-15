@@ -13,16 +13,9 @@
 
 {% block content %}
   <div class="main-inner width-12/12">
-    <h1 id="main-heading" class="h1">
-      {% if results.total_count == 0 %}
-        {{ 'No results matched your query.' | i18n }}
-      {% else %}
-        {{ '%d results found.' | i18n | format(results.total_count) }}
-      {% endif %}
-     </h1>
+    <h1 id="main-heading" class="h1">{{ 'Search results' | i18n }}</h1>
 
   {% if results.total_count > 0 %}
-     {# perhaps use _n() #}
      <p id="main-description" class="main-description">
         {{ '%d %s and %d %s matched your query.' | i18n | format(
             results.resources.total, 
@@ -31,6 +24,8 @@
             _n('collection', 'collections', results.collections.total)
         ) }}
      </p>
+  {% else %}
+    <p>{{ 'No results matched your query.' | i18n }}</p>
   {% endif %}
 
     <form role="search" class="search-form">
