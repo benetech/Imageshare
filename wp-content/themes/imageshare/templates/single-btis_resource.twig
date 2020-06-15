@@ -90,8 +90,8 @@
 
     {% if post.files | length > 0 %}
       <section id="files">
-        <h2>{{ 'Files' | i18n }} <span class="counter">{{ post.files | length }}</span></h2>
-        <ul role="list">
+        <h2 id="files-heading">{{ 'Files' | i18n }} <span class="counter">{{ post.files | length }}</span></h2>
+        <ul role="list" aria-labelledby="files-heading">
         {% for file in post.files %}
           {{ block('file') }}
         {% endfor %}
@@ -101,9 +101,9 @@
 
     {% if post.collections | length > 0 %}
       <section id="collections">
-        <h2>{{ 'Collections' | i18n }} <span class="counter">{{ post.collections | length }}</span></h2>
+        <h2 id="collections-heading">{{ 'Collections' | i18n }} <span class="counter">{{ post.collections | length }}</span></h2>
         <p>{{ 'This resource is part of one or more collections.' | i18n }}</p>
-        <ul role="list">
+        <ul role="list" aria-labelledby="collections-heading">
         {% for collection in post.collections %}
           {{ include('partial/collection-list-item.twig') }}
         {% endfor %}

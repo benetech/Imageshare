@@ -70,17 +70,21 @@
 
     <h3 tabindex="-1" id="resources-heading">{{ 'Resources' | i18n }}</h2>
 
+    <div>
+      <p>
+      {{ 'Showing resources %d to %d of %d' | i18n | format(paging.start, paging.stop, paging.total) }}
+      </p>
+
+      <p class="width-9/12">
+      {{ 'Select a resource below to get more information and link to download this resource.' | i18n }}
+      </p>
+    </div>
+
+
+    {{ include('partial/resource-table.twig', {results: results.resources.posts, level: 4, labelledby: 'resources-heading'}, with_context = false) }}
+
     <div class="paging">
-      <div>
-        <p>
-        {{ 'Showing resources %d to %d of %d' | i18n | format(paging.start, paging.stop, paging.total) }}
-        </p>
-
-        <p class="width-9/12">
-        {{ 'Select a resource below to get more information and link to download this resource.' | i18n }}
-        </p>
-      </div>
-
+      <h3>{{ 'Pagination' | i18n }}<span class="sr-only">({{ 'resources' | i18n }})</span></h3>
       <div class="controls">
           <div class="form-group">
             <label class="resources-per-page-label" for="resources-per-page">{{ 'Results per page' | i18n }}</label>
@@ -100,7 +104,6 @@
       </div>
     </div>
 
-    {{ include('partial/resource-table.twig', {results: results.resources.posts, level: 4}, with_context = false) }}
 
 {% endblock %}
 
@@ -108,11 +111,16 @@
     <h3 tabindex="-1" id="collections-heading">{{ 'Collections' | i18n }}</h2>
     {% set paging = results.collections.paging %}
 
-    <div class="paging">
+    <div>
       <p>
           {{ 'Showing collections %d to %d of %d' | i18n | format(paging.start, paging.stop, paging.total) }}
       </p>
+    </div>
 
+    {{ include('partial/collection-table.twig', {results: results.collections.posts, labelledby: 'collections-heading'}, with_context = false) }}
+
+    <div class="paging">
+      <h3>{{ 'Pagination' | i18n }}<span class="sr-only">({{ 'collections' | i18n }})</span></h3>
       <div class="controls">
         <div class="form-group">
           <label class="collections-per-page-label" for="collections-per-page">{{ 'Results per page' | i18n }}</label>
@@ -132,5 +140,4 @@
       </div>
     </div>
 
-    {{ include('partial/collection-table.twig', {results: results.collections.posts}, with_context = false) }}
 {% endblock %}

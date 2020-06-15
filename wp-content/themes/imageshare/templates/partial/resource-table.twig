@@ -1,4 +1,4 @@
-<ul id="resources" role="list">
+<ul id="resources" role="list" {{ labelledby ? 'aria-labelledby="%s"' | format(labelledby) : '' }}>
   {% for resource in results %}
   <li>
     <a href="{{ resource.permalink }}">

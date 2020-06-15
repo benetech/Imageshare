@@ -1009,6 +1009,7 @@ h2.resource-section {
 }
 
 .search-results .paging {
+  margin-top: .5em;
   display: flex;
   justify-content: space-between;
   padding: .5em;
@@ -1017,8 +1018,16 @@ h2.resource-section {
   margin-bottom: .2em;
 }
 
+.search-results .paging h3 {
+    margin: 0;
+}
+
 .search-results .paging .form-group {
   margin: 0 .5em;
+}
+
+.search-results .paging .form-group * {
+    display: inline-block;
 }
 
 .search-results img {
@@ -1038,9 +1047,12 @@ h2.resource-section {
   margin: 0 .5em .2em 0;
 }
 
-.search-results h3, .search-results h4 {
-  margin: 0;
-  margin-bottom: .5em;
+.search-results h3 {
+    margin: 1em 0 .5em 0;
+}
+
+.search-results ul h3, .search-results ul h4 {
+  margin: 0 0 .5em 0;
   display: inline-block;
 }
 
