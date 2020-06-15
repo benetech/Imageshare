@@ -641,13 +641,10 @@ h2.resource-section {
 }
 
 .results-per-page {
-  text-align: right;
-  margin-bottom: 5px;
-}
-.results-per-page-label {
-  font-size: 0.875em;
-  display: inline-block;
-  margin-right: 5px;
+  padding: .2em;
+  border: 1px solid #000;
+  align-self: center;
+  justify-content: space-between;
 }
 
 .resources-headings {
@@ -1027,6 +1024,10 @@ h2.resource-section {
 
 .search-results .paging h3 {
     margin: 0;
+}
+
+.search-results .paging li {
+    display: inline-block;
 }
 
 .search-results .paging .form-group {

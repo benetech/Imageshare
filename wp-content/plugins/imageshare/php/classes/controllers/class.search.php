@@ -102,7 +102,7 @@ class Search {
         return $results;
     }
 
-    public function get_paging($page = 1, $size = 20, $amount = 0, $total = 0) {
+    public function get_paging($args, $page = 1, $size = 20, $amount = 0, $total = 0) {
         $valid_size_steps = [5, 20, 50, 100];
         $default_size = 20;
         $default_page = 1;
@@ -118,12 +118,24 @@ class Search {
         $start = ($size * ($page -1) + 1) ?? 1;
         $stop = ($start + $size - 1) < $total ? $start + $size -1 : $total;
 
+        $first_page = $page > 1 ? 1 : null;
+        $prev_page = $first_page && $page-1 > $first_page && $page-1 < $page ? $page-1 : null;
+        $last_page = intval($total / $size) > $page ? intval($total / $size) : null;
+        $next_page = $last_page && $page+1 < $last_page ? $page+1 : null; 
+
         return [
+            'args' => $args,
+
             'size'  => $size,
             'page'  => $page,
             'start' => $start,
             'stop'  => $stop,
-            'total' => $total
+            'total' => $total,
+
+            'first_page' => $first_page,
+            'prev_page' => $prev_page,
+            'next_page' => $next_page,
+            'last_page' => $last_page
         ];
     }
 
@@ -132,11 +144,11 @@ class Search {
         $terms = self::get_terms($args);
 
         [$resources, $total_resources] = self::post_type_query(
-            ResourceModel::type, $query, $terms, self::get_paging($args['rp'], $args['rs'])
+            ResourceModel::type, $query, $terms, self::get_paging($args, $args['rp'], $args['rs'])
         );
 
         [$collections, $total_collections] = self::post_type_query(
-            ResourceCollectionModel::type, $query, $terms, self::get_paging($args['cp'], $args['cs'])
+            ResourceCollectionModel::type, $query, $terms, self::get_paging($args, $args['cp'], $args['cs'])
         );
 
         $filters = array_merge(['query' => $query], $terms);
@@ -156,8 +168,8 @@ class Search {
 
         $results['total_count'] = count($resources) + count($collections);
 
-        $results['resources']['paging'] = self::get_paging($args['rp'], $args['rs'], count($resources), $total_resources);
-        $results['collections']['paging'] = self::get_paging($args['cp'], $args['cs'], count($collections), $total_collections);
+        $results['resources']['paging'] = self::get_paging($args, $args['rp'], $args['rs'], count($resources), $total_resources);
+        $results['collections']['paging'] = self::get_paging($args, $args['cp'], $args['cs'], count($collections), $total_collections);
 
         $results['resources']['posts'] = $resources;
         $results['collections']['posts'] = $collections;
