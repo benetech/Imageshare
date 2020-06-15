@@ -1056,7 +1056,10 @@ h2.resource-section {
 
 /* collection */
 
-#collection .description {
-  margin-top: .2em;
+#collection .contributor {
   font-style: italic;
+}
+
+#collection > div * + * {
+  margin-top: .5em;
 }
