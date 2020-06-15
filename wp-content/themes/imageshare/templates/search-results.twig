@@ -90,21 +90,21 @@
         <nav>
           <ul role="list">
             {% if paging.first_page %}
-              <li><a href="/?page=search&q={{ args.query | url_encode }}&cp={{ args.cp ? args.cp : 1 }}&cs={{ args.cs ? args.cs : 20 }}&rp={{ paging.first_page }}&rs={{ args.rs ? args.rs : 20 }}">Page {{ paging.first_page }}</a></li>
+              <li><a href="/?page=search&q={{ args.query | url_encode }}&cp={{ args.cp ? args.cp : 1 }}&cs={{ args.cs ? args.cs : 20 }}&rp={{ paging.first_page }}&rs={{ args.rs ? args.rs : 20 }}">{{ 'First page' | i18n }}</a></li>
             {% endif %}
 
             {% if paging.prev_page %}
-              <li><a href="/?page=search&q={{ args.query | url_encode }}&cp={{ args.cp ? args.cp : 1 }}&cs={{ args.cs ? args.cs : 20 }}&rp={{ paging.prev_page }}&rs={{ args.rs ? args.rs : 20 }}">Page {{ paging.prev_page }}</a></li>
+              <li><a href="/?page=search&q={{ args.query | url_encode }}&cp={{ args.cp ? args.cp : 1 }}&cs={{ args.cs ? args.cs : 20 }}&rp={{ paging.prev_page }}&rs={{ args.rs ? args.rs : 20 }}">{{ 'Previous page' | i18n }}</a></li>
             {% endif %}
 
-            <li>Page {{ paging.page }}</li>
+            <li>{{ 'Page %d of %d' | format(paging.page, paging.last_page ? paging.last_page : paging.page) | i18n }}</li>
 
             {% if paging.next_page %}
-              <li><a href="/?page=search&q={{ args.query | url_encode }}&cp={{ args.cp ? args.cp : 1 }}&cs={{ args.cs ? args.cs : 20 }}&rp={{ paging.next_page }}&rs={{ args.rs ? args.rs : 20 }}">Page {{ paging.next_page }}</a></li>
+              <li><a href="/?page=search&q={{ args.query | url_encode }}&cp={{ args.cp ? args.cp : 1 }}&cs={{ args.cs ? args.cs : 20 }}&rp={{ paging.next_page }}&rs={{ args.rs ? args.rs : 20 }}">{{ 'Next page' | i18n }}</a></li>
             {% endif %}
 
             {% if paging.last_page %}
-              <li><a href="/?page=search&q={{ args.query | url_encode }}&cp={{ args.cp ? args.cp : 1 }}&cs={{ args.cs ? args.cs : 20 }}&rp={{ paging.last_page }}&rs={{ args.rs ? args.rs : 20 }}">Page {{ paging.last_page }}</a></li>
+              <li><a href="/?page=search&q={{ args.query | url_encode }}&cp={{ args.cp ? args.cp : 1 }}&cs={{ args.cs ? args.cs : 20 }}&rp={{ paging.last_page }}&rs={{ args.rs ? args.rs : 20 }}">{{ 'Last page' | i18n }}</a></li>
             {% endif %}
           </ul>
       </nav>
@@ -138,25 +138,25 @@
 
     <div class="paging">
       <div>
-        <h3>{{ 'Collection pagination' | i18n }}<span class="sr-only">({{ 'collections' | i18n }})</span></h3>
+        <h3>{{ 'Collection pagination' | i18n }}</h3>
         <nav>
           <ul role="list">
             {% if paging.first_page %}
-              <li><a href="/?page=search&q={{ args.query | url_encode }}&cp={{ paging.first_page }}&cs={{ args.cs or 20 }}&rp={{ args.rp ? args.rp : 1 }}&rs={{ args.rs ? args.rs : 20 }}">Page {{ paging.first_page }}</a></li>
+              <li><a href="/?page=search&q={{ args.query | url_encode }}&cp={{ paging.first_page }}&cs={{ args.cs or 20 }}&rp={{ args.rp ? args.rp : 1 }}&rs={{ args.rs ? args.rs : 20 }}">{{ 'First page' | i18n }}</a></li>
             {% endif %}
 
             {% if paging.prev_page %}
-              <li><a href="/?page=search&q={{ args.query | url_encode }}&cp={{ paging.prev_page }}&cs={{ args.cs or 20 }}&rp={{ args.rp ? args.rp : 1 }}&rs={{ args.rs ? args.rs : 20 }}">Page {{ paging.prev_page }}</a></li>
+              <li><a href="/?page=search&q={{ args.query | url_encode }}&cp={{ paging.prev_page }}&cs={{ args.cs or 20 }}&rp={{ args.rp ? args.rp : 1 }}&rs={{ args.rs ? args.rs : 20 }}">{{ 'Previous page' | i18n }}</a></li>
             {% endif %}
 
-            <li>Page {{ paging.page }}</li>
+            <li>{{ 'Page %d of %d' | format(paging.page, paging.last_page ? paging.last_page : paging.page) | i18n }}</li>
 
             {% if paging.next_page %}
-              <li><a href="/?page=search&q={{ args.query | url_encode }}&cp={{ paging.next_page }}&cs={{ args.cs ? args.cs : 20 }}&rp={{ args.rp ? args.rp : 1 }}&rs={{ args.rs ? args.rs : 20 }}">Page {{ paging.next_page }}</a></li>
+              <li><a href="/?page=search&q={{ args.query | url_encode }}&cp={{ paging.next_page }}&cs={{ args.cs ? args.cs : 20 }}&rp={{ args.rp ? args.rp : 1 }}&rs={{ args.rs ? args.rs : 20 }}">{{ 'Next page' | i18n }}</a></li>
             {% endif %}
 
             {% if paging.last_page %}
-              <li><a href="/?page=search&q={{ args.query | url_encode }}&cp={{ paging.last_page }}&cs={{ args.cs ? args.cs : 20 }}&rp={{ args.rp ? args.rp : 1 }}&rs={{ args.rs ? args.rs : 20 }}">Page {{ paging.last_page }}</a></li>
+              <li><a href="/?page=search&q={{ args.query | url_encode }}&cp={{ paging.last_page }}&cs={{ args.cs ? args.cs : 20 }}&rp={{ args.rp ? args.rp : 1 }}&rs={{ args.rs ? args.rs : 20 }}">{{ 'Last page' | i18n }}</a></li>
             {% endif %}
           </ul>
         </nav>
