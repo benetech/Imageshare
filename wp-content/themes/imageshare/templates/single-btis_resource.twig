@@ -77,7 +77,7 @@
           {% if post.tags %}
             <div>
                 <dd>{{ 'Keywords' | i18n }}:</dd>
-                <dt>{{ post.tags | join(', ') }}</dt>
+                <dt>{{ post.tags ? post.tags | join(', ') : '(none)' | i18n }}</dt>
             </div>
           {% endif %}
           </dl>

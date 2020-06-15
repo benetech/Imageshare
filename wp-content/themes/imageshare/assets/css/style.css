@@ -616,6 +616,10 @@ table.resources {
   vertical-align: middle;
 }
 
+dl.resource-details * + * {
+    margin-top: .5em;
+}
+
 dl.resource-details dd {
   margin-left: 0;
   font-size: 1.3em;
@@ -631,8 +635,6 @@ h2.resource-section {
   color: #0C4471;
   margin-bottom: .5em;
 }
-
-
 
 #resources-page, #collections-page {
   width: 2em;

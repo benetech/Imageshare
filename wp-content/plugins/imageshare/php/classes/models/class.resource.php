@@ -205,11 +205,7 @@ class Resource {
                 break;
 
             case 'tags':
-                $term_names = array_map(function ($term) {
-                    return $term->name;
-                }, wp_get_post_terms($post_id));
-
-                echo join(', ', $term_names);
+                echo join(', ', $post->tags);
                 break;
         }
     }
@@ -263,11 +259,18 @@ class Resource {
             $this->file_ids      = get_post_meta($this->post_id, 'files', true);
             $this->download_uri  = get_post_meta($this->post_id, 'download_uri', true);
             $this->subject       = Model::get_meta_term_name($this->post_id, 'subject', 'subjects', true);
+            $this->tags          = $this->get_tags();
 
             return $this->id;
         }
 
         return null;
+    }
+
+    private function get_tags () {
+        return array_map(function ($term) {
+            return $term->name;
+        }, wp_get_post_terms($this->post_id));
     }
 
     public static function get_subject_name_by_term_id($term_id) {
