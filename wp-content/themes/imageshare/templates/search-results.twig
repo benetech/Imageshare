@@ -51,12 +51,13 @@
     {% endif %}
 
     <div class="search-results">
+      <h2 class="sr-only">{{ 'Results' | i18n }}</h2>
     {% if results.resources.posts | length > 0 %}
-        {{ block('resources') }}
+      {{ block('resources') }}
     {% endif %}
 
     {% if results.collections.posts | length > 0 %}
-        {{ block('collections') }}
+      {{ block('collections') }}
     {% endif %}
     </div>
 
