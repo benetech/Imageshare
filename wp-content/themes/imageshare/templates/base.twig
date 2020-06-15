@@ -12,13 +12,13 @@
 
      {# no skip link on home for now 
         {% if is_home %}
-           <a class="skip-link" href="#search">{{ 'Jump directly to search' | i18n }}</a>
+           <a class="skip-link" href="#search">{{ 'Skip to search' | i18n }}</a>
         {% endif %}
       #}
 
         {% if is_search and results.total_count %}
            {% set target = results.resources.posts | length ? '#resources-heading' : '#collections-heading' %}
-           <a class="skip-link" href="{{ target }}">{{ 'Jump directly to results' | i18n }}</a>
+           <a class="skip-link" href="{{ target }}">{{ 'Skip to results' | i18n }}</a>
         {% endif %}
 
         {% block header %}
