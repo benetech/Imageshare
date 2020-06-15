@@ -68,7 +68,7 @@
 {% block resources %}
     {% set paging = results.resources.paging %}
 
-    <h2 tabindex="-1" id="resources-heading">{{ 'Resources' | i18n }}</h2>
+    <h3 tabindex="-1" id="resources-heading">{{ 'Resources' | i18n }}</h2>
 
     <div class="paging">
       <div>
@@ -100,12 +100,12 @@
       </div>
     </div>
 
-    {{ include('partial/resource-table.twig', {results: results.resources.posts}, with_context = false) }}
+    {{ include('partial/resource-table.twig', {results: results.resources.posts, level: 4}, with_context = false) }}
 
 {% endblock %}
 
 {% block collections %}
-    <h2 tabindex="-1" id="collections-heading">{{ 'Collections' | i18n }}</h2>
+    <h3 tabindex="-1" id="collections-heading">{{ 'Collections' | i18n }}</h2>
     {% set paging = results.collections.paging %}
 
     <div class="paging">

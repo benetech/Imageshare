@@ -927,7 +927,7 @@ h2.resource-section {
   margin-bottom: .5em;
 }
 
-#resource h3 {
+#resource h3, #resource h4 {
   margin: 0;
   color: #0c4471;
 }
@@ -988,7 +988,7 @@ h2.resource-section {
 
 /* search results */
 
-.search-results h2 {
+.search-results h3, .search-results h4 {
   margin-bottom: .2em;
 }
 
@@ -1038,7 +1038,7 @@ h2.resource-section {
   margin: 0 .5em .2em 0;
 }
 
-.search-results h3 {
+.search-results h3, .search-results h4 {
   margin: 0;
   margin-bottom: .5em;
   display: inline-block;
