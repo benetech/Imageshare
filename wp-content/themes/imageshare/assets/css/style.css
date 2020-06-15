@@ -226,6 +226,12 @@ h2#main-search {
 }
 
 /* search */
+
+.controls h3 {
+    margin: 0;
+    padding: 0;
+}
+
 .search-field {
   border: 1px solid #737369;
   padding: 1em;
