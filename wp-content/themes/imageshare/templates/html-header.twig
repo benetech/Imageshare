@@ -7,6 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="apple-touch-icon" href="{{ site.theme.link }}/assets/img/icon.png" />
     {% for sheet in ['normalize', 'main', 'grid', 'style'] %}
-        <link rel="stylesheet" href="{{ site.theme.link }}/assets/css/{{ sheet }}.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="{{ site.theme.link }}/assets/css/{{ sheet }}.css?{{ theme.version }}" type="text/css" media="screen" />
     {% endfor %}
     <meta name="theme-color" content="#fafafa" />
