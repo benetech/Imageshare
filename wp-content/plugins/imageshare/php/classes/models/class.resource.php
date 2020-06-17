@@ -325,6 +325,9 @@ class Resource {
     private function files_by_status() {
         return array_reduce($this->files(), function($carry, $item) {
             $status = $item->post->post_status;
+            if ($status === 'publish') {
+                $status = 'published';
+            }
 
             if (!array_key_exists($status, $carry)) {
                 $carry[$status] = 1;
@@ -407,12 +410,12 @@ class Resource {
     public function get_resource_file_types() {
         return array_map(function ($resource_file) {
             return $resource_file->type;
-        }, $this->files());
+        }, $this->published_files());
     }
 
     public function get_resource_file_accommodations() {
         return array_map(function ($resource_file) {
             return $resource_file->get_accommodations();
-        }, $this->files());
+        }, $this->published_files());
     }
 }
