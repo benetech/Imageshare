@@ -17,6 +17,11 @@ class Search {
     public function index_post($index, $post) {
         Logger::log("Indexing post {$post->ID}");
 
+        if ($post->post_status !== 'publish') {
+            Logger::log("Post status is {$post->post_status}, skipping");
+            return $index;
+        }
+
         switch ($post->post_type) {
             case (ResourceModel::type):
                 $type = ResourceModel::type;

@@ -210,6 +210,21 @@ class Resource {
         }
     }
 
+    public static function on_save_post($post_id, $post, $update) {
+        if (!$update) {
+            return;
+        }
+
+        if (wp_is_post_revision($post_id)) {
+            return;
+        }
+
+        if ($post->post_status === 'publish') {
+            $resource = new Resource($post_id);
+            $resource->force_publish_files();
+        }
+    }
+
     public function acf_update_value($field, $value) {
         switch($field['name']) {
             case 'files':
@@ -267,7 +282,7 @@ class Resource {
         return null;
     }
 
-    private function get_tags () {
+    private function get_tags() {
         return array_map(function ($term) {
             return $term->name;
         }, wp_get_post_terms($this->post_id));
@@ -283,6 +298,24 @@ class Resource {
         }
 
         return $this->_collections = ResourceCollection::containing($this->post_id);
+    }
+
+    public function force_publish_files() {
+        foreach ($this->files() as $file) {
+            if ($file->post->post_status !== 'draft') {
+                Logger::log("File {$file->id} status is {$file->post->post_status}, skipping");
+                continue;
+            }
+
+            $file->post->post_status = 'publish';
+
+            if (!$result = wp_update_post($file->post)) {
+                Logger::log("Unable to force publish file {$file->id}");
+                continue;
+            }
+
+            Logger::log("Force published file {$file->id}");
+        }
     }
 
     public function files() {
