@@ -201,7 +201,11 @@ class Resource {
                 break;
 
             case 'files':
-                echo count($post->file_ids);
+                $fbs = $post->files_by_status();
+                echo join(', ', array_map(function($status) use($fbs) {
+                    return "{$fbs[$status]} {$status}";
+                }, array_keys($fbs)));
+
                 break;
 
             case 'tags':
@@ -316,6 +320,26 @@ class Resource {
 
             Logger::log("Force published file {$file->id}");
         }
+    }
+
+    private function files_by_status() {
+        return array_reduce($this->files(), function($carry, $item) {
+            $status = $item->post->post_status;
+
+            if (!array_key_exists($status, $carry)) {
+                $carry[$status] = 1;
+            } else {
+                $carry[$status]++;
+            }
+
+            return $carry;
+        }, []);
+    }
+
+    public function published_files() {
+        return array_filter($this->files(), function ($file) {
+            return $file->post->post_status === 'publish';
+        });
     }
 
     public function files() {

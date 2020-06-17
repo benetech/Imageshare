@@ -41,7 +41,7 @@
             </li>
           {% endif %}
             <li class="right width-3/12">
-              <a href="mailto:report@imageshare.benetech.edu" class="">Report Issue</a>
+              <a href="mailto:report@imageshare.benetech.edu">Report Issue</a>
             </li>
           </ul>
       </div>
@@ -88,17 +88,17 @@
           </dl>
       </div>
 
-    {% if post.files | length > 0 %}
+    {% if post.published_files | length > 0 %}
       <section id="files">
-        <h2 id="files-heading">{{ 'Files' | i18n }} <span class="counter">{{ post.files | length }}</span></h2>
+        <h2 id="files-heading">{{ 'Files' | i18n }} <span class="counter">{{ post.published_files | length }}</span></h2>
         {% if post.download_uri | length > 5 %}
           <a href="{{ post.download_uri }}" class="download download-all" download="{{ post.download_uri | basename }}">
-            {{ 'Download all files' | i18n }} ({{ post.files | length }}) 
+            {{ 'Download all files' | i18n }} ({{ post.published_files | length }})
           </a>
         {% endif %}
 
         <ul role="list" aria-labelledby="files-heading">
-        {% for file in post.files %}
+        {% for file in post.published_files %}
           {{ block('file') }}
         {% endfor %}
         </ul>
