@@ -643,7 +643,6 @@ h2.resource-section {
 .results-per-page {
   padding: .5em;
   border: 1px solid #000;
-  align-self: center;
   justify-content: space-between;
 }
 
@@ -1015,6 +1014,7 @@ h2.resource-section {
 .search-results .paging {
   margin-top: .5em;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   padding: .5em;
   border: 1px solid black;
@@ -1024,14 +1024,15 @@ h2.resource-section {
 
 .search-results .paging h3 {
   margin: 0;
+  flex-basis: 100%;
+}
+
+.search-results .paging h3 ~ * {
+    align-self: flex-end;
 }
 
 .search-results .paging li {
   display: inline-block;
-}
-
-.search-results .paging nav {
-  margin-top: .2em;
 }
 
 .search-results img {
