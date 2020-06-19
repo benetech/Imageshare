@@ -235,6 +235,11 @@ class ResourceFile {
         return $wrapped;
     }
 
+    public function reindex() {
+        wpfts_post_reindex($this->id);
+        ResourceModel::reindex_resources_containing_resource_file($this->id);
+    }
+
     public function load_custom_attributes() {
         if (!empty($this->post)) {
             $this->id = $this->post->ID;

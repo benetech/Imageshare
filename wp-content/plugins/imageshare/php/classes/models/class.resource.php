@@ -109,6 +109,19 @@ class Resource {
         }
     }
 
+    public function reindex() {
+        wpfts_post_reindex($this->id);
+
+        $collections = ResourceCollection::containing($resource->ID);
+        $collection_ids = array_merge($collection_ids, array_map(function ($r) {
+            return $r->id;
+        }, $collections));
+
+        foreach (array_unique($collection_ids) as $collection_id) {
+            wpfts_post_reindex($collection_id);
+        }
+    }
+
     public function __construct($post_id = null) {
         if (!empty($post_id)) {
             $this->get_post($post_id);

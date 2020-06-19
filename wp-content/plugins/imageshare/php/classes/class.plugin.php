@@ -159,10 +159,55 @@ class Plugin {
 
         add_filter('plugin_action_links_' . plugin_basename($this->file), [$this, 'add_action_links']);
         add_filter('wp_insert_post_data', [$this, 'on_insert_post_data'], 2, 10);
+        add_filter('edited_term', [$this, 'on_edited_term',], 3, 10);
         add_action('wp', [$this, 'on_wp']);
     }
 
-    public static function on_insert_post_data($data, $postarr) {
+    public function on_edited_term($term_id, $tt_id, $taxonomy_name) {
+        $taxonomy = get_taxonomy($taxonomy_name);
+
+        Logger::log("Modified term {$term_id} ({$taxonomy_name})");
+
+        foreach ($taxonomy->object_type as $post_type) {
+            switch ($post_type) {
+                case Resource::type:
+                case ResourceFile::type:
+                    try {
+                        $this->reindex_posts_with_term($term_id, $taxonomy_name);
+                    } catch (Error $e) {
+                        Logger::log("Error reindexing posts: " . $e->getMessage());
+                    }
+            }
+        }
+    }
+
+    private function reindex_posts_with_term($term_id, $taxonomy) {
+        $posts = get_posts([
+            'post_type' => [Resource::type, ResourceFile::type],
+            'post_status' => 'publish',
+            'tax_query' => [
+                [
+                    'taxonomy' => $taxonomy,
+                    'terms' => $term_id
+                ]
+            ]
+        ]);
+
+        Logger::log(sprintf('Found %d posts for term %d (%s)', count($posts), $term_id, $taxonomy));
+
+        foreach ($posts as $post) {
+            switch ($post->post_type) {
+                case Resource::type:
+                    Resource::from_post($post)->reindex();
+                    break;
+                case ResourceFile::type:
+                    ResourceFile::from_post($post)->reindex();
+                    break;
+            }
+        }
+    }
+
+    public function on_insert_post_data($data, $postarr) {
         switch ($postarr['post_type']) {
             case Resource::type:
                 Resource::on_insert_post_data($postarr['ID'], $postarr);
