@@ -110,7 +110,7 @@
       <div class="results-per-page">
         <label class="resources-per-page-label" for="resources-per-page">{{ 'Resources per page' | i18n }}</label>
         <select id="resources-per-page" name="rs">
-          {% for size in [5, 20, 50, 100] %}
+          {% for size in [20, 50, 100] %}
             <option value="{{ size }}" {{ results.resources.paging.size == size ? 'selected' : ''}}>{{ size }}</option>
           {% endfor %}
         </select>
@@ -158,7 +158,7 @@
       <div class="results-per-page">
         <label class="collections-per-page-label" for="collections-per-page">{{ 'Collections per page' | i18n }}</label>
         <select id="collections-per-page" name="cs">
-          {% for size in [5, 20, 50, 100] %}
+          {% for size in [20, 50, 100] %}
             <option value="{{ size }}" {{ results.collections.paging.size == size ? 'selected' : ''}}>{{ size }}</option>
           {% endfor %}
         </select>
