@@ -620,7 +620,7 @@ dl.resource-details * + * {
     margin-top: .5em;
 }
 
-dl.resource-details dd {
+dl.resource-details dt {
   margin-left: 0;
   font-size: 1.3em;
   font-weight: bold;
