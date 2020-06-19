@@ -158,9 +158,21 @@ class Plugin {
         $this->set_acf_hooks_and_filters();
 
         add_filter('plugin_action_links_' . plugin_basename($this->file), [$this, 'add_action_links']);
-        add_filter('save_post_' . ResourceFile::type, [self::model('ResourceFile'), 'on_save_post'], 3, 10);
-        add_filter('save_post_' . Resource::type, [self::model('Resource'), 'on_save_post'], 3, 10);
+        add_filter('wp_insert_post_data', [$this, 'on_insert_post_data'], 2, 10);
         add_action('wp', [$this, 'on_wp']);
+    }
+
+    public static function on_insert_post_data($data, $postarr) {
+        switch ($postarr['post_type']) {
+            case Resource::type:
+                Resource::on_insert_post_data($postarr['ID'], $postarr);
+                break;
+            case ResourceCollection::type:
+                ResourceCollection::on_insert_post_data($postarr['ID'], $postarr);
+                break;
+        }
+
+        return $data;
     }
 
     public static function model(string $model) {

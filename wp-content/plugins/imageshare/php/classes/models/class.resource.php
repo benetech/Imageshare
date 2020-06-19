@@ -201,7 +201,7 @@ class Resource {
                 break;
 
             case 'files':
-                $fbs = $post->files_by_status();
+                $fbs = Model::children_by_status($post->files());
                 echo join(', ', array_map(function($status) use($fbs) {
                     return "{$fbs[$status]} {$status}";
                 }, array_keys($fbs)));
@@ -214,18 +214,24 @@ class Resource {
         }
     }
 
-    public static function on_save_post($post_id, $post, $update) {
-        if (!$update) {
-            return;
-        }
-
+    public static function on_insert_post_data($post_id, $data) {
         if (wp_is_post_revision($post_id)) {
             return;
         }
 
-        if ($post->post_status === 'publish') {
-            $resource = new Resource($post_id);
-            $resource->force_publish_files();
+        $resource = new Resource($post_id);
+        $old_status = $resource->post->post_status;
+
+        if ($old_status === 'publish') {
+            Logger::log("Resource {$post_id} is already published, skipping filter");
+            return;
+        }
+
+        $new_status = $data['post_status'];
+
+        if ($new_status === 'publish') {
+            Logger::log("Resource {$post_id} going from {$old_status} to {$new_status}");
+            Model::force_publish_children($resource->files());
         }
     }
 
@@ -320,23 +326,6 @@ class Resource {
 
             Logger::log("Force published file {$file->id}");
         }
-    }
-
-    private function files_by_status() {
-        return array_reduce($this->files(), function($carry, $item) {
-            $status = $item->post->post_status;
-            if ($status === 'publish') {
-                $status = 'published';
-            }
-
-            if (!array_key_exists($status, $carry)) {
-                $carry[$status] = 1;
-            } else {
-                $carry[$status]++;
-            }
-
-            return $carry;
-        }, []);
     }
 
     public function published_files() {

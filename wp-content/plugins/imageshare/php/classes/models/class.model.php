@@ -2,7 +2,44 @@
 
 namespace Imageshare\Models;
 
+use Imageshare\Logger;
+
 class Model {
+    public static function force_publish_children($children) {
+        foreach ($children as $child) {
+            if ($child->post->post_status !== 'draft') {
+                Logger::log("{$child->post->post_type} {$child->id} status is {$child->post->post_status}, skipping");
+                continue;
+            }
+
+            $child->post->post_status = 'publish';
+
+            if (!$result = wp_update_post($child->post)) {
+                Logger::log("Unable to force publish {$child->post->post_type} {$child->id}");
+                continue;
+            }
+
+            Logger::log("Force published {$child->post->post_type} {$child->id}");
+        }
+    }
+
+    public static function children_by_status($children) {
+        return array_reduce($children, function($carry, $item) {
+            $status = $item->post->post_status;
+            if ($status === 'publish') {
+                $status = 'published';
+            }
+
+            if (!array_key_exists($status, $carry)) {
+                $carry[$status] = 1;
+            } else {
+                $carry[$status]++;
+            }
+
+            return $carry;
+        }, []);
+    }
+
     public static function as_search_term($term, $value) {
         return
             preg_replace('/_{2,}/', '_',

@@ -14,8 +14,8 @@
       </p>
 
       <section class="search-results">
-        <h2>{{ 'Resources' | i18n }} <span class="counter">{{ post.resources | length }}</span></h2>
-        {{ include('partial/resource-table.twig', {results: post.resources, level: 3}, with_context = false) }}
+        <h2>{{ 'Resources' | i18n }} <span class="counter">{{ post.published_resources | length }}</span></h2>
+        {{ include('partial/resource-table.twig', {results: post.published_resources, level: 3}, with_context = false) }}
       </section>
 
     </div>
