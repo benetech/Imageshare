@@ -954,11 +954,18 @@ h2.resource-section {
 
 #resource #files dl {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: .5em;
+
+  /* cancel out the margin on the first item */
+  margin-left: -.5em;
+
+  margin-bottom: 0;
 }
 
-#resource #files dl > div + div {
-  margin-top: .5em;
+#resource #files dl div {
+    margin: .5em;
 }
 
 #resource #files dt,
