@@ -626,6 +626,10 @@ dl.resource-details dt {
   font-weight: bold;
 }
 
+dl.resource-details dd {
+    margin-left: 0;
+}
+
 dl.resource-details dd, dl.resource-details dt {
   display: inline-block;
   color: #0C4471;
