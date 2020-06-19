@@ -97,7 +97,7 @@
           </a>
         {% endif %}
 
-        <ul role="list" aria-labelledby="files-heading">
+        <ul role="list" aria-label="{{ 'Files' | i18n }}">
         {% for file in post.published_files %}
           {{ block('file') }}
         {% endfor %}
