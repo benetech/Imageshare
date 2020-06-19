@@ -164,6 +164,14 @@
         <dd>{{ file.license | e }}</dd>
       </div>
 
+    {% if file.length_minutes %}
+      <div>
+        <dt>{{ 'Length' | i18n }}:</dt>
+        <dd>{{ file.length_formatted_string() | e }}</dd>
+      </div>
+    {% endif %}
+
+
     </dl>
   </li>
 {% endblock %}
