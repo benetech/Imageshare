@@ -125,8 +125,8 @@ class Search {
 
         $first_page = $page > 1 ? 1 : null;
         $prev_page = $first_page && $page-1 > $first_page && $page-1 < $page ? $page-1 : null;
-        $last_page = intval($total / $size) > $page ? intval($total / $size) : null;
-        $next_page = $last_page && $page+1 < $last_page ? $page+1 : null; 
+        $last_page = ceil($total / $size) > $page ? ceil($total / $size) : null;
+        $next_page = $last_page && $page+1 < $last_page ? $page+1 : null;
 
         return [
             'args' => $args,
