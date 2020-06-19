@@ -76,13 +76,13 @@
 
           <dl class="resource-details">
             <div>
-                <dd>{{ 'Subject' | i18n }}:</dd>
-                <dt>{{ post.subject | i18n | e }}</dt>
+                <dt>{{ 'Subject' | i18n }}:</dt>
+                <dd>{{ post.subject | i18n | e }}</dd>
             </div>
           {% if post.tags %}
             <div>
-                <dd>{{ 'Keywords' | i18n }}:</dd>
-                <dt>{{ post.tags ? post.tags | join(', ') : '(none)' | i18n }}</dt>
+                <dt>{{ 'Keywords' | i18n }}:</dt>
+                <dd>{{ post.tags ? post.tags | join(', ') : '(none)' | i18n }}</dd>
             </div>
           {% endif %}
           </dl>
