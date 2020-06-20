@@ -903,6 +903,7 @@ h2.resource-section {
   max-height: 5em;
   height: auto;
   width: auto;
+  flex: 1 0 5em;
 }
 
 #resource h2 {
@@ -995,13 +996,12 @@ h2.resource-section {
 
 #resource #collections img {
   max-width: 5em;
-  min-width: 5em;
   max-height: 5em;
   height: auto;
   width: auto;
   margin-right: .5em;
   border: 1px solid black;
-  object-fit: contain;
+  flex: 1 0 5em;
 }
 
 #resource #collections h3 {
