@@ -240,6 +240,10 @@ label {
   display: block;
 }
 
+nav.main-navigation {
+    margin: 0 1em;
+}
+
 .search-form {
   margin-bottom: 30px;
 }
