@@ -5,7 +5,7 @@
         "singular": "Accessibility Accommodation",
         "hierarchical": true,
         "terms": {
-            "Auditive": ["Closed Captioning", "High Contrast Audio", "Sign Language", "Transcript"],
+            "Auditory": ["Closed Captioning", "High Contrast Audio", "Sign Language", "Transcript"],
             "Cognitive": ["Leveled Content"],
             "Tactile": ["Braille", "Textured"],
             "Visual": ["Audio Description", "Image Description", "Labels", "Sonification", "Tactile Graphics with Braille", "Tactile Graphics with Text", "Tactile Model"]

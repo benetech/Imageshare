@@ -1,5 +1,8 @@
 <section aria-labelledby="main-search" id="search-form">
   <h2 id="main-search" class="h2">{{ 'Search' | i18n }}</h2>
+{% if results.total_count > 0 %}
+  <button type="button" hidden id="reset">{{ 'Clear search parameters' | i18n }}</button>
+{% endif %}
   <p class="main-description">
     {{ 'Library of %d accessible STEM media resources.' | i18n | format(resource_count) }}
   </p>
@@ -10,7 +13,7 @@
     <label for="search" class="search-label"
       >{{ 'Search collections or resources' | i18n }}</label
     >
-    <div class="controls">
+    <div class="controls" role="search">
       <div class="input-wrapper">
         <input
           id="search"
@@ -24,10 +27,12 @@
           {{ 'Try searching “geology” or “heart”.' | i18n }}
         </div>
       </div>
-      <button id="advanced-btn" type="button" class="advanced-btn" aria-expanded="false">
-        <span>{{ 'Advanced search' | i18n }}</span>
-        <span class="bracket" aria-hidden="true"></span>
-      </button>
+      <h3>
+        <button id="advanced-btn" type="button" class="advanced-btn" aria-expanded="false">
+          <span>{{ 'Advanced search' | i18n }}</span>
+          <span class="bracket" aria-hidden="true"></span>
+        </button>
+      </h3>
       <div class="submit-btn-wrapper">
         <button type="submit" class="submit-btn">
           <span>{{ 'Search library' | i18n }}</span>
@@ -64,11 +69,6 @@
           </select>
         </li>
       </ul>
-      <div class="submit-btn-wrapper">
-        <button type="submit" class="submit-btn">
-          <span>{{ 'Search Library' | i18n }}</span>
-        </button>
-      </div>
     </div>
 
   {{ enclosing_form ? '</form>' : '' }}

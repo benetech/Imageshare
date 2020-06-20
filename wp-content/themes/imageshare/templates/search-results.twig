@@ -13,23 +13,22 @@
 
 {% block content %}
   <div class="main-inner width-12/12">
-    <h1 id="main-heading" class="h1">
-      {% if results.total_count == 0 %}
-        {{ 'No results matched your query.' | i18n }}
-      {% else %}
-        {{ '%d results found.' | i18n | format(results.total_count) }}
-      {% endif %}
-     </h1>
+    <h1 id="main-heading" class="h1">{{ 'Search results' | i18n }}</h1>
 
   {% if results.total_count > 0 %}
-     {# perhaps use _n() #}
      <p id="main-description" class="main-description">
-        {{ '%d resource(s) and %d collection(s) matched your query.' | i18n | format(results.resources.total, results.collections.total) }}
-        <button type="button" hidden id="reset">{{ 'Reset search settings' | i18n }}</button>
+        {{ '%d %s and %d %s matched your query.' | i18n | format(
+            results.resources.total, 
+            _n('resource', 'resources', results.resources.total),
+            results.collections.total,
+            _n('collection', 'collections', results.collections.total)
+        ) }}
      </p>
+  {% else %}
+    <p>{{ 'No results matched your query.' | i18n }}</p>
   {% endif %}
 
-    <form role="search" class="search-form">
+    <form class="search-form">
 
     {{ include('partial/search-form.twig', {enclosing_form: false}) }}
 
@@ -52,12 +51,13 @@
     {% endif %}
 
     <div class="search-results">
+      <h2 class="sr-only">{{ 'Results' | i18n }}</h2>
     {% if results.resources.posts | length > 0 %}
-        {{ block('resources') }}
+      {{ block('resources') }}
     {% endif %}
 
     {% if results.collections.posts | length > 0 %}
-        {{ block('collections') }}
+      {{ block('collections') }}
     {% endif %}
     </div>
 
@@ -67,70 +67,103 @@
 
 {% block resources %}
     {% set paging = results.resources.paging %}
+    {% set args = paging.args %}
 
-    <h2 tabindex="-1" id="resources-heading">{{ 'Resources' | i18n }}</h2>
+    <h3 tabindex="-1" id="resources-heading">{{ 'Resources' | i18n }}</h3>
 
-    <div class="paging">
-      <div>
-        <p>
-        {{ 'Showing resources %d to %d of %d' | i18n | format(paging.start, paging.stop, paging.total) }}
-        </p>
+    <div>
+      <p>
+      {{ 'Showing resources %d to %d of %d' | i18n | format(paging.start, paging.stop, paging.total) }}
+      </p>
 
-        <p class="width-9/12">
-        {{ 'Select a resource below to get more information and link to download this resource.' | i18n }}
-        </p>
-      </div>
-
-      <div class="controls">
-          <div class="form-group">
-            <label class="resources-per-page-label" for="resources-per-page">{{ 'Results per page' | i18n }}</label>
-            <select id="resources-per-page" name="rs">
-              {% for size in [5, 20, 50, 100] %}
-                <option value="{{ size }}" {{ results.resources.paging.size == size ? 'selected' : ''}}>{{ size }}</option>
-              {% endfor %}
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="resources-page">{{ 'Page' | i18n }}</label>
-            <input type="number" id="resources-page" value="{{ results.resources.paging.page }}" name="rp">
-          </div class="form-group">
-
-          <button type="submit">{{ 'Update' | i18n }}<span class="sr-only">{{ 'resources' | i18n }}</span></button>
-      </div>
+      <p class="width-9/12">
+      {{ 'Select a resource below to get more information and link to download this resource.' | i18n }}
+      </p>
     </div>
 
-    {{ include('partial/resource-table.twig', {results: results.resources.posts}, with_context = false) }}
 
+    {{ include('partial/resource-table.twig', {results: results.resources.posts, level: 4, labelledby: 'resources-heading'}, with_context = false) }}
+
+    <nav class="paging">
+      <h3 id="resource-paging-heading">{{ 'Resource pagination' | i18n }}</h3>
+
+      <ul role="list" aria-labelledby="resource-paging-heading">
+      {% if paging.first_page %}
+        <li><a href="/?page=search&q={{ args.query | url_encode }}&cp={{ args.cp ? args.cp : 1 }}&cs={{ args.cs ? args.cs : 20 }}&rp={{ paging.first_page }}&rs={{ args.rs ? args.rs : 20 }}">{{ 'First page' | i18n }}</a></li>
+      {% endif %}
+
+      {% if paging.prev_page %}
+        <li><a href="/?page=search&q={{ args.query | url_encode }}&cp={{ args.cp ? args.cp : 1 }}&cs={{ args.cs ? args.cs : 20 }}&rp={{ paging.prev_page }}&rs={{ args.rs ? args.rs : 20 }}">{{ 'Previous page' | i18n }}</a></li>
+      {% endif %}
+
+      <li>{{ 'Page %d of %d' | format(paging.page, paging.last_page ? paging.last_page : paging.page) | i18n }}</li>
+
+      {% if paging.next_page %}
+        <li><a href="/?page=search&q={{ args.query | url_encode }}&cp={{ args.cp ? args.cp : 1 }}&cs={{ args.cs ? args.cs : 20 }}&rp={{ paging.next_page }}&rs={{ args.rs ? args.rs : 20 }}">{{ 'Next page' | i18n }}</a></li>
+      {% endif %}
+
+      {% if paging.last_page %}
+        <li><a href="/?page=search&q={{ args.query | url_encode }}&cp={{ args.cp ? args.cp : 1 }}&cs={{ args.cs ? args.cs : 20 }}&rp={{ paging.last_page }}&rs={{ args.rs ? args.rs : 20 }}">{{ 'Last page' | i18n }}</a></li>
+      {% endif %}
+      </ul>
+
+      <div class="results-per-page">
+        <label class="resources-per-page-label" for="resources-per-page">{{ 'Resources per page' | i18n }}</label>
+        <select id="resources-per-page" name="rs">
+          {% for size in [20, 50, 100] %}
+            <option value="{{ size }}" {{ results.resources.paging.size == size ? 'selected' : ''}}>{{ size }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit">{{ 'Update' | i18n }}<span class="sr-only">{{ 'resources' | i18n }}</span></button>
+      </div>
+  </nav>
 {% endblock %}
 
 {% block collections %}
-    <h2 tabindex="-1" id="collections-heading">{{ 'Collections' | i18n }}</h2>
+    <h3 tabindex="-1" id="collections-heading">{{ 'Collections' | i18n }}</h3>
     {% set paging = results.collections.paging %}
+    {% set args = paging.args %}
 
-    <div class="paging">
+    <div>
       <p>
           {{ 'Showing collections %d to %d of %d' | i18n | format(paging.start, paging.stop, paging.total) }}
       </p>
-
-      <div class="controls">
-        <div class="form-group">
-          <label class="collections-per-page-label" for="collections-per-page">{{ 'Results per page' | i18n }}</label>
-          <select id="collections-per-page" name="cs">
-            {% for size in [5, 20, 50, 100] %}
-              <option value="{{ size }}" {{ results.collections.paging.size == size ? 'selected' : ''}}>{{ size }}</option>
-            {% endfor %}
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="collections-page">{{ 'Page' | i18n }}</label>
-          <input type="number" id="collections-page" value="{{ results.resources.paging.page }}" name="cp">
-        </div class="form-group">
-
-        <button type="submit">{{ 'Update' | i18n }}<span class="sr-only">{{ 'collections' | i18n }}</span></button>
-      </div>
     </div>
 
-    {{ include('partial/collection-table.twig', {results: results.collections.posts}, with_context = false) }}
+    {{ include('partial/collection-table.twig', {results: results.collections.posts, labelledby: 'collections-heading'}, with_context = false) }}
+
+    <nav class="paging">
+      <h3 id="collection-paging-heading">{{ 'Collection pagination' | i18n }}</h3>
+
+      <ul role="list" aria-labelledby="collection-paging-heading">
+      {% if paging.first_page %}
+        <li><a href="/?page=search&q={{ args.query | url_encode }}&cp={{ paging.first_page }}&cs={{ args.cs or 20 }}&rp={{ args.rp ? args.rp : 1 }}&rs={{ args.rs ? args.rs : 20 }}">{{ 'First page' | i18n }}</a></li>
+      {% endif %}
+
+      {% if paging.prev_page %}
+        <li><a href="/?page=search&q={{ args.query | url_encode }}&cp={{ paging.prev_page }}&cs={{ args.cs or 20 }}&rp={{ args.rp ? args.rp : 1 }}&rs={{ args.rs ? args.rs : 20 }}">{{ 'Previous page' | i18n }}</a></li>
+      {% endif %}
+
+      <li>{{ 'Page %d of %d' | format(paging.page, paging.last_page ? paging.last_page : paging.page) | i18n }}</li>
+
+      {% if paging.next_page %}
+        <li><a href="/?page=search&q={{ args.query | url_encode }}&cp={{ paging.next_page }}&cs={{ args.cs ? args.cs : 20 }}&rp={{ args.rp ? args.rp : 1 }}&rs={{ args.rs ? args.rs : 20 }}">{{ 'Next page' | i18n }}</a></li>
+      {% endif %}
+
+      {% if paging.last_page %}
+        <li><a href="/?page=search&q={{ args.query | url_encode }}&cp={{ paging.last_page }}&cs={{ args.cs ? args.cs : 20 }}&rp={{ args.rp ? args.rp : 1 }}&rs={{ args.rs ? args.rs : 20 }}">{{ 'Last page' | i18n }}</a></li>
+      {% endif %}
+      </ul>
+
+      <div class="results-per-page">
+        <label class="collections-per-page-label" for="collections-per-page">{{ 'Collections per page' | i18n }}</label>
+        <select id="collections-per-page" name="cs">
+          {% for size in [20, 50, 100] %}
+            <option value="{{ size }}" {{ results.collections.paging.size == size ? 'selected' : ''}}>{{ size }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit">{{ 'Update' | i18n }}<span class="sr-only">{{ 'collections' | i18n }}</span></button>
+      </div>
+    </nav>
+
 {% endblock %}

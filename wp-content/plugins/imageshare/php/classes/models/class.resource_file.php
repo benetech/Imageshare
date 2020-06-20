@@ -168,7 +168,7 @@ class ResourceFile {
         $columns['languages'] = self::i18n('Language(s)');
         $columns['accommodations'] = self::i18n('Accommodation(s)');
         $columns['license'] = self::i18n('License');
-        $columns['length_minutes'] = self::i18n('Length (minutes)');
+        $columns['length'] = self::i18n('Length');
         $columns['downloadable'] = self::i18n('Downloadable');
 
         return $columns;
@@ -206,8 +206,8 @@ class ResourceFile {
                 echo $post->license;
                 break;
 
-            case 'length_minutes':
-                echo $post->length_minutes;
+            case 'length':
+                echo $post->length_formatted_string();
                 break;
 
             case 'downloadable':
@@ -235,6 +235,11 @@ class ResourceFile {
         return $wrapped;
     }
 
+    public function reindex() {
+        wpfts_post_reindex($this->id);
+        ResourceModel::reindex_resources_containing_resource_file($this->id);
+    }
+
     public function load_custom_attributes() {
         if (!empty($this->post)) {
             $this->id = $this->post->ID;
@@ -246,6 +251,7 @@ class ResourceFile {
             $this->uri = get_post_meta($this->post_id, 'uri', true);
             $this->downloadable = get_post_meta($this->post_id, 'downloadable', true);
             $this->length_minutes = get_post_meta($this->post_id, 'length_minutes', true);
+            $this->length = $this->get_length();
             $this->license = Model::get_meta_term_name($this->post_id, 'license', 'licenses');
 
             $this->type = Model::get_meta_term_name($this->post_id, 'type', 'file_types');
@@ -261,6 +267,34 @@ class ResourceFile {
         }
         
         return null;
+    }
+
+    public function length_formatted_string() {
+        $length = $this->get_length();
+        if (($length['hours'] + $length['minutes']) === 0) {
+            echo "0";
+        } else if ($length['hours'] === 0) {
+            echo sprintf(_n('%d minute', '%d minutes', $length['minutes'], 'imageshare'), $length['minutes']); 
+        } else {
+            echo sprintf(_n('%d hour', '%d hours', $length['hours'], 'imageshare'), $length['hours']);
+            if ($length['minutes']) {
+                echo " ";
+                echo sprintf(_n('%d minute', '%d minutes', $length['minutes'], 'imageshare'), $length['minutes']); 
+            }
+        }
+    }
+
+    private function get_length() {
+        $length = intval($this->length_minutes);
+
+        if ($length < 60) {
+            return ['hours' => 0, 'minutes' => $length];
+        }
+
+        $hours = floor($length / 60);
+        $minutes = $length % 60;
+
+        return [ 'hours' => $hours, 'minutes' => $minutes ];
     }
 
     public static function get_type_name_by_term_id($term_id) {

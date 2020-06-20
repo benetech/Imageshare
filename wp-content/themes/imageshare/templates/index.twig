@@ -20,6 +20,7 @@
       <h2 class="h2 collections-heading" id="collections">
         {{ 'Browse Collections' | i18n }}
       </h2>
+    {% if collections | length %}
       <ul
         class="collections grid"
         aria-labelledby="collections"
@@ -31,12 +32,14 @@
         >
           <a href="{{ collection.permalink }}" class="collection-link">
             <img class="collection-img" src="{{ collection.thumbnail }}" alt="" />
-            <div class="collection-heading">{{ collection.title | i18n | e }}</div>
-            <div class="collection-description">{{ collection.description | i18n | e }}</div>
+            <div class="collection-heading">{{ collection.title | e }}</div>
           </a>
         </li>
       {% endfor %}
       </ul>
+    {% else %}
+      <p>{{ 'No collections are currently featured.' | i18n }}</p>
+    {% endif %}
       <div class="see-more-collections width-12/12">
         <a href="{{ collection_archive_href }}">{{ 'See more collections' | i18n }}</a>
       </div>

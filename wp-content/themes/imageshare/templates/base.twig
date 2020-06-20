@@ -12,13 +12,13 @@
 
      {# no skip link on home for now 
         {% if is_home %}
-           <a class="skip-link" href="#search">{{ 'Jump directly to search' | i18n }}</a>
+           <a class="skip-link" href="#search">{{ 'Skip to search' | i18n }}</a>
         {% endif %}
       #}
 
         {% if is_search and results.total_count %}
            {% set target = results.resources.posts | length ? '#resources-heading' : '#collections-heading' %}
-           <a class="skip-link" href="{{ target }}">{{ 'Jump directly to results' | i18n }}</a>
+           <a class="skip-link" href="{{ target }}">{{ 'Skip to results' | i18n }}</a>
         {% endif %}
 
         {% block header %}
@@ -27,7 +27,7 @@
               <img
                 class="logo-img"
                 src="{{ site.theme.link }}/assets/img/imageshare.png"
-                alt="Imageshare, A Benetech Initiative Logo"
+                alt="Imageshare, A Benetech Initiative"
               />
             </a>
           </div>
@@ -55,19 +55,13 @@
     <div id="announcement" aria-live="polite" aria-atomic="true" class="sr-only"></div>
 
     <script src="{{ site.theme.link }}/assets/js/vendor/modernizr-3.8.0.min.js"></script>
-    <script
-      src="https://code.jquery.com/jquery-3.4.1.min.js"
-      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-      crossorigin="anonymous"
-    ></script>
     <script>
       window.jQuery ||
         document.write(
           '<script src="{{ site.theme.link }}/assets/js/vendor/jquery-3.4.1.min.js"><\/script>'
         );
     </script>
-    <script src="{{ site.theme.link }}/assets/js/plugins.js"></script>
-    <script src="{{ site.theme.link }}/assets/js/main.js"></script>
+    <script src="{{ site.theme.link }}/assets/js/main.js?{{ theme.version }}"></script>
 
     <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
     <script>

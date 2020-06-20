@@ -109,6 +109,19 @@ class Resource {
         }
     }
 
+    public function reindex() {
+        wpfts_post_reindex($this->id);
+
+        $collections = ResourceCollection::containing($resource->ID);
+        $collection_ids = array_merge($collection_ids, array_map(function ($r) {
+            return $r->id;
+        }, $collections));
+
+        foreach (array_unique($collection_ids) as $collection_id) {
+            wpfts_post_reindex($collection_id);
+        }
+    }
+
     public function __construct($post_id = null) {
         if (!empty($post_id)) {
             $this->get_post($post_id);
@@ -201,16 +214,37 @@ class Resource {
                 break;
 
             case 'files':
-                echo count($post->file_ids);
+                $fbs = Model::children_by_status($post->files());
+                echo join(', ', array_map(function($status) use($fbs) {
+                    return "{$fbs[$status]} {$status}";
+                }, array_keys($fbs)));
+
                 break;
 
             case 'tags':
-                $term_names = array_map(function ($term) {
-                    return $term->name;
-                }, wp_get_post_terms($post_id));
-
-                echo join(', ', $term_names);
+                echo join(', ', $post->tags);
                 break;
+        }
+    }
+
+    public static function on_insert_post_data($post_id, $data) {
+        if (wp_is_post_revision($post_id)) {
+            return;
+        }
+
+        $resource = new Resource($post_id);
+        $old_status = $resource->post->post_status;
+
+        if ($old_status === 'publish') {
+            Logger::log("Resource {$post_id} is already published, skipping filter");
+            return;
+        }
+
+        $new_status = $data['post_status'];
+
+        if ($new_status === 'publish') {
+            Logger::log("Resource {$post_id} going from {$old_status} to {$new_status}");
+            Model::force_publish_children($resource->files());
         }
     }
 
@@ -263,11 +297,18 @@ class Resource {
             $this->file_ids      = get_post_meta($this->post_id, 'files', true);
             $this->download_uri  = get_post_meta($this->post_id, 'download_uri', true);
             $this->subject       = Model::get_meta_term_name($this->post_id, 'subject', 'subjects', true);
+            $this->tags          = $this->get_tags();
 
             return $this->id;
         }
 
         return null;
+    }
+
+    private function get_tags() {
+        return array_map(function ($term) {
+            return $term->name;
+        }, wp_get_post_terms($this->post_id));
     }
 
     public static function get_subject_name_by_term_id($term_id) {
@@ -280,6 +321,30 @@ class Resource {
         }
 
         return $this->_collections = ResourceCollection::containing($this->post_id);
+    }
+
+    public function force_publish_files() {
+        foreach ($this->files() as $file) {
+            if ($file->post->post_status !== 'draft') {
+                Logger::log("File {$file->id} status is {$file->post->post_status}, skipping");
+                continue;
+            }
+
+            $file->post->post_status = 'publish';
+
+            if (!$result = wp_update_post($file->post)) {
+                Logger::log("Unable to force publish file {$file->id}");
+                continue;
+            }
+
+            Logger::log("Force published file {$file->id}");
+        }
+    }
+
+    public function published_files() {
+        return array_filter($this->files(), function ($file) {
+            return $file->post->post_status === 'publish';
+        });
     }
 
     public function files() {
@@ -347,12 +412,12 @@ class Resource {
     public function get_resource_file_types() {
         return array_map(function ($resource_file) {
             return $resource_file->type;
-        }, $this->files());
+        }, $this->published_files());
     }
 
     public function get_resource_file_accommodations() {
         return array_map(function ($resource_file) {
             return $resource_file->get_accommodations();
-        }, $this->files());
+        }, $this->published_files());
     }
 }

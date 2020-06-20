@@ -1,4 +1,4 @@
-<ul id="collections" role="list">
+<ul id="collections" role="list" {{ labelledby ? 'aria-labelledby="%s"' | format(labelledby) : '' }}>
   {% for collection in results %}
     {{ include('partial/collection-list-item.twig') }}
   {% endfor %}

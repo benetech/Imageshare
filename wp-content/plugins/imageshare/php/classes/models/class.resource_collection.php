@@ -56,7 +56,7 @@ class ResourceCollection {
     public static function manage_columns(array $columns) {
         $columns['description'] = self::i18n('Description');
         $columns['contributor'] = self::i18n('Contributor');
-        $columns['size'] = self::i18n('Size');
+        $columns['resources'] = self::i18n('Resources');
         $columns['featured'] = self::i18n('Featured');
         return $columns;
     }
@@ -69,12 +69,11 @@ class ResourceCollection {
                 echo $post->description;
                 break;
 
-            case 'size':
-                if (empty($post->resource_ids)) {
-                    echo "0";
-                } else {
-                    echo count($post->resource_ids);
-                }
+            case 'resources':
+                $fbs = Model::children_by_status($post->resources());
+                echo join(', ', array_map(function($status) use($fbs) {
+                    return "{$fbs[$status]} {$status}";
+                }, array_keys($fbs)));
                 break;
 
             case 'contributor':
@@ -143,6 +142,12 @@ class ResourceCollection {
         return [];
     }
 
+    public function published_resources() {
+        return array_filter($this->resources(), function ($resource) {
+            return $resource->post->post_status === 'publish';
+        });
+    }
+
     public function resources() {
         if (isset($this->_resources)) {
             return $this->_resources;
@@ -169,6 +174,27 @@ class ResourceCollection {
         }
 
         return $value;
+    }
+
+    public static function on_insert_post_data($post_id, $data) {
+        if (wp_is_post_revision($post_id)) {
+            return;
+        }
+
+        $collection = new ResourceCollection($post_id);
+        $old_status = $collection->post->post_status;
+
+        if ($old_status === 'publish') {
+            Logger::log("Collection {$post_id} is already published, skipping filter");
+            return;
+        }
+
+        $new_status = $data['post_status'];
+
+        if ($new_status === 'publish') {
+            Logger::log("Collection {$post_id} going from {$old_status} to {$new_status}");
+            Model::force_publish_children($collection->resources());
+        }
     }
 
     public function get_index_data($specific = null) {
