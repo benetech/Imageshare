@@ -65,9 +65,13 @@ class Plugin {
         }
     }
 
-    public static function admin_enqueue_styles() {
+    public static function admin_enqueue_styles_and_scripts() {
         $file = dirname(plugin_dir_url(__FILE__), 2) . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'admin.css';
         wp_enqueue_style('imageshare-admin-css', $file, [], false, 'screen, print');
+
+        $file = dirname(plugin_dir_url(__FILE__), 2) . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'acf_imageshare_relationship.js';
+        wp_enqueue_script('imageshare-admin-acf_imageshare_relationship-js', $file, ['acf-input', 'select2']);
+
     }
 
     public function activate() {
@@ -114,6 +118,10 @@ class Plugin {
             $wp_query->set_404();
             status_header(404);
         }
+    }
+
+    private function register_acf_fields() {
+        include_once(imageshare_php_file('classes/class.acf.relationship.php'));
     }
 
     private function set_acf_hooks_and_filters() {
@@ -171,6 +179,7 @@ class Plugin {
         $this->register_taxonomies();
         $this->register_custom_post_types();
         $this->load_controllers();
+        $this->register_acf_fields();
         $this->set_acf_hooks_and_filters();
 
         add_filter('plugin_action_links_' . plugin_basename($this->file), [$this, 'add_action_links']);
@@ -252,7 +261,7 @@ class Plugin {
 
     private function setup_filters_and_hooks() {
         add_action('add_meta_boxes', array($this, 'remove_edit_metaboxes'));
-        add_action('admin_enqueue_scripts', array($this, 'admin_enqueue_styles'));
+        add_action('admin_enqueue_scripts', array($this, 'admin_enqueue_styles_and_scripts'));
 
         add_filter('manage_btis_collection_posts_columns', array(self::model('ResourceCollection'), 'manage_columns'), 10, 1);
         add_action('manage_btis_collection_posts_custom_column', array(self::model('ResourceCollection'), 'manage_custom_column'), 10, 2);
