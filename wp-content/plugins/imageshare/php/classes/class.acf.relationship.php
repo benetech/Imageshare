@@ -412,6 +412,12 @@ class acf_custom_field_relationship extends acf_field {
 
         }
 
+        function get_post_title_with_status( $post, $field, $post_id = 0, $is_search = 0 ) {
+            $title = $this->get_post_title($post, $field, $post_id, $is_search);
+            $status = self::imageshare_get_post_status_label($post->post_status);
+            return sprintf('%s (%s)', $title, $status);
+        }
+
 
         /*
         *  render_field()
@@ -565,7 +571,7 @@ class acf_custom_field_relationship extends acf_field {
                                         <li>
                                                 <?php acf_hidden_input( array('name' => $field['name'].'[]', 'value' => $post->ID) ); ?>
                                                 <span data-id="<?php echo esc_attr($post->ID); ?>" class="acf-rel-item">
-                                                        <?php echo acf_esc_html( $this->get_post_title( $post, $field ) ); ?>
+                                                        <?php echo acf_esc_html( $this->get_post_title_with_status( $post, $field ) ); ?>
                                                         <a href="#" class="acf-icon -minus small dark" data-name="remove_item"></a>
                                                 </span>
                                         </li>
