@@ -262,7 +262,6 @@
                 "taxonomy": "",
                 "filters": [
                     "search",
-                    "post_type",
                     "taxonomy"
                 ],
                 "elements": "",
