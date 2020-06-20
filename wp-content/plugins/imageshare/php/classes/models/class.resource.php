@@ -238,7 +238,15 @@ class Resource {
             return;
         }
 
+        if (!$post_id) {
+            Logger::log('Post id 0 is auto_draft, skipping');
+            return;
+        }
+
         $resource = new Resource($post_id);
+
+        Logger::log([$resource, $post_id]);
+
         $old_status = $resource->post->post_status;
 
         if ($old_status === 'publish') {

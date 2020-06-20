@@ -187,6 +187,11 @@ class ResourceCollection {
             return;
         }
 
+        if (!$post_id) {
+            Logger::log('Post id 0 is auto_draft, skipping');
+            return;
+        }
+
         $collection = new ResourceCollection($post_id);
         $old_status = $collection->post->post_status;
 
