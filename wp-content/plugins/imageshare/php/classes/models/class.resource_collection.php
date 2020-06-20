@@ -176,6 +176,12 @@ class ResourceCollection {
         return $value;
     }
 
+    public static function on_acf_relationship_result($post_id, $related_post, $field) {
+        // this can only be a file
+        $resource = Resource::from_post($related_post);
+        return sprintf('%s (%s)', $resource->title, $resource->subject);
+    }
+
     public static function on_insert_post_data($post_id, $data) {
         if (wp_is_post_revision($post_id)) {
             return;

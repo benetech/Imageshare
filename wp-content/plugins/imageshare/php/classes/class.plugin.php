@@ -118,6 +118,22 @@ class Plugin {
 
     private function set_acf_hooks_and_filters() {
         add_filter('acf/update_value', [$this, 'on_acf_update_value'], 20, 3);
+        add_filter('acf/fields/relationship/result', [$this, 'on_acf_relationship_result'], 20, 4);
+    }
+
+    public function on_acf_relationship_result($text, $post, $field, $post_id) {
+        $post_type = get_post_type($post_id);
+
+        switch (get_post_type($post_id)) {
+            case Resource::type:
+                $text = Resource::on_acf_relationship_result($post_id, $post, $field);
+                break;
+            case ResourceCollection::type:
+                $text = ResourceCollection::on_acf_relationship_result($post_id, $post, $field);
+                break;
+        }
+
+        return $text;
     }
 
     public function on_acf_update_value($value, $post_id, $field) {
