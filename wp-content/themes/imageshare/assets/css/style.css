@@ -900,7 +900,6 @@ h2.resource-section {
 }
 
 #resource .header img {
-  max-width: 5em;
   max-height: 5em;
   height: auto;
   width: auto;
