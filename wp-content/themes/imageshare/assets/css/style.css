@@ -240,6 +240,10 @@ label {
   display: block;
 }
 
+nav.main-navigation {
+    margin: 0 1em;
+}
+
 .search-form {
   margin-bottom: 30px;
 }
@@ -517,10 +521,11 @@ label {
 .collection-img {
   width: 100%;
   display: block;
+  border-bottom: 1px solid #fff;
 }
 .collection-heading {
   font-size: 1.5em;
-  margin: 15px 0 10px 0;
+  margin: .2em;
   padding: 0;
 }
 .collection-description {
@@ -531,6 +536,7 @@ label {
 
 li.collection {
   background-color: #0c4471;
+  border: 1px solid #000;
 }
 
 .background205d9c {
@@ -898,8 +904,10 @@ h2.resource-section {
 }
 
 #resource .header img {
-  max-width: 8em;
-  max-height: 8em;
+  max-height: 5em;
+  height: auto;
+  width: auto;
+  flex: 1 0 5em;
 }
 
 #resource h2 {
@@ -992,8 +1000,12 @@ h2.resource-section {
 
 #resource #collections img {
   max-width: 5em;
+  max-height: 5em;
+  height: auto;
+  width: auto;
   margin-right: .5em;
   border: 1px solid black;
+  flex: 1 0 5em;
 }
 
 #resource #collections h3 {

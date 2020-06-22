@@ -17,8 +17,13 @@
       #}
 
         {% if is_search and results.total_count %}
-           {% set target = results.resources.posts | length ? '#resources-heading' : '#collections-heading' %}
-           <a class="skip-link" href="{{ target }}">{{ 'Skip to results' | i18n }}</a>
+          {% if results.resources.posts | length %}
+            <a class="skip-link" href="#resources-heading">{{ 'Skip to matching resources' | i18n }}</a>
+          {% endif %}
+
+          {% if results.collections.posts | length %}
+            <a class="skip-link" href="#collections-heading">{{ 'Skip to matching collections' | i18n }}</a>
+          {% endif %}
         {% endif %}
 
         {% block header %}

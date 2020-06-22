@@ -45,7 +45,7 @@
                 "key": "field_5ea1754751362",
                 "label": "Resources",
                 "name": "resources",
-                "type": "relationship",
+                "type": "imgs_relationship",
                 "instructions": "",
                 "required": 1,
                 "conditional_logic": 0,
@@ -57,9 +57,11 @@
                 "post_type": [
                     "btis_resource"
                 ],
+                "post_status": "",
                 "taxonomy": "",
                 "filters": [
                     "search",
+                    "post_status",
                     "taxonomy"
                 ],
                 "elements": "",
@@ -247,7 +249,7 @@
                 "key": "field_5ea189783edd7",
                 "label": "File(s)",
                 "name": "files",
-                "type": "relationship",
+                "type": "imgs_relationship",
                 "instructions": "",
                 "required": 1,
                 "conditional_logic": 0,
@@ -259,10 +261,11 @@
                 "post_type": [
                     "btis_resource_file"
                 ],
+                "post_status": "",
                 "taxonomy": "",
                 "filters": [
                     "search",
-                    "post_type",
+                    "post_status",
                     "taxonomy"
                 ],
                 "elements": "",
