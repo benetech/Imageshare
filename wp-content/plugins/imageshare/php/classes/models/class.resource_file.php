@@ -40,14 +40,14 @@ class ResourceFile {
 
         $existing = get_posts([
             'post_type' => self::type,
-            'post_status' => 'publish',
+            'post_status' => ['publish', 'draft'],
             'meta_key' => 'uri',
             'meta_value' => $args['uri'],
             'meta_compare' => '==='
         ]);
 
         if (count($existing)) {
-            Logger::log(sprintf(__('A published ResourceFile with URI "%s" already exists, updating', 'imageshare'), $args['uri']));
+            Logger::log(sprintf(__('A published or draft ResourceFile with URI "%s" already exists, updating', 'imageshare'), $args['uri']));
             $post_id = $existing[0]->ID;
             $is_update = true;
         } else {

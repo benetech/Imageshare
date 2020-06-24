@@ -25,8 +25,8 @@ class Resource {
 
         $existing = post_exists($args['title'], '', '', self::type);
 
-        if ($existing && get_post_status($existing) == 'publish') {
-            Logger::log(sprintf(__('A published Resource with unique title "%s" already exists, updating', 'imageshare'), $args['title']));
+        if ($existing && in_array(get_post_status($existing), ['publish', 'draft'])) {
+            Logger::log(sprintf(__('A published or draft Resource with unique title "%s" already exists, updating', 'imageshare'), $args['title']));
             $is_update = true;
         } else {
             $post_data = [
