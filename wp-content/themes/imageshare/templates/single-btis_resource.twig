@@ -67,8 +67,9 @@
             {{ post.description | i18n | e }}
           </p>
 
+
           <p class="source">
-            (Source: {{ post.source }})
+            ({{ 'Source' | i18n }}: {{ post.source | e }})
           </p>
           </div>
 
@@ -167,6 +168,13 @@
         <dt>{{ 'License' | i18n }}:</dt>
         <dd>{{ file.license | e }}</dd>
       </div>
+
+    {% if file.author | length %}
+      <div>
+        <dt>{{ 'Author' | i18n }}:</dt>
+        <dd>{{ file.author | e }}</dd>
+      </div>
+    {% endif %}
 
     {% if file.length_minutes %}
       <div>
