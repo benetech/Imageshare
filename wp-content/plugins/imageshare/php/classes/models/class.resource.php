@@ -373,6 +373,24 @@ class Resource {
         }, []);
     }
 
+    public function get_constituting_file_types() {
+        $term_ids = array_unique(array_map(function ($file) {
+            return $file->get_type_term_id();
+        }, $this->files()));
+
+        $terms = get_terms(['include' => $term_ids]);
+
+        return array_map(function ($term) {
+            $url = get_field('thumbnail', 'category_' . $term->term_id);
+
+            return [
+                'term_id' => $term->term_id,
+                'name' => $term->name,
+                'thumbnail_url' => $url
+            ];
+        }, $terms);
+    }
+
     public function get_index_data($specific = null) {
         if ($specific === 'subject') {
             $subject_term_id = get_post_meta($this->post_id, 'subject', true);

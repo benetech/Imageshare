@@ -60,6 +60,7 @@
           <img
             src="{{ post.thumbnail_src }}"
             alt="{{ post.thumbnail_alt | e }}"
+            class="thumbnail"
           />
 
           <div>
@@ -122,7 +123,7 @@
 {% endblock %}
 
 {% block file %}
-  <li>
+  <li class="result">
     <div class="header">
       {% if file.thumbnail_src | length %}
         <img

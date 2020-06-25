@@ -904,7 +904,7 @@ h2.resource-section {
   margin-right: .5em;
 }
 
-#resource .header img {
+#resource .header .thumbnail {
   max-width: 8em;
   flex: 0 0 auto;
   align-self: baseline;
@@ -920,14 +920,12 @@ h2.resource-section {
   padding: 0;
 }
 
-#resource #files li,
-#resource #collections li {
+#resource .result {
   border: 1px solid darkblue;
   padding: .5em;
 }
 
-#resource #files li + li,
-#resource #collections li + li {
+#resource .result + .result {
   margin-top: .5em;
 }
 
@@ -936,11 +934,6 @@ h2.resource-section {
   align-items: baseline;
   justify-content: flex-start;
   margin-bottom: .5em;
-}
-
-#resource h3, #resource h4 {
-  margin: 0;
-  color: #0c4471;
 }
 
 #resource .download {
@@ -987,6 +980,7 @@ h2.resource-section {
 }
 
 #resource #files dt {
+  margin-right: .2em;
   font-weight: bold;
   color: #0c4471;
 }
@@ -995,11 +989,7 @@ h2.resource-section {
   margin-left: 0;
 }
 
-#resource #collections li {
-  display: flex;
-}
-
-#resource #collections img {
+#resource #collections .thumbnail {
   max-width: 5em;
   flex: 0 0 auto;
   align-self: baseline;
@@ -1023,13 +1013,13 @@ h2.resource-section {
   padding: 0;
 }
 
-.search-results li {
+.search-results li.result {
   border: 1px solid darkblue;
   padding: .5em;
   overflow: auto;
 }
 
-.search-results li + li {
+.search-results .result + .result {
   margin-top: .5em;
 }
 
@@ -1057,7 +1047,7 @@ h2.resource-section {
   display: inline-block;
 }
 
-.search-results img {
+.search-results img.thumbnail {
   max-width: 5em;
   flex: 0 0 auto;
   align-self: baseline;
@@ -1070,29 +1060,36 @@ h2.resource-section {
   margin-top: 1em;
 }
 
-.search-results #resources img {
+.search-results #resources img.thumbnail {
   float: left;
   margin: 0 .5em .2em 0;
+}
+
+.search-results .result div:first-child,
+#resource .result div:first-child {
+    display: flex;
+    margin-bottom: .5em;
 }
 
 .search-results h3 {
     margin: 1em 0 .5em 0;
 }
 
-.search-results ul h3, .search-results ul h4 {
-  margin: 0 0 .5em 0;
+li.result h3, li.result h4 {
+  margin: .5em .5em .5em 0;
   display: inline-block;
 }
 
-.search-results #collections li {
-  display: flex;
-}
-
-.search-results #collections img {
+.search-results #collections .thumbnail {
   margin-right: .5em;
   max-width: 5em;
   flex: 0 0 auto;
   align-self: baseline;
+}
+
+.search-results #collections .result div,
+#resource .result div {
+    display: flex;
 }
 
 /* collection */
@@ -1101,6 +1098,14 @@ h2.resource-section {
   font-style: italic;
 }
 
-#collection > div * + * {
-  margin-top: .5em;
+ul.resource-file-types {
+    display: flex;
+}
+
+ul.resource-file-types img {
+    max-width: 2em;
+}
+
+ul.resource-file-types li + li img {
+    margin-left: .5em;
 }

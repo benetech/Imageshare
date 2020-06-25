@@ -1,12 +1,23 @@
-<li>
-  <img
-    src="{{ collection.thumbnail }}"
-    alt=""
-  />
+<li class="result">
   <div class="header">
     <a href="{{ collection.permalink }}">
       <h4>{{ collection.title | e }}</h4>
     </a>
+
+    <ul aria-label="{{ 'File types' | i18n }}" role="list" class="resource-file-types">
+    {% for type in collection.get_constituting_file_types() %}
+        <li>
+            <img src="{{ type.thumbnail_url }}" alt="{{ type.name | e }}">
+        </li>
+    {% endfor %}
+    </ul>
+  </div>
+  <div>
+    <img
+      src="{{ collection.thumbnail }}"
+      alt=""
+      class="thumbnail"
+    />
     <p class="description">
       {{ 'A collection containing %d resources, contributed by %s' | i18n | format(collection.resource_ids | length, collection.contributor) | e }}
     </p>

@@ -291,6 +291,10 @@ class ResourceFile {
         }
     }
 
+    public function get_type_term_id() {
+        return get_post_meta($this->post_id, 'type', true);
+    }
+
     private function get_length() {
         $length = intval($this->length_minutes);
 

@@ -208,6 +208,25 @@ class ResourceCollection {
         }
     }
 
+    public function get_constituting_file_types() {
+        // php can't do transform compare to save its life
+        
+        $seen_term_ids = [];
+        $types = [];
+
+        foreach ($this->resources() as $resource) {
+            foreach ($resource->get_constituting_file_types() as $type) {
+                if (in_array($type['term_id'], $seen_term_ids)) {
+                    continue;
+                }
+                array_push($types, $type);
+                array_push($seen_term_ids, $type['term_id']);
+            }
+        }
+        
+        return $types;
+    }
+
     public function get_index_data($specific = null) {
         if ($specific === 'subject') {
             return array_unique(Model::flatten(array_map(function ($resource) {
