@@ -1065,6 +1065,13 @@ h2.resource-section {
   margin: 0 .5em .2em 0;
 }
 
+.search-results #resources .description {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 .search-results .result div:first-child,
 #resource .result div:first-child {
     display: flex;
