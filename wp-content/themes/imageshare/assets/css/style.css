@@ -674,8 +674,8 @@ h2.resource-section {
 }
 .resource-img {
   max-width: 8em;
-  flex: 0 0 auto;
-  align-self: baseline;
+  max-height: 5em;
+  float: left;
 }
 .resource-link {
   font-weight: bold;
@@ -930,9 +930,7 @@ h2.resource-section {
 }
 
 #resource #files .header {
-  display: flex;
-  align-items: baseline;
-  justify-content: flex-start;
+  display: block;
   margin-bottom: .5em;
 }
 
@@ -955,6 +953,8 @@ h2.resource-section {
 }
 
 #resource #files .header + p {
+  margin-left: .5em;
+  display: inline-block;
   font-style: italic;
 }
 
@@ -1083,8 +1083,13 @@ h2.resource-section {
 }
 
 li.result h3, li.result h4 {
-  margin: .5em .5em .5em 0;
+  margin: .5em;
   display: inline-block;
+}
+
+.search-results .result h3,
+.search-results .result h4 {
+  margin-left: 0;
 }
 
 .search-results #collections .thumbnail {

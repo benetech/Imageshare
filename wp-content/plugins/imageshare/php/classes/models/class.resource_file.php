@@ -295,6 +295,18 @@ class ResourceFile {
         return get_post_meta($this->post_id, 'type', true);
     }
 
+    public function get_display_thumbnail() {
+        $type_term = get_term($this->get_type_term_id());
+
+        if ($type_term->name === 'Image') {
+            # yuck. TODO better solution for this?
+            return $this->uri;
+        } else {
+            // metadata field from ACF
+            return get_field('thumbnail', 'category_' . $type_term->term_id);
+        }
+    }
+
     private function get_length() {
         $length = intval($this->length_minutes);
 
