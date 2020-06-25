@@ -288,7 +288,19 @@ class Plugin {
                 [
                     'label' => self::i18n($definition->plural),
                     'labels' => [
-                        'singular_name' => self::i18n($definition->singular)
+                        'singular_name'     => self::i18n($definition->singular),
+                        'search_items'      => self::i18n('Search ' . $definition->plural),
+                        'popular_items'     => self::i18n('Popular ' . $definition->plural),
+                        'all_items'         => self::i18n('All ' . $definition->plural),
+                        'parent_item'       => self::i18n('Parent ' . $definition->singular),
+                        'parent_item_colon' => self::i18n('Parent ' . $definition->singular . ':'),
+                        'edit_item'         => self::i18n('Edit ' . $definition->singular),
+                        'view_item'         => self::i18n('View ' . $definition->singular),
+                        'update_item'       => self::i18n('Update ' . $definition->singular),
+                        'add_new_item'      => self::i18n('Add New ' . $definition->singular),
+                        'new_item_name'     => self::i18n('New ' . $definition->singular . ' name'),
+                        'back_to_items'     => self::i18n('Back to ' . $definition->plural),
+                        'not_found'         => self::i18n('No ' . $definition->plural . ' found')
                     ],
                     'hierarchical' => $definition->hierarchical
                 ]
