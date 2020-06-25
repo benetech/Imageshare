@@ -378,7 +378,7 @@ class Resource {
             return $file->get_type_term_id();
         }, $this->files()));
 
-        $terms = get_terms(['include' => $term_ids]);
+        $terms = get_terms(['taxonomy' => 'file_types', 'include' => $term_ids]);
 
         return array_map(function ($term) {
             $url = get_field('thumbnail', 'category_' . $term->term_id);
