@@ -376,7 +376,7 @@ class Resource {
     public function get_constituting_file_types() {
         $term_ids = array_unique(array_map(function ($file) {
             return $file->get_type_term_id();
-        }, $this->files()));
+        }, $this->published_files()));
 
         $terms = get_terms(['taxonomy' => 'file_types', 'include' => $term_ids]);
 
