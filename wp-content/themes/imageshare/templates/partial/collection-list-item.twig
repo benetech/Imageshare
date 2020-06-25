@@ -19,7 +19,7 @@
       class="thumbnail"
     />
     <p class="description">
-      {{ 'A collection containing %d resources, contributed by %s' | i18n | format(collection.resource_ids | length, collection.contributor) | e }}
+      {{ 'A collection containing %d resources, contributed by %s' | i18n | format(collection.published_resources() | length, collection.contributor) | e }}
     </p>
   </div>
 </li>
