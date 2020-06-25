@@ -378,6 +378,10 @@ class Resource {
             return $file->get_type_term_id();
         }, $this->published_files()));
 
+        if (!count($term_ids)) {
+            return [];    
+        }
+
         $terms = get_terms(['taxonomy' => 'file_types', 'include' => $term_ids]);
 
         return array_map(function ($term) {
