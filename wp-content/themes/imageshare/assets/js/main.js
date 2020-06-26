@@ -3,11 +3,12 @@ advancedBtn &&
   advancedBtn.addEventListener("click", (event) => {
     event.stopPropagation();
     if (event.currentTarget.getAttribute("aria-expanded") === "false") {
-      $(event.currentTarget).parent().addClass('expanded');
+      event.currentTarget.parentNode.classList.add('expanded');
       event.currentTarget.setAttribute("aria-expanded", "true");
       document.querySelector(".refinements-wrapper").style.display = "flex";
     } else {
       $(event.currentTarget).parent().removeClass('expanded');
+      event.currentTarget.parentNode.classList.remove('expanded');
       event.currentTarget.setAttribute("aria-expanded", "false");
       document.querySelector(".refinements-wrapper").style.display = "none";
     }
