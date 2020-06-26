@@ -184,8 +184,22 @@ class Plugin {
 
         add_filter('plugin_action_links_' . plugin_basename($this->file), [$this, 'add_action_links']);
         add_filter('wp_insert_post_data', [$this, 'on_insert_post_data'], 2, 10);
+        add_filter('delete_post', [$this, 'on_delete_post'], 1, 10);
         add_filter('edited_term', [$this, 'on_edited_term',], 3, 10);
         add_action('wp', [$this, 'on_wp']);
+    }
+
+    public function on_delete_post($post_id) {
+        $post_type = get_post_type($post_id);
+
+        switch ($post_type) {
+            case Resource::type:
+                ResourceCollection::remove_resource($post_id);
+                break;
+             case ResourceFile::type:
+                Resource::remove_resource_file($post_id);
+                break;
+        }
     }
 
     public function on_edited_term($term_id, $tt_id, $taxonomy_name) {

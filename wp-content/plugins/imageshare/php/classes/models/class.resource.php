@@ -84,15 +84,37 @@ class Resource {
         array_push($files, $resource_file_id);
         update_field('files', $files, $resource_id);
     }
-    
-    public static function reindex_resources_containing_resource_file($resource_file_id) {
-        $existing = get_posts([
+
+    public static function remove_resource_file($resource_file_id) {
+        $resources = self::containing($resource_file_id);
+
+        foreach ($resources as $resource) {
+            $resource = Resource::from_post($resource);
+
+            delete_post_meta($resource->post_id, 'resource_file_id', $resource_file_id);
+            $other_resource_file_ids = array_filter($resource->file_ids, function ($id) use ($resource_file_id) {
+                return $id != $resource_file_id;
+            });
+
+            update_field('files', $other_resource_file_ids, $resource->post_id);
+            $resource->file_ids = $other_resource_file_ids;
+
+            $resource->reindex();
+        }
+    }
+
+    public static function containing($resource_file_id) {
+        return get_posts([
             'post_type' => self::type,
             'post_status' => 'publish',
             'meta_key' => 'resource_file_id',
             'meta_value' => $resource_file_id,
             'meta_compare' => '==='
         ]);
+    }
+
+    public static function reindex_resources_containing_resource_file($resource_file_id) {
+        $existing = self::containing($resource_file_id);
 
         $collection_ids = [];
 
@@ -112,7 +134,9 @@ class Resource {
     public function reindex() {
         wpfts_post_reindex($this->id);
 
-        $collections = ResourceCollection::containing($resource->ID);
+        $collection_ids = [];
+
+        $collections = ResourceCollection::containing($this->id);
         $collection_ids = array_merge($collection_ids, array_map(function ($r) {
             return $r->id;
         }, $collections));
@@ -245,8 +269,6 @@ class Resource {
 
         $resource = new Resource($post_id);
 
-        Logger::log([$resource, $post_id]);
-
         $old_status = $resource->post->post_status;
 
         if ($old_status === 'publish') {
@@ -264,7 +286,7 @@ class Resource {
 
     public function acf_update_value($field, $value) {
         switch($field['name']) {
-            case 'files':
+        case 'files':
             // also store resource file ids as flat database records for meta search
             // use $this->post->ID as the resource might not be finished creating
                 delete_post_meta($this->post->ID, 'resource_file_id');
@@ -337,24 +359,6 @@ class Resource {
         return $this->_collections = ResourceCollection::containing($this->post_id);
     }
 
-    public function force_publish_files() {
-        foreach ($this->files() as $file) {
-            if ($file->post->post_status !== 'draft') {
-                Logger::log("File {$file->id} status is {$file->post->post_status}, skipping");
-                continue;
-            }
-
-            $file->post->post_status = 'publish';
-
-            if (!$result = wp_update_post($file->post)) {
-                Logger::log("Unable to force publish file {$file->id}");
-                continue;
-            }
-
-            Logger::log("Force published file {$file->id}");
-        }
-    }
-
     public function published_files() {
         return array_filter($this->files(), function ($file) {
             return $file->post->post_status === 'publish';
@@ -362,7 +366,7 @@ class Resource {
     }
 
     public function files() {
-        if (isset($this->_files)) {
+        if (isset($this->_files) && is_array($this->_files)) {
             return $this->_files;
         }
 
