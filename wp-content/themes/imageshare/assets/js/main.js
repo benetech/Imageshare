@@ -1,6 +1,6 @@
-const advancedBtn = document.querySelector(".advanced-btn");
+var advancedBtn = document.querySelector(".advanced-btn");
 advancedBtn &&
-  advancedBtn.addEventListener("click", (event) => {
+  advancedBtn.addEventListener("click", function (event) {
     event.stopPropagation();
     if (event.currentTarget.getAttribute("aria-expanded") === "false") {
       event.currentTarget.parentNode.classList.add('expanded');
@@ -13,12 +13,12 @@ advancedBtn &&
     }
   });
 
-const removeElement = (el) => {
+var removeElement = function (el) {
   el.remove();
 };
 
-const announcement = (msg, selector, time) => {
-  const el = document.querySelector(selector);
+var announcement = function (msg, selector, time) {
+  var el = document.querySelector(selector);
   el.innerHTML = msg;
   setTimeout(() => {
     el.innerHTML = "";
