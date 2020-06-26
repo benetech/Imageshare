@@ -66,16 +66,16 @@ class PluginSettings {
             Logger::log("Creating resource for \"{$key}\"");
 
             try {
-                [$resource, $is_update, $files] = $this->create_resource($value);
+                [$resource, $is_resource_update, $files] = $this->create_resource($value);
 
-                array_push($result['resources'], $is_update
+                array_push($result['resources'], $is_resource_update
                     ? sprintf(__('Resource updated: %s', 'imageshare'), $key)
                     : sprintf(__('Resource created: %s', 'imageshare'), $key)
                 );
 
                 foreach ($files as $file) {
-                    [$name, $is_update] = $file;
-                    array_push($result['resources'], $is_update
+                    [$name, $is_file_update] = $file;
+                    array_push($result['resources'], $is_file_update
                         ? sprintf(__('File updated: %s', 'imageshare'), $name)
                         : sprintf(__('File associated: %s', 'imageshare'), $name)
                     );
@@ -90,7 +90,7 @@ class PluginSettings {
     }
 
     private function create_resource($record) {
-        [$resource_id, $is_update] = ResourceModel::create([
+        [$resource_id, $is_resource_update] = ResourceModel::create([
             'title'         => $record->unique_name,
             'thumbnail_src' => $record->featured_image_URI,
             'thumbnail_alt' => $record->featured_image_alt,
@@ -105,7 +105,7 @@ class PluginSettings {
 
         foreach ($record->files as $file) {
             try {
-                [$file_id, $is_update] = ResourceFileModel::create([
+                [$file_id, $is_file_update] = ResourceFileModel::create([
                     'title'          => $file->display_name,
                     'description'    => $file->description,
                     'author'         => $file->author ?? '',
@@ -119,17 +119,17 @@ class PluginSettings {
                     'downloadable'   => $file->downloadable
                 ]);
 
-                if (!$is_update) {
+                if (!$is_file_update) {
                     ResourceModel::associate_resource_file($resource_id, $file_id);
                 }
 
-                array_push($files, [$file->display_name, $is_update]);
+                array_push($files, [$file->display_name, $is_file_update]);
             } catch (Exception $error) {
                 Logger::log("Error creating resource file: " . $error->getMessage());
             }
         }
 
-        return [$resource_id, $is_update, $files];
+        return [$resource_id, $is_resource_update, $files];
     }
 
     private function get_taxonomies() {

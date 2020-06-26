@@ -23,9 +23,9 @@ class Resource {
         $is_update = false;
         $subject = Model::get_taxonomy_term_id('subjects', $args['subject']);
 
-        $existing = post_exists($args['title'], '', '', self::type);
+        $post_id = post_exists($args['title'], '', '', self::type);
 
-        if ($existing && in_array(get_post_status($existing), ['publish', 'draft'])) {
+        if ($post_id && in_array(get_post_status($post_id), ['publish', 'draft'])) {
             Logger::log(sprintf(__('A published or draft Resource with unique title "%s" already exists, updating', 'imageshare'), $args['title']));
             $is_update = true;
         } else {
