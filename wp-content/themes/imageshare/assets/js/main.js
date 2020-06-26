@@ -7,7 +7,6 @@ advancedBtn &&
       event.currentTarget.setAttribute("aria-expanded", "true");
       document.querySelector(".refinements-wrapper").style.display = "flex";
     } else {
-      $(event.currentTarget).parent().removeClass('expanded');
       event.currentTarget.parentNode.classList.remove('expanded');
       event.currentTarget.setAttribute("aria-expanded", "false");
       document.querySelector(".refinements-wrapper").style.display = "none";
