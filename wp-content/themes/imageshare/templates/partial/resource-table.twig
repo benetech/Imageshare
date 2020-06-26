@@ -9,7 +9,8 @@
       <ul aria-label="{{ 'File types' | i18n }}" role="list" class="resource-file-types">
       {% for type in resource.get_constituting_file_types() %}
           <li>
-              <img src="{{ type.thumbnail_url }}" alt="{{ type.name | e }}">
+              <img src="{{ type.thumbnail_url }}" alt="">
+              <span>{{ type.name | e }}</span>
           </li>
       {% endfor %}
       </ul>

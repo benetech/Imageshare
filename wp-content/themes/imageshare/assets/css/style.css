@@ -1116,10 +1116,21 @@ ul.resource-file-types {
     display: flex;
 }
 
+ul.resource-file-types li {
+  border: 1px solid #777;
+  padding: .2em .4em;
+  border-radius: .5em;
+}
+
 ul.resource-file-types img {
     max-width: 2em;
 }
 
-ul.resource-file-types li + li img {
+ul.resource-file-types li + li {
     margin-left: .5em;
+}
+
+ul.resource-file-types span {
+    vertical-align: bottom;
+    font-size: .8em;
 }
