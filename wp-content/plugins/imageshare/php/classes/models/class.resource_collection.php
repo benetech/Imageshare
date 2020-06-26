@@ -71,6 +71,12 @@ class ResourceCollection {
 
             case 'resources':
                 $fbs = Model::children_by_status($post->resources());
+
+                if (empty($fbs)) {
+                    echo '0';
+                    break;
+                }
+
                 echo join(', ', array_map(function($status) use($fbs) {
                     return "{$fbs[$status]} {$status}";
                 }, array_keys($fbs)));

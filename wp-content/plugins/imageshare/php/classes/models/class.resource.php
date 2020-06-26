@@ -239,6 +239,12 @@ class Resource {
 
             case 'files':
                 $fbs = Model::children_by_status($post->files());
+
+                if (empty($fbs)) {
+                    echo '0';
+                    break;
+                }
+
                 echo join(', ', array_map(function($status) use($fbs) {
                     return "{$fbs[$status]} {$status}";
                 }, array_keys($fbs)));
