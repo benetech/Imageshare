@@ -1114,6 +1114,7 @@ li.result h3, li.result h4 {
 
 ul.resource-file-types {
     display: flex;
+    flex-wrap: wrap;
 }
 
 ul.resource-file-types li {
