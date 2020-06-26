@@ -40,14 +40,14 @@ class ResourceFile {
 
         $existing = get_posts([
             'post_type' => self::type,
-            'post_status' => 'publish',
+            'post_status' => ['publish', 'draft'],
             'meta_key' => 'uri',
             'meta_value' => $args['uri'],
             'meta_compare' => '==='
         ]);
 
         if (count($existing)) {
-            Logger::log(sprintf(__('A published ResourceFile with URI "%s" already exists, updating', 'imageshare'), $args['uri']));
+            Logger::log(sprintf(__('A published or draft ResourceFile with URI "%s" already exists, updating', 'imageshare'), $args['uri']));
             $post_id = $existing[0]->ID;
             $is_update = true;
         } else {
@@ -75,6 +75,7 @@ class ResourceFile {
         }
 
         update_field('description', $args['description'], $post_id);
+        update_field('author', $args['author'], $post_id);
         update_field('uri', $args['uri'], $post_id);
         update_field('length_minutes', $length, $post_id);
         update_field('type', $type, $post_id);
@@ -162,6 +163,7 @@ class ResourceFile {
 
     public static function manage_columns(array $columns) {
         $columns['description'] = self::i18n('Description');
+        $columns['file_author'] = self::i18n('Author');
         $columns['uri'] = self::i18n('URI');
         $columns['type'] = self::i18n('Type');
         $columns['format'] = self::i18n('Format');
@@ -180,6 +182,10 @@ class ResourceFile {
         switch ($column_name) {
             case 'description':
                 echo $post->description;
+                break;
+
+            case 'file_author':
+                echo $post->author;
                 break;
 
             case 'uri':
@@ -248,6 +254,7 @@ class ResourceFile {
             $this->permalink = get_permalink($this->post->ID);
 
             $this->description = get_post_meta($this->post_id, 'description', true);
+            $this->author = get_post_meta($this->post_id, 'author', true);
             $this->uri = get_post_meta($this->post_id, 'uri', true);
             $this->downloadable = get_post_meta($this->post_id, 'downloadable', true);
             $this->length_minutes = get_post_meta($this->post_id, 'length_minutes', true);
@@ -281,6 +288,22 @@ class ResourceFile {
                 echo " ";
                 echo sprintf(_n('%d minute', '%d minutes', $length['minutes'], 'imageshare'), $length['minutes']); 
             }
+        }
+    }
+
+    public function get_type_term_id() {
+        return get_post_meta($this->post_id, 'type', true);
+    }
+
+    public function get_display_thumbnail() {
+        $type_term = get_term($this->get_type_term_id());
+
+        if ($type_term->name === 'Image') {
+            # yuck. TODO better solution for this?
+            return $this->uri;
+        } else {
+            // metadata field from ACF
+            return get_field('thumbnail', 'category_' . $type_term->term_id);
         }
     }
 

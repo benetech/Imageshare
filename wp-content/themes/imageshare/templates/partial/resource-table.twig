@@ -1,14 +1,29 @@
 <ul id="resources" role="list" {{ labelledby ? 'aria-labelledby="%s"' | format(labelledby) : '' }}>
   {% for resource in results %}
-  <li>
-    <a href="{{ resource.permalink }}">
-      <h{{ level }}>{{ resource.title | e }}</h{{ level }}>
-    </a>
+  <li class="result">
+    <div>
+       <a href="{{ resource.permalink }}">
+        <h{{ level }}>{{ resource.title | e }}</h{{ level }}>
+      </a>
+
+      <ul aria-label="{{ 'File types' | i18n }}" role="list" class="resource-file-types">
+      {% for type in resource.get_constituting_file_types() %}
+          <li>
+              <img src="{{ type.thumbnail_url }}" alt="">
+              <span>{{ type.name | e }}</span>
+          </li>
+      {% endfor %}
+      </ul>
+    </div>
+
     <div>
       <img
         src="{{ resource.thumbnail_src }}"
         alt="{{ resource.thumbnail_alt | e }}"
+        class="thumbnail"
       />
+
+
       <p class="description">{{ resource.description | e }}</p>
       <p class="source">({{ 'Source: %s' | i18n | format(resource.source) | e }})</p>
     </div>

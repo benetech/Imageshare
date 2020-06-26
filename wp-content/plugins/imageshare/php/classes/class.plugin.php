@@ -184,8 +184,22 @@ class Plugin {
 
         add_filter('plugin_action_links_' . plugin_basename($this->file), [$this, 'add_action_links']);
         add_filter('wp_insert_post_data', [$this, 'on_insert_post_data'], 2, 10);
+        add_filter('delete_post', [$this, 'on_delete_post'], 1, 10);
         add_filter('edited_term', [$this, 'on_edited_term',], 3, 10);
         add_action('wp', [$this, 'on_wp']);
+    }
+
+    public function on_delete_post($post_id) {
+        $post_type = get_post_type($post_id);
+
+        switch ($post_type) {
+            case Resource::type:
+                ResourceCollection::remove_resource($post_id);
+                break;
+             case ResourceFile::type:
+                Resource::remove_resource_file($post_id);
+                break;
+        }
     }
 
     public function on_edited_term($term_id, $tt_id, $taxonomy_name) {
@@ -288,7 +302,19 @@ class Plugin {
                 [
                     'label' => self::i18n($definition->plural),
                     'labels' => [
-                        'singular_name' => self::i18n($definition->singular)
+                        'singular_name'     => self::i18n($definition->singular),
+                        'search_items'      => self::i18n('Search ' . $definition->plural),
+                        'popular_items'     => self::i18n('Popular ' . $definition->plural),
+                        'all_items'         => self::i18n('All ' . $definition->plural),
+                        'parent_item'       => self::i18n('Parent ' . $definition->singular),
+                        'parent_item_colon' => self::i18n('Parent ' . $definition->singular . ':'),
+                        'edit_item'         => self::i18n('Edit ' . $definition->singular),
+                        'view_item'         => self::i18n('View ' . $definition->singular),
+                        'update_item'       => self::i18n('Update ' . $definition->singular),
+                        'add_new_item'      => self::i18n('Add New ' . $definition->singular),
+                        'new_item_name'     => self::i18n('New ' . $definition->singular . ' name'),
+                        'back_to_items'     => self::i18n('Back to ' . $definition->plural),
+                        'not_found'         => self::i18n('No ' . $definition->plural . ' found')
                     ],
                     'hierarchical' => $definition->hierarchical
                 ]

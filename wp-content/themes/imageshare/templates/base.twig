@@ -59,26 +59,6 @@
 
     <div id="announcement" aria-live="polite" aria-atomic="true" class="sr-only"></div>
 
-    <script src="{{ site.theme.link }}/assets/js/vendor/modernizr-3.8.0.min.js"></script>
-    <script>
-      window.jQuery ||
-        document.write(
-          '<script src="{{ site.theme.link }}/assets/js/vendor/jquery-3.4.1.min.js"><\/script>'
-        );
-    </script>
     <script src="{{ site.theme.link }}/assets/js/main.js?{{ theme.version }}"></script>
-
-    <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
-    <script>
-      window.ga = function () {
-        ga.q.push(arguments);
-      };
-      ga.q = [];
-      ga.l = +new Date();
-      ga("create", "UA-XXXXX-Y", "auto");
-      ga("set", "transport", "beacon");
-      ga("send", "pageview");
-    </script>
-    <script src="https://www.google-analytics.com/analytics.js" async></script>
   </body>
 </html>

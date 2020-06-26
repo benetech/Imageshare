@@ -1,22 +1,24 @@
-const advancedBtn = document.querySelector(".advanced-btn");
+var advancedBtn = document.querySelector(".advanced-btn");
 advancedBtn &&
-  advancedBtn.addEventListener("click", (event) => {
+  advancedBtn.addEventListener("click", function (event) {
     event.stopPropagation();
     if (event.currentTarget.getAttribute("aria-expanded") === "false") {
+      event.currentTarget.parentNode.classList.add('expanded');
       event.currentTarget.setAttribute("aria-expanded", "true");
       document.querySelector(".refinements-wrapper").style.display = "flex";
     } else {
+      event.currentTarget.parentNode.classList.remove('expanded');
       event.currentTarget.setAttribute("aria-expanded", "false");
       document.querySelector(".refinements-wrapper").style.display = "none";
     }
   });
 
-const removeElement = (el) => {
+var removeElement = function (el) {
   el.remove();
 };
 
-const announcement = (msg, selector, time) => {
-  const el = document.querySelector(selector);
+var announcement = function (msg, selector, time) {
+  var el = document.querySelector(selector);
   el.innerHTML = msg;
   setTimeout(() => {
     el.innerHTML = "";

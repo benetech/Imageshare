@@ -71,6 +71,12 @@ class ResourceCollection {
 
             case 'resources':
                 $fbs = Model::children_by_status($post->resources());
+
+                if (empty($fbs)) {
+                    echo '0';
+                    break;
+                }
+
                 echo join(', ', array_map(function($status) use($fbs) {
                     return "{$fbs[$status]} {$status}";
                 }, array_keys($fbs)));
@@ -149,13 +155,13 @@ class ResourceCollection {
     }
 
     public function resources() {
-        if (isset($this->_resources)) {
+        if (isset($this->_resources) && is_array($this->_resources)) {
             return $this->_resources;
         }
 
         return $this->_resources = array_reduce($this->resource_ids, function ($carry, $resource_id) {
-            $resource_file = new Resource($resource_id);
-            array_push($carry, $resource_file);
+            $resource = new Resource($resource_id);
+            array_push($carry, $resource);
             return $carry;
         }, []);
 
@@ -174,6 +180,20 @@ class ResourceCollection {
         }
 
         return $value;
+    }
+
+    public static function remove_resource($resource_id) {
+        $collections = self::containing($resource_id);
+        foreach ($collections as $collection) {
+            delete_post_meta($collection->post_id, 'resource_file', $resource_id);
+            $other_resource_ids = array_filter($collection->get_resource_ids(), function ($id) use ($resource_id) {
+                return $id != $resource_id;
+            });
+
+            update_field('resources', $other_resource_ids, $collection->post_id);
+            $collection->resource_ids = $other_resource_ids;
+            wpfts_post_reindex($collection->post_id);
+        }
     }
 
     public static function on_acf_relationship_result($post_id, $related_post, $field) {
@@ -208,11 +228,30 @@ class ResourceCollection {
         }
     }
 
+    public function get_constituting_file_types() {
+        // php can't do transform compare to save its life
+        
+        $seen_term_ids = [];
+        $types = [];
+
+        foreach ($this->published_resources() as $resource) {
+            foreach ($resource->get_constituting_file_types() as $type) {
+                if (in_array($type['term_id'], $seen_term_ids)) {
+                    continue;
+                }
+                array_push($types, $type);
+                array_push($seen_term_ids, $type['term_id']);
+            }
+        }
+        
+        return $types;
+    }
+
     public function get_index_data($specific = null) {
         if ($specific === 'subject') {
             return array_unique(Model::flatten(array_map(function ($resource) {
                 return Model::as_search_term('subject', $resource->subject);
-            }, $this->resources())));
+            }, $this->published_resources())));
         }
 
         if ($specific === 'type') {
@@ -220,7 +259,7 @@ class ResourceCollection {
                 return array_map(function ($type) {
                     return Model::as_search_term('type', $type);
                 }, $resource->get_resource_file_types());
-            }, $this->resources())));
+            }, $this->published_resources())));
         }
 
         if ($specific === 'accommodation') {
@@ -228,12 +267,12 @@ class ResourceCollection {
                 return array_map(function ($accommodation) {
                     return Model::as_search_term('accommodation', $accommodation);
                 }, Model::flatten($resource->get_resource_file_accommodations()));
-            }, $this->resources())));
+            }, $this->published_resources())));
         }
 
         $resource_indices = array_map(function ($resource) {
             return $resource->get_index_data();
-        }, $this->resources());
+        }, $this->published_resources());
 
         return Model::flatten([$resource_indices, $this->description, $this->contributor]);
     }

@@ -75,25 +75,33 @@ class Model {
     public static function get_hierarchical_terms($taxonomy, $hide_empty) {
         $terms = get_terms([
             'taxonomy' => $taxonomy,
-            'orderby' => 'term_group',
-            'hide_empty' => $hide_empty,
+            'orderby' => 'name',
+            'hierarchical' => false,
+            'hide_empty' => false,
+            'count' => true,
+            'parent' => 0
         ]);
-
-        $id_lookup = array_reduce($terms, function ($carry, $item) {
-            $carry[$item->term_id] = $item;
-            return $carry;
-        }, []);
 
         $results = [];
 
         foreach ($terms as $term) {
-            if ($parent_id = $term->parent) {
-                $parent = $id_lookup[$parent_id];
-                $results[$term->term_id] = [$term->name, $parent->name];
-                continue;
+            if ($term->count || !$hide_empty) {
+                $results[$term->term_id] = [$term->name];
             }
 
-            $results[$term->term_id] = [$term->name];
+            $children = get_terms([
+                'taxonomy' => $taxonomy,
+                'parent' => $term->term_id,
+                'orderby' => 'name',
+                'hide_empty' => false,
+                'count' => true
+            ]);
+
+            foreach ($children as $child) {
+                if ($child->count || !$hide_empty) {
+                    $results[$child->term_id] = [$child->name, $term->name];
+                }
+            }
         }
 
         return $results;

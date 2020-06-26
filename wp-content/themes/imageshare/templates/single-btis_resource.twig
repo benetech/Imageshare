@@ -41,7 +41,7 @@
             </li>
           {% endif %}
             <li class="right width-3/12">
-              <a href="mailto:report@imageshare.benetech.edu">Report Issue</a>
+              <a href="mailto:imageshare-issues@diagramcenter.org">Report Issue</a>
             </li>
           </ul>
       </div>
@@ -60,6 +60,7 @@
           <img
             src="{{ post.thumbnail_src }}"
             alt="{{ post.thumbnail_alt | e }}"
+            class="thumbnail"
           />
 
           <div>
@@ -67,8 +68,9 @@
             {{ post.description | i18n | e }}
           </p>
 
+
           <p class="source">
-            (Source: {{ post.source }})
+            ({{ 'Source' | i18n }}: {{ post.source | e }})
           </p>
           </div>
 
@@ -121,16 +123,16 @@
 {% endblock %}
 
 {% block file %}
-  <li>
+  <li class="result">
     <div class="header">
-      {% if file.thumbnail_src | length %}
-        <img
-          class="resource-img"
-          src="{{ file.thumbnail_src }}"
-          alt="{{ file.thumbnail_alt | i18n }}"
-        />
-      {% endif %}
       <h3>{{ file.title | e }}</h3>
+
+      <img
+        class="resource-img"
+        src="{{ file.get_display_thumbnail() }}"
+        alt=""
+      />
+
       {% if file.downloadable %}
         <a download="{{ file.uri | basename }}" aria-label="{{ 'Download %s - %s' | format(file.title, file.type | i18n) }}" class="download" href="{{ file.uri }}">{{ 'Download' | i18n }}</a>
       {% endif %}
@@ -140,7 +142,9 @@
       {% endif %}
     </div>
     
+  {% if file.description | length %}
     <p>{{ file.description | e }}</p>
+  {% endif %}
 
     <dl>
       <div>
@@ -167,6 +171,13 @@
         <dt>{{ 'License' | i18n }}:</dt>
         <dd>{{ file.license | e }}</dd>
       </div>
+
+    {% if file.author | length %}
+      <div>
+        <dt>{{ 'Author' | i18n }}:</dt>
+        <dd>{{ file.author | e }}</dd>
+      </div>
+    {% endif %}
 
     {% if file.length_minutes %}
       <div>
