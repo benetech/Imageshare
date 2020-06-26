@@ -19,12 +19,14 @@
       alt=""
       class="thumbnail"
     />
-    <p>
-      {{ collection.description | e }}
-    </p>
-    <p class="description">
-      {{ 'A collection containing %d resources, contributed by %s' | i18n | format(collection.published_resources() | length, collection.contributor) | e }}
-    </p>
+    <div>
+        <p>
+          {{ collection.description | e }}
+        </p>
+        <p class="description">
+          {{ 'A collection containing %d resources, contributed by %s' | i18n | format(collection.published_resources() | length, collection.contributor) | e }}
+        </p>
+    </div>
   </div>
 </li>
 

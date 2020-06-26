@@ -1101,8 +1101,8 @@ li.result h3, li.result h4 {
   align-self: baseline;
 }
 
-.search-results #collections .result div,
-#resource .result div {
+.search-results #collections .result > div,
+#resource .result > div {
     display: flex;
 }
 
