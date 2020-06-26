@@ -301,7 +301,7 @@ nav.main-navigation {
   content: "︿";
   margin-top: -0.5em;
 }
-.advanced-btn[aria-expanded="true"] + .submit-btn-wrapper {
+h3.expanded + .submit-btn-wrapper {
   visibility: hidden;
 }
 .submit-btn {
