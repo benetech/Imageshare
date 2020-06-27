@@ -20,7 +20,7 @@ var removeElement = function (el) {
 var announcement = function (msg, selector, time) {
   var el = document.querySelector(selector);
   el.innerHTML = msg;
-  setTimeout(() => {
+  setTimeout(function () {
     el.innerHTML = "";
   }, time);
 };
