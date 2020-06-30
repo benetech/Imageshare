@@ -1118,9 +1118,7 @@ ul.resource-file-types {
 }
 
 ul.resource-file-types li {
-  border: 1px solid #777;
-  padding: .2em .4em;
-  border-radius: .5em;
+  padding: .2em;
 }
 
 ul.resource-file-types img {
@@ -1128,10 +1126,6 @@ ul.resource-file-types img {
 }
 
 ul.resource-file-types li + li {
-    margin-left: .5em;
+    margin-left: .2em;
 }
 
-ul.resource-file-types span {
-    vertical-align: bottom;
-    font-size: .8em;
-}
