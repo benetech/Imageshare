@@ -23,19 +23,30 @@ class Resource {
         $is_update = false;
         $subject = Model::get_taxonomy_term_id('subjects', $args['subject']);
 
-        $post_id = post_exists($args['title'], '', '', self::type);
+        $existing = get_posts([
+            'numberposts' => 1,
+            'post_type' => self::type,
+            'meta_query' => [[
+                'key' => 'unique_id',
+                'value' => $args['unique_id'],
+                'compare' => '='
+            ]]
+        ]);
 
-        if ($post_id && in_array(get_post_status($post_id), ['publish', 'draft'])) {
-            Logger::log(sprintf(__('A published or draft Resource with unique title "%s" already exists, updating', 'imageshare'), $args['title']));
+        if (count($existing)) {
+            Logger::log(sprintf(__('A Resource with unique id "%s" already exists, updating', 'imageshare'), $args['unique_id']));
             $is_update = true;
+            $post_id = $existing[0]->ID;
         } else {
             $post_data = [
                 'post_type' => self::type,
                 'post_title' => $args['title'],
+                'post_name' => sanitize_title_with_dashes(join('-', [$args['title'], $args['source']])),
                 'comment_status' => 'closed',
                 'post_category' => [],
                 'meta_input' => [
-                    'importing' => true
+                    'importing' => true,
+                    'unique_id' => $args['unique_id']
                 ]
             ];
 
