@@ -615,13 +615,14 @@ table.resources {
 }
 
 .counter {
-  color: #fff;
+  color: #000;
   margin: 0 .2em;
-  background-color: darkblue;
-  padding: .2em .5em;
-  border-radius: 6px;
+  background-color: #fff;
+  padding: .3em;
+  border-radius: 50%;
+  border: 1px solid darkblue;
   font-size: .7em;
-  vertical-align: middle;
+  vertical-align: middle;    
 }
 
 dl.resource-details * + * {
