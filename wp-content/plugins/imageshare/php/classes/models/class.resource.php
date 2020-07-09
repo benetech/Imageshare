@@ -26,6 +26,7 @@ class Resource {
         $existing = get_posts([
             'numberposts' => 1,
             'post_type' => self::type,
+            'post_status' => ['publish', 'draft', 'pending', 'private'],
             'meta_query' => [[
                 'key' => 'unique_id',
                 'value' => $args['unique_id'],
@@ -35,8 +36,14 @@ class Resource {
 
         if (count($existing)) {
             Logger::log(sprintf(__('A Resource with unique id "%s" already exists, updating', 'imageshare'), $args['unique_id']));
+            $post = $existing[0];
+            $post_id = $post->ID;
             $is_update = true;
-            $post_id = $existing[0]->ID;
+
+            if ($post->post_status === 'publish') {
+                $post->post_status = 'pending';
+                wp_update_post($post);
+            }
         } else {
             $post_data = [
                 'post_type' => self::type,

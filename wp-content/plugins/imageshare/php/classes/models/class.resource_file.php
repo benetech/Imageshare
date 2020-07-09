@@ -40,16 +40,22 @@ class ResourceFile {
 
         $existing = get_posts([
             'post_type' => self::type,
-            'post_status' => ['publish', 'draft'],
+            'post_status' => ['publish', 'draft', 'pending', 'private'],
             'meta_key' => 'uri',
             'meta_value' => $args['uri'],
             'meta_compare' => '==='
         ]);
 
         if (count($existing)) {
-            Logger::log(sprintf(__('A published or draft ResourceFile with URI "%s" already exists, updating', 'imageshare'), $args['uri']));
-            $post_id = $existing[0]->ID;
+            Logger::log(sprintf(__('A ResourceFile with URI "%s" already exists, updating', 'imageshare'), $args['uri']));
+            $post = $existing[0];
+            $post_id = $post->ID;
             $is_update = true;
+
+            if ($post->post_status === 'publish') {
+                $post->post_status = 'pending';
+                wp_update_post($post);
+            }
         } else {
             $post_data = [
                 'post_type' => self::type,
