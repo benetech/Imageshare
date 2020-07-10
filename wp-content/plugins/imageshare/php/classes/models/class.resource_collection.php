@@ -270,6 +270,12 @@ class ResourceCollection {
             }, $this->published_resources())));
         }
 
+        if ($specific === 'resources') {
+            return array_unique(Model::flatten(array_map(function ($resource) {
+                return [$resource->get_index_data(), $resource->get_index_data('files')];
+            }, $this->published_resources())));
+        }
+
         $resource_indices = array_map(function ($resource) {
             return $resource->get_index_data();
         }, $this->published_resources());

@@ -452,9 +452,9 @@ class Resource {
         }
 
         if ($specific === 'files') {
-            return array_map(function ($file) {
+            return array_unique(Model::flatten(array_map(function ($file) {
                 return implode(' ', [$file->title, $file->description]);
-            }, $this->published_files());
+            }, $this->published_files())));
         }
 
         $term_names = array_map(function ($term) {
