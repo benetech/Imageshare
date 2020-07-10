@@ -451,12 +451,19 @@ class Resource {
             }, Model::flatten($this->get_resource_file_accommodations()))));
         }
 
+        if ($specific === 'files') {
+            return array_map(function ($file) {
+                return implode(' ', [$file->title, $file->description]);
+            }, $this->published_files());
+        }
+
         $term_names = array_map(function ($term) {
             return $term->name;
         }, wp_get_post_terms($this->post_id));
 
         return Model::flatten([
             Model::as_search_term('subject', $this->subject),
+            $this->title,
             $this->thumbnail_alt,
             $this->source,
             $this->description,

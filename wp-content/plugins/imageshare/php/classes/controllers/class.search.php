@@ -35,6 +35,9 @@ class Search {
                 $index['post_content'] = '';
                 $index[$type . '_data'] = implode(' ', array_unique($resource->get_index_data()));
 
+                // index data distilled from published child resource files
+                $index['file_content'] = implode(' ', $resource->get_index_data('files'));
+
                 // subject and keyword-specific relevance clusters
                 $index[$type . '_subject'] = implode(' ', $resource->get_index_data('subject'));
                 $index[$type . '_type'] = implode(' ', $resource->get_index_data('type'));
@@ -201,6 +204,7 @@ class Search {
         if (strlen($query)) {
             $cluster_weights = [
                 'post_title' => 0.7,
+                'file_content' => 0.9,
                 ($type . '_data') => 0.9
             ];
             $query = [$query];
