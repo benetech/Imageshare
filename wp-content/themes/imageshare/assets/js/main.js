@@ -20,14 +20,14 @@ var removeElement = function (el) {
 var announcement = function (msg, selector, time) {
   var el = document.querySelector(selector);
   el.innerHTML = msg;
-  setTimeout(() => {
+  setTimeout(function () {
     el.innerHTML = "";
   }, time);
 };
 
 if (resetBtn = document.querySelector('button#reset')) {
   resetBtn.removeAttribute('hidden');
-  resetBtn.addEventListener("click", (event) => {
+  resetBtn.addEventListener("click", function (event) {
     document.getElementById('search').value = '';
     if (filters = document.querySelector('#search-filters')) {
         filters.remove();

@@ -8,7 +8,7 @@
     {% for type in collection.get_constituting_file_types() %}
         <li>
             <img src="{{ type.thumbnail_url }}" alt="">
-            <span>{{ type.name | e }}</span>
+            <span class="sr-only">{{ type.name | e }}</span>
         </li>
     {% endfor %}
     </ul>
@@ -24,7 +24,7 @@
           {{ collection.description | e }}
         </p>
         <p class="description">
-          {{ 'A collection containing %d resources, contributed by %s' | i18n | format(collection.published_resources() | length, collection.contributor) | e }}
+          {{ 'A collection containing %d resources, curated by %s' | i18n | format(collection.published_resources() | length, collection.contributor) | e }}
         </p>
     </div>
   </div>

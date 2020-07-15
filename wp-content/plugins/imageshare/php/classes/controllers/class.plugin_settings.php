@@ -91,6 +91,7 @@ class PluginSettings {
 
     private function create_resource($record) {
         [$resource_id, $is_resource_update] = ResourceModel::create([
+            'unique_id'     => $record->unique_id,
             'title'         => $record->unique_name,
             'thumbnail_src' => $record->featured_image_URI,
             'thumbnail_alt' => $record->featured_image_alt,

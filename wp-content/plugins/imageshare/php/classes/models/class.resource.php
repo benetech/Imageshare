@@ -23,19 +23,37 @@ class Resource {
         $is_update = false;
         $subject = Model::get_taxonomy_term_id('subjects', $args['subject']);
 
-        $post_id = post_exists($args['title'], '', '', self::type);
+        $existing = get_posts([
+            'numberposts' => 1,
+            'post_type' => self::type,
+            'post_status' => ['publish', 'draft', 'pending', 'private'],
+            'meta_query' => [[
+                'key' => 'unique_id',
+                'value' => $args['unique_id'],
+                'compare' => '='
+            ]]
+        ]);
 
-        if ($post_id && in_array(get_post_status($post_id), ['publish', 'draft'])) {
-            Logger::log(sprintf(__('A published or draft Resource with unique title "%s" already exists, updating', 'imageshare'), $args['title']));
+        if (count($existing)) {
+            Logger::log(sprintf(__('A Resource with unique id "%s" already exists, updating', 'imageshare'), $args['unique_id']));
+            $post = $existing[0];
+            $post_id = $post->ID;
             $is_update = true;
+
+            if ($post->post_status === 'publish') {
+                $post->post_status = 'pending';
+                wp_update_post($post);
+            }
         } else {
             $post_data = [
                 'post_type' => self::type,
                 'post_title' => $args['title'],
+                'post_name' => sanitize_title_with_dashes(join('-', [$args['title'], $args['source']])),
                 'comment_status' => 'closed',
                 'post_category' => [],
                 'meta_input' => [
-                    'importing' => true
+                    'importing' => true,
+                    'unique_id' => $args['unique_id']
                 ]
             ];
 
@@ -433,12 +451,19 @@ class Resource {
             }, Model::flatten($this->get_resource_file_accommodations()))));
         }
 
+        if ($specific === 'files') {
+            return array_unique(Model::flatten(array_map(function ($file) {
+                return implode(' ', [$file->title, $file->description]);
+            }, $this->published_files())));
+        }
+
         $term_names = array_map(function ($term) {
             return $term->name;
         }, wp_get_post_terms($this->post_id));
 
         return Model::flatten([
             Model::as_search_term('subject', $this->subject),
+            $this->title,
             $this->thumbnail_alt,
             $this->source,
             $this->description,
