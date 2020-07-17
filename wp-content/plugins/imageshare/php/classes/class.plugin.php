@@ -191,7 +191,7 @@ class Plugin {
     }
 
     public function patch_admin_search($query) {
-        if (is_admin()) {
+        if (is_admin() && !(isset($_POST['action']) && $_POST['action'] === 'wpftsi_submit_testsearch')) {
             $query->set('wpfts_disable', 1);
         }
 
