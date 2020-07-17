@@ -315,6 +315,12 @@ class ResourceFile {
             return $this->uri;
         } else {
             // metadata field from ACF
+            // try format first
+            $format_thumbnail = get_field('thumbnail', 'category_' . $format_term->term_id);
+            if (!empty($format_thumbnail)) {
+                return $format_thumbnail;
+            }
+
             return get_field('thumbnail', 'category_' . $type_term->term_id);
         }
     }
