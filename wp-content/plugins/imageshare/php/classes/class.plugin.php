@@ -187,6 +187,15 @@ class Plugin {
         add_filter('delete_post', [$this, 'on_delete_post'], 1, 10);
         add_filter('edited_term', [$this, 'on_edited_term',], 3, 10);
         add_action('wp', [$this, 'on_wp']);
+        add_action('pre_get_posts', [$this, 'patch_admin_search']);
+    }
+
+    public function patch_admin_search($query) {
+        if (is_admin()) {
+            $query->set('wpfts_disable', 1);
+        }
+
+        return $query;
     }
 
     public function on_delete_post($post_id) {
