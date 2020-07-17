@@ -7,7 +7,7 @@ use Imageshare\Logger;
 class Model {
     public static function force_publish_children($children) {
         foreach ($children as $child) {
-            if ($child->post->post_status !== 'draft') {
+            if (!in_array($child->post->post_status, ['draft', 'pending'])) {
                 Logger::log("{$child->post->post_type} {$child->id} status is {$child->post->post_status}, skipping");
                 continue;
             }
