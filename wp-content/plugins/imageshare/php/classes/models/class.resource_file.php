@@ -301,11 +301,17 @@ class ResourceFile {
         return get_post_meta($this->post_id, 'type', true);
     }
 
+    public function get_format_term_id() {
+        return get_post_meta($this->post_id, 'format', true);
+    }
+
     public function get_display_thumbnail() {
         $type_term = get_term($this->get_type_term_id());
+        $format_term = get_term($this->get_format_term_id());
 
-        if ($type_term->name === 'Image') {
-            # yuck. TODO better solution for this?
+        $use_uri_as_thumbnail =  get_field('use_resource_uri_as_thumbnail', 'category_' . $format_term->term_id);
+
+        if ($use_uri_as_thumbnail) {
             return $this->uri;
         } else {
             // metadata field from ACF
