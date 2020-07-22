@@ -1,6 +1,6 @@
 <section aria-labelledby="main-search" id="search-form">
   <h2 id="main-search" class="h2">{{ 'Search' | i18n }}</h2>
-{% if results.total_count > 0 %}
+{% if results is defined %}
   <button type="button" hidden id="reset">{{ 'Clear search parameters' | i18n }}</button>
 {% endif %}
   <p class="main-description">
