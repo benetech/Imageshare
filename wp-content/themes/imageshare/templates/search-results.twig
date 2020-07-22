@@ -69,7 +69,10 @@
     {% set paging = results.resources.paging %}
     {% set args = paging.args %}
 
+    <div>
     <h3 tabindex="-1" id="resources-heading">{{ 'Resources' | i18n }}</h3>
+    <span class="counter">{{ paging.total }}</span>
+    </div>
 
     <div>
       <p>
@@ -120,9 +123,13 @@
 {% endblock %}
 
 {% block collections %}
-    <h3 tabindex="-1" id="collections-heading">{{ 'Collections' | i18n }}</h3>
     {% set paging = results.collections.paging %}
     {% set args = paging.args %}
+
+    <div>
+        <h3 tabindex="-1" id="collections-heading">{{ 'Collections' | i18n }}</h3>
+        <span class="counter">{{ paging.total }}</span>
+    </div>
 
     <div>
       <p>

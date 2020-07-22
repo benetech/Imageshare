@@ -1101,6 +1101,11 @@ h2.resource-section {
 
 .search-results h3 {
     margin: 1em 0 .5em 0;
+    display: inline-block;
+}
+
+.search-results .counter {
+    font-size: 1em;
 }
 
 li.result h3, li.result h4 {
