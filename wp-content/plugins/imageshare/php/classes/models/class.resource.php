@@ -460,7 +460,7 @@ class Resource {
 
         if ($specific === 'files') {
             return array_unique(Model::flatten(array_map(function ($file) {
-                return implode(' ', [$file->title, $file->description]);
+                return implode(' ', [$file->title, $file->description, $file->author]);
             }, $this->published_files())));
         }
 
