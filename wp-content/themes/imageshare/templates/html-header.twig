@@ -6,7 +6,8 @@
     <title>{{ page_title }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="apple-touch-icon" href="{{ site.theme.link }}/assets/img/icon.png" />
-    {% for sheet in ['normalize', 'main', 'grid', 'style'] %}
+    {% for sheet in ['normalize', 'main', 'grid'] %}
         <link rel="stylesheet" href="{{ site.theme.link }}/assets/css/{{ sheet }}.css?{{ theme.version }}" type="text/css" media="screen" />
     {% endfor %}
+        <link rel="stylesheet" href="{{ site.theme.link }}/style.css?{{ theme.version }}" type="text/css" media="screen" />
     <meta name="theme-color" content="#fafafa" />
