@@ -59,7 +59,9 @@
           <dl class="resource-details">
             <div>
                 <dt>{{ 'Subject' | i18n }}:</dt>
-                <dd>{{ post.subject | i18n | e }}</dd>
+                <dd>
+                  <a href="/?page=search&subject={{ post.subject_term_id }}">{{ post.subject | i18n | e }}</a>
+                </dd>
             </div>
           {% if post.tags %}
             <div>
