@@ -2,9 +2,9 @@
   {% for resource in results %}
   <li class="result">
     <div>
-       <a href="{{ resource.permalink }}">
-        <h{{ level }}>{{ resource.title | e }}</h{{ level }}>
-      </a>
+      <h{{ level }}>
+        <a href="{{ resource.permalink }}">{{ resource.title | e }}</a>
+      </h{{ level }}>
 
       <ul aria-label="{{ 'File types' | i18n }}" role="list" class="resource-file-types">
       {% for type in resource.get_constituting_file_types() %}
