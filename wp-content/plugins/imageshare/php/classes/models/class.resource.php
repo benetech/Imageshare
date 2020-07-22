@@ -402,25 +402,32 @@ class Resource {
     }
 
     public function get_constituting_file_types() {
-        $term_ids = array_unique(array_map(function ($file) {
-            return $file->get_type_term_id();
-        }, $this->published_files()));
+        $published = $this->published_files();
 
-        if (!count($term_ids)) {
-            return [];    
+        $thumbnails = array_filter(array_map(function ($file) {
+            return $file->get_display_thumbnail_with_type();
+        }, $published), function ($t) { return !isset($t['custom']); });
+
+        Logger::log($thumbnails);
+
+        $known_ids = [];
+        $types = [];
+
+        foreach ($thumbnails as $thumb) {
+            if (isset($known_ids[$thumb['term']->term_id])) {
+                continue;
+            }
+
+            $known_ids[$thumb['term']->term_id] = true;
+
+            array_push($types, [
+                'term_id' => $thumb['term']->term_id,
+                'name' => $thumb['term']->name,
+                'thumbnail_url' => $thumb['path']
+            ]);
         }
 
-        $terms = get_terms(['taxonomy' => 'file_types', 'include' => $term_ids]);
-
-        return array_map(function ($term) {
-            $url = get_field('thumbnail', 'category_' . $term->term_id);
-
-            return [
-                'term_id' => $term->term_id,
-                'name' => $term->name,
-                'thumbnail_url' => $url
-            ];
-        }, $terms);
+        return $types;
     }
 
     public function get_index_data($specific = null) {
