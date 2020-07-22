@@ -675,11 +675,13 @@ h2.resource-section {
 .resources-data td {
   vertical-align: top;
 }
+
 .resource-img {
   max-width: 8em;
   max-height: 5em;
   float: left;
 }
+
 .resource-link {
   font-weight: bold;
   display: block;
@@ -930,6 +932,11 @@ h2.resource-section {
 
 #resource .result + .result {
   margin-top: .5em;
+}
+
+[data-click-navigate]:hover {
+    cursor: pointer;
+    box-shadow: 2px 2px 2px darkblue;
 }
 
 #resource #files .header {
