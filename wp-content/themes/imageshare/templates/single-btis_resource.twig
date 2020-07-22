@@ -64,7 +64,7 @@
           {% if post.tags %}
             <div>
                 <dt>{{ 'Keywords' | i18n }}:</dt>
-                <dd>{{ post.tags ? post.tags | join(', ') : '(none)' | i18n }}</dd>
+                <dd>{{ post.tags ? post.tags | map(t => "<a href=\"/?page=search&q=#{t}\">#{t}</a>") | join(', ') : '(none)' | i18n }}</dd>
             </div>
           {% endif %}
           </dl>
