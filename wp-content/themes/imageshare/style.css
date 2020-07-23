@@ -308,6 +308,7 @@ nav.main-navigation {
 h3.expanded + .submit-btn-wrapper {
   visibility: hidden;
 }
+
 .submit-btn {
   font-size: 22px;
   color: white;
@@ -319,6 +320,19 @@ h3.expanded + .submit-btn-wrapper {
   white-space: nowrap;
   border: 1px solid #00275c;
 }
+
+.submit-btn:focus,
+.submit-btn:hover {
+    outline: 2px solid darkblue;
+}
+
+.reset-btn {
+  margin-top: .5em;
+  padding: .5em;
+  font-size: 1.2em;
+  height: 2em;
+}
+
 .refinements-wrapper {
   display: none;
   clear: both;

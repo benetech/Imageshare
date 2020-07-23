@@ -35,6 +35,10 @@
 
     {{ include('partial/search-form.twig', {enclosing_form: false}) }}
 
+    {% if results is defined %}
+      <button class="submit-btn reset-btn" type="button" hidden id="reset">{{ 'Clear search parameters' | i18n }}</button>
+    {% endif %}
+
     {% if results.has_filters %}
       <div class="search-filters" id="search-filters">
         <h2 id="search-filters-heading">{{ 'Current filters' | i18n }}</h2>
