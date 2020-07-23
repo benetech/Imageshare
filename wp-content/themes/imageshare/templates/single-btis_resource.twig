@@ -115,6 +115,8 @@
         alt=""
       />
 
+   </div>
+   <div>
       {% if file.downloadable %}
         <a download="{{ file.uri | basename }}" aria-label="{{ 'Download %s - %s' | format(file.title, file.type | i18n) }}" class="download" href="{{ file.uri }}">{{ 'Download' | i18n }}</a>
       {% endif %}
@@ -122,7 +124,8 @@
       {% if not file.downloadable and file.uri | length > 5 %}
         <a target="_blank" aria-label="{{ 'Visit %s - %s' | format(file.title, file.type | i18n) }}" class="download" href="{{ file.uri }}">{{ 'Visit' | i18n }}</a>
       {% endif %}
-    </div>
+   </div>
+ 
     
   {% if file.description | length %}
     <p>{{ file.description | e }}</p>
