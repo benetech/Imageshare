@@ -612,6 +612,7 @@ li.collection {
 
 form.search-form p + p {
   margin-top: .5em;
+  line-height: 1.5em;
 }
 
 table.resources {
@@ -1020,6 +1021,11 @@ h2.resource-section {
 }
 
 /* search results */
+
+.no-results p + p {
+    margin-top: .5em;
+    line-height: 1.5em;
+}
 
 .search-results h3, .search-results h4 {
   margin-bottom: .2em;

@@ -25,7 +25,10 @@
         ) }}
      </p>
   {% else %}
-    <p>{{ 'No results matched your query.' | i18n }}</p>
+    <div class="no-results">
+      <p>{{ 'No results matched your query.' | i18n }}</p>
+      <p>{{ 'Not finding what you are looking for? Try broadening your search by reducing the number of terms you are searching for.<br> You can also check out our <a href="/faq#improvedSearch">%s</a>.' | format("FAQ on improving your search results" | i18n) }}</p>
+    </div>
   {% endif %}
 
     <form class="search-form">
