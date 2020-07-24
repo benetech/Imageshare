@@ -1,8 +1,8 @@
 <li class="result">
   <div class="header">
-    <a href="{{ collection.permalink }}">
-      <h4>{{ collection.title | e }}</h4>
-    </a>
+    <h4>
+      <a href="{{ collection.permalink }}">{{ collection.title | e }}</a>
+    </h4>
 
     <ul aria-label="{{ 'File types' | i18n }}" role="list" class="resource-file-types">
     {% for type in collection.get_constituting_file_types() %}
@@ -15,6 +15,7 @@
   </div>
   <div>
     <img
+      data-click-navigate="{{ collection.permalink }}"
       src="{{ collection.thumbnail }}"
       alt=""
       class="thumbnail"

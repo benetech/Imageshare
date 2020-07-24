@@ -25,7 +25,10 @@
         ) }}
      </p>
   {% else %}
-    <p>{{ 'No results matched your query.' | i18n }}</p>
+    <div class="no-results">
+      <p>{{ 'No results matched your query.' | i18n }}</p>
+      <p>{{ 'Not finding what you are looking for? Try broadening your search by reducing the number of terms you are searching for.<br> You can also check out our <a href="/faq#improvedSearch">%s</a>.' | format("FAQ on improving your search results" | i18n) }}</p>
+    </div>
   {% endif %}
 
     <form class="search-form">
@@ -69,7 +72,10 @@
     {% set paging = results.resources.paging %}
     {% set args = paging.args %}
 
+    <div>
     <h3 tabindex="-1" id="resources-heading">{{ 'Resources' | i18n }}</h3>
+    <span class="counter">{{ paging.total }}</span>
+    </div>
 
     <div>
       <p>
@@ -120,9 +126,13 @@
 {% endblock %}
 
 {% block collections %}
-    <h3 tabindex="-1" id="collections-heading">{{ 'Collections' | i18n }}</h3>
     {% set paging = results.collections.paging %}
     {% set args = paging.args %}
+
+    <div>
+        <h3 tabindex="-1" id="collections-heading">{{ 'Collections' | i18n }}</h3>
+        <span class="counter">{{ paging.total }}</span>
+    </div>
 
     <div>
       <p>

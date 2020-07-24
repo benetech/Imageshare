@@ -38,3 +38,11 @@ if (resetBtn = document.querySelector('button#reset')) {
     announcement('Search form has been reset.', '#announcement', 3000);
   });
 }
+
+var navigateImages = document.querySelectorAll('img[data-click-navigate]');
+for (var i = 0, j = navigateImages.length; i < j; i++) {
+    var image = navigateImages[i];
+    image.addEventListener('click', function () {
+        document.location.href = this.dataset.clickNavigate;    
+    }.bind(image));
+}

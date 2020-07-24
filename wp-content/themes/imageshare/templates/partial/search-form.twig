@@ -1,8 +1,5 @@
 <section aria-labelledby="main-search" id="search-form">
   <h2 id="main-search" class="h2">{{ 'Search' | i18n }}</h2>
-{% if results.total_count > 0 %}
-  <button type="button" hidden id="reset">{{ 'Clear search parameters' | i18n }}</button>
-{% endif %}
   <p class="main-description">
     {{ 'Library of %d accessible STEM media resources.' | i18n | format(resource_count) }}
   </p>
@@ -13,6 +10,11 @@
     <label for="search" class="search-label"
       >{{ 'Search collections or resources' | i18n }}</label
     >
+
+    {% if results is defined %}
+      <button class="submit-btn reset-btn" type="button" hidden id="reset">{{ 'Clear Search' | i18n }}</button>
+    {% endif %}
+
     <div class="controls" role="search">
       <div class="input-wrapper">
         <input

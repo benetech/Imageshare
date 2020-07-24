@@ -301,16 +301,48 @@ class ResourceFile {
         return get_post_meta($this->post_id, 'type', true);
     }
 
+    public function get_format_term_id() {
+        return get_post_meta($this->post_id, 'format', true);
+    }
+
     public function get_display_thumbnail() {
         $type_term = get_term($this->get_type_term_id());
+        $format_term = get_term($this->get_format_term_id());
 
-        if ($type_term->name === 'Image') {
-            # yuck. TODO better solution for this?
+        $use_uri_as_thumbnail =  get_field('use_resource_uri_as_thumbnail', 'category_' . $format_term->term_id);
+
+        if ($use_uri_as_thumbnail) {
             return $this->uri;
-        } else {
-            // metadata field from ACF
-            return get_field('thumbnail', 'category_' . $type_term->term_id);
         }
+
+        // metadata field from ACF
+        // try format first
+        $format_thumbnail = get_field('thumbnail', 'category_' . $format_term->term_id);
+
+        if (!empty($format_thumbnail)) {
+            return $format_thumbnail;
+        }
+
+        return get_field('thumbnail', 'category_' . $type_term->term_id);
+    }
+
+    public function get_display_thumbnail_with_type() {
+        $type_term = get_term($this->get_type_term_id());
+        $format_term = get_term($this->get_format_term_id());
+
+        $use_uri_as_thumbnail =  get_field('use_resource_uri_as_thumbnail', 'category_' . $format_term->term_id);
+
+        if ($use_uri_as_thumbnail) {
+            return ['custom' => true, 'path' => $this->uri];
+        }
+
+        $format_thumbnail = get_field('thumbnail', 'category_' . $format_term->term_id);
+
+        if (!empty($format_thumbnail)) {
+            return ['format' => true, 'path' => $format_thumbnail, 'term' => $format_term];
+        }
+
+        return ['type' => true, 'path' => get_field('thumbnail', 'category_' . $type_term->term_id), 'term' => $type_term];
     }
 
     private function get_length() {
@@ -335,7 +367,7 @@ class ResourceFile {
     }
 
     public function get_index_data() {
-        return Model::flatten([$this->title, $this->description, $this->license, $this->type, $this->format, $this->languages, $this->accommodations]);
+        return Model::flatten([$this->title, $this->description, $this->license, $this->type, $this->format, $this->languages, $this->accommodations, $this->author]);
     }
 
     private function get_languages() {

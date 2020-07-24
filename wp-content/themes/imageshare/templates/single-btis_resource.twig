@@ -23,27 +23,7 @@
           <h2 id="main-navigation-heading" class="sr-only">
             Page Navigation
           </h2>
-          <ul
-            role="list"
-            aria-labelledby="main-navigation-heading"
-          >
-          {% if last_search | length %}
-            <li class="left width-9/12">
-              <a href="{{ last_search }}" class="back-link"
-                ><span aria-hidden="true" class="lsaquo">&lsaquo;</span
-                ><span class="txt">Go back to search results</span></a>
-            </li>
-          {% else %}
-            <li class="left width-9/12">
-              <a href="/?page=search" class="back-link"
-                ><span aria-hidden="true" class="lsaquo">&lsaquo;</span
-                ><span class="txt">Go to search page</span></a>
-            </li>
-          {% endif %}
-            <li class="right width-3/12">
-              <a href="mailto:imageshare-issues@diagramcenter.org">Report Issue</a>
-            </li>
-          </ul>
+          <a href="mailto:imageshare-issues@diagramcenter.org?subject={{ 'Imageshare page issue' | url_encode }}&body={{ post.permalink | url_encode }}">Report Issue</a>
       </div>
     </nav>
 {% endblock %}
@@ -79,12 +59,14 @@
           <dl class="resource-details">
             <div>
                 <dt>{{ 'Subject' | i18n }}:</dt>
-                <dd>{{ post.subject | i18n | e }}</dd>
+                <dd>
+                  <a href="/?page=search&subject={{ post.subject_term_id }}">{{ post.subject | i18n | e }}</a>
+                </dd>
             </div>
           {% if post.tags %}
             <div>
                 <dt>{{ 'Keywords' | i18n }}:</dt>
-                <dd>{{ post.tags ? post.tags | join(', ') : '(none)' | i18n }}</dd>
+                <dd>{{ post.tags ? post.tags | map(t => "<a href=\"/?page=search&q=#{t}\">#{t}</a>") | join(', ') : '(none)' | i18n }}</dd>
             </div>
           {% endif %}
           </dl>
@@ -133,6 +115,8 @@
         alt=""
       />
 
+   </div>
+   <div>
       {% if file.downloadable %}
         <a download="{{ file.uri | basename }}" aria-label="{{ 'Download %s - %s' | format(file.title, file.type | i18n) }}" class="download" href="{{ file.uri }}">{{ 'Download' | i18n }}</a>
       {% endif %}
@@ -140,7 +124,8 @@
       {% if not file.downloadable and file.uri | length > 5 %}
         <a target="_blank" aria-label="{{ 'Visit %s - %s' | format(file.title, file.type | i18n) }}" class="download" href="{{ file.uri }}">{{ 'Visit' | i18n }}</a>
       {% endif %}
-    </div>
+   </div>
+ 
     
   {% if file.description | length %}
     <p>{{ file.description | e }}</p>
