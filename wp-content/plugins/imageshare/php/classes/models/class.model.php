@@ -42,9 +42,10 @@ class Model {
 
     public static function as_search_term($term, $value) {
         return
-            preg_replace('/_{2,}/', '_',
+            'imageshare' .
+            preg_replace('/_{2,}/', '',
             preg_replace('/[^\w]+/', '',
-            preg_replace('/\s+/', '_', implode('_', [$term, $value]
+            preg_replace('/\s+/', '', implode('', [$term, $value]
         ))));
     }
 
