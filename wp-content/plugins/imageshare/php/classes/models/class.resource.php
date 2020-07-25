@@ -410,8 +410,6 @@ class Resource {
             return $file->get_display_thumbnail_with_type();
         }, $published), function ($t) { return !isset($t['custom']); });
 
-        Logger::log($thumbnails);
-
         $known_ids = [];
         $types = [];
 
