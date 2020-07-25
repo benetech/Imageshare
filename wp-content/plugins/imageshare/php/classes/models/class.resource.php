@@ -132,6 +132,7 @@ class Resource {
     }
 
     public static function reindex_resources_containing_resource_file($resource_file_id) {
+        Logger::log("Reindexing resources containing resource file {$resource_file_id}");
         $existing = self::containing($resource_file_id);
 
         $collection_ids = [];

@@ -184,6 +184,7 @@ class Plugin {
 
         add_filter('plugin_action_links_' . plugin_basename($this->file), [$this, 'add_action_links']);
         add_filter('wp_insert_post_data', [$this, 'on_insert_post_data'], 2, 10);
+        add_filter('save_post_btis_resource_file', [self::model('ResourceFile'), 'on_save_post'], 3, 10);
         add_filter('delete_post', [$this, 'on_delete_post'], 1, 10);
         add_filter('edited_term', [$this, 'on_edited_term',], 3, 10);
         add_action('wp', [$this, 'on_wp']);
