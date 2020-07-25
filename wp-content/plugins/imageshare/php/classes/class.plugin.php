@@ -189,10 +189,42 @@ class Plugin {
         add_filter('edited_term', [$this, 'on_edited_term',], 3, 10);
         add_action('wp', [$this, 'on_wp']);
         add_action('pre_get_posts', [$this, 'patch_admin_search']);
+        add_action('posts_join', [$this, 'patch_admin_search_join']);
+        add_action('posts_where', [$this, 'patch_admin_search_where']);
+    }
+
+    public function is_admin_search() {
+        global $pagenow;
+        return is_admin() && !(isset($_POST['action']) && $_POST['action'] === 'wpftsi_submit_testsearch') && $pagenow === 'edit.php';
+    }
+
+    public function patch_admin_search_join($join) {
+        global $wpdb;
+
+        if (self::is_admin_search()) {
+            $join .= 'LEFT JOIN ' . $wpdb->postmeta . ' ON ' . $wpdb->posts . '.ID = ' . $wpdb->postmeta . '.post_id ';
+        }
+
+        return $join;
+    }
+
+    public function patch_admin_search_where($where) {
+        global $wpdb;
+
+        if (self::is_admin_search()) {
+            $where = preg_replace(
+                "/\(\s*" . $wpdb->posts . ".post_title\s+LIKE\s*(\'[^\']+\')\s*\)/",
+                "(" . $wpdb->posts . ".post_title LIKE $1) OR (" . $wpdb->postmeta . ".meta_value LIKE $1)", $where
+            );
+        }
+
+        return $where;
     }
 
     public function patch_admin_search($query) {
-        if (is_admin() && !(isset($_POST['action']) && $_POST['action'] === 'wpftsi_submit_testsearch')) {
+        global $pagenow;
+
+        if (self::is_admin_search()) {
             $query->set('wpfts_disable', 1);
         }
 
