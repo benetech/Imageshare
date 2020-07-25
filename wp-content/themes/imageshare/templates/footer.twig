@@ -10,12 +10,9 @@
     aria-labelledby="nav-footer"
     role="list"
   >
-    <li><a href="#">About Imageshare</a></li>
-    <li><a href="#">Contact</a></li>
-    <li><a href="#">Contribute</a></li>
-    <li><a href="#">Terms of Service Agreement</a></li>
-    <li><a href="#">Privacy Policy</a></li>
-    <li><a href="#">Resources</a></li>
+  {% for item in footer_menu.items %}
+    <li><a href="{{ item.link}}">{{ item.title }}</a></li>
+  {% endfor %}
   </ul>
 </nav>
 <p class="width-9/12 width-12/12@small row-2">
