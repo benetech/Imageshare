@@ -59,7 +59,11 @@ class PluginSettings {
     private function create_resources($records) {
         $result = [
             'resources' => [],
-            'errors'    => []
+            'errors'    => [],
+            'new_resources' => 0,
+            'new_files' => 0,
+            'updated_resources' => 0,
+            'updated_files' => 0
         ];
 
         foreach ($records as $key => $value) {
@@ -68,6 +72,12 @@ class PluginSettings {
             try {
                 [$resource, $is_resource_update, $files] = $this->create_resource($value);
 
+                if ($is_resource_update) {
+                    $result['updated_resources']++;
+                } else {
+                    $result['new_resources']++; 
+                }
+
                 array_push($result['resources'], $is_resource_update
                     ? sprintf(__('Resource updated: %s', 'imageshare'), $key)
                     : sprintf(__('Resource created: %s', 'imageshare'), $key)
@@ -75,6 +85,13 @@ class PluginSettings {
 
                 foreach ($files as $file) {
                     [$name, $is_file_update] = $file;
+
+                    if ($is_file_update) {
+                        $result['updated_files']++;
+                    } else {
+                        $result['new_files']++; 
+                    }
+
                     array_push($result['resources'], $is_file_update
                         ? sprintf(__('File updated: %s', 'imageshare'), $name)
                         : sprintf(__('File associated: %s', 'imageshare'), $name)
