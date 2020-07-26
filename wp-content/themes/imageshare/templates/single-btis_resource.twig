@@ -23,7 +23,7 @@
           <h2 id="main-navigation-heading" class="sr-only">
             Page Navigation
           </h2>
-          <a href="mailto:imageshare-issues@diagramcenter.org?subject={{ 'Imageshare page issue' | url_encode }}&body={{ post.permalink | url_encode }}">Report Issue</a>
+          <a href="mailto:imageshare-issues@diagramcenter.org?subject={{ 'Imageshare page issue' | url_encode }}&body={{ 'Issue: ' }}{{ post.permalink | url_encode }}{{ '%0D%0A Add more details below %0D%0A' }}">Report Issue</a>
       </div>
     </nav>
 {% endblock %}
