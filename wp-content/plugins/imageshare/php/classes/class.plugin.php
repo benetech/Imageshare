@@ -191,6 +191,7 @@ class Plugin {
         add_action('pre_get_posts', [$this, 'patch_admin_search']);
         add_action('posts_join', [$this, 'patch_admin_search_join']);
         add_action('posts_where', [$this, 'patch_admin_search_where']);
+        add_action('posts_groupby', [$this, 'patch_admin_search_groupby']);
     }
 
     public function is_admin_search() {
@@ -206,6 +207,16 @@ class Plugin {
         }
 
         return $join;
+    }
+
+    public function patch_admin_search_groupby($groupby) {
+        global $wpdb;
+
+        if (self::is_admin_search()) {
+            $groupby = "{$wpdb->posts}.ID";
+        }
+
+        return $groupby;
     }
 
     public function patch_admin_search_where($where) {
