@@ -70,6 +70,15 @@
           {% endfor %}
           </select>
         </li>
+        <li class="refinement">
+          <label for="source">{{ 'Source' | i18n }}</label>
+          <select id="source" name="src">
+            <option value="">--{{ 'choose a source' | i18n }}--</option>
+          {% for source in sources %}
+            <option value="{{ source | e }}">{{ source | e }}</option>
+          {% endfor %}
+          </select>
+        </li>
       </ul>
       <div class="submit-btn-wrapper">
         <button type="submit" class="submit-btn">

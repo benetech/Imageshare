@@ -16,6 +16,7 @@
 $context = Timber::context();
 $context['search_terms'] = $imageshare->controllers->search->get_available_terms();
 $context['resource_count'] = $imageshare->controllers->search->get_published_resource_count();
+$context['sources'] = $imageshare->controllers->search->get_available_sources();
 
 function multi_param ($var) {
     $vars = [];
@@ -40,7 +41,8 @@ if (($_GET['page'] ?? null) === 'search') {
         'query'   => $_GET['q'] ?? '',
         'subject' => array_unique(multi_param('subject')),
         'type'    => array_unique(multi_param('type')),
-        'acc'     => array_unique(multi_param('acc'))
+        'acc'     => array_unique(multi_param('acc')),
+        'source'  => $_GET['src'] ?? null
     ];
 
     $paging = [
