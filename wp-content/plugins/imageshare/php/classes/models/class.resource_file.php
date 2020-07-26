@@ -305,6 +305,11 @@ class ResourceFile {
         return get_post_meta($this->post_id, 'format', true);
     }
 
+    public function previewable() {
+        $format_term = get_term($this->get_format_term_id());
+        return get_field('allow_preview', 'category_' . $format_term->term_id) ?? false;
+    }
+
     public function get_display_thumbnail() {
         $type_term = get_term($this->get_type_term_id());
         $format_term = get_term($this->get_format_term_id());

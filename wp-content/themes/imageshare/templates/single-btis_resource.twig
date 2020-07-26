@@ -124,6 +124,12 @@
       {% if not file.downloadable and file.uri | length > 5 %}
         <a target="_blank" aria-label="{{ 'Visit %s - %s' | format(file.title, file.type | i18n) }}" class="download" href="{{ file.uri }}">{{ 'Visit' | i18n }}</a>
       {% endif %}
+
+    {# disabled for content-disposition reasons 
+      {% if file.previewable and file.uri | length > 5 %}
+        <a target="_blank" aria-label="{{ 'Preview %s - %s' | format(file.title, file.type | i18n) }}" class="download" href="{{ file.uri }}">{{ 'Preview' | i18n }}</a>
+      {% endif %}
+    #}
    </div>
  
     
