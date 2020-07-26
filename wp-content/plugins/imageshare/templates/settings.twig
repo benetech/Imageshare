@@ -2,11 +2,13 @@
     <h1>{{ 'Imageshare configuration' | i18n }}</h1>
 
     {% if result is defined %}
+        <h2>{{ 'Import results' | i18n }}</h2>
+
         <div class="notice notice-success">
-            <p>{{ '%d resources created' | format(result.new_resources) }}</p>
-            <p>{{ '%d resources updated' | format(result.updated_resources) }}</p>
-            <p>{{ '%d resource files created' | format(result.new_files) }}</p>
-            <p>{{ '%d resource files updated' | format(result.updated_files) }}</p>
+            <p>{{ '%d resources created' | format(result.new_resources) | i18n }}</p>
+            <p>{{ '%d resources updated' | format(result.updated_resources) | i18n }}</p>
+            <p>{{ '%d resource files created' | format(result.new_files) | i18n }}</p>
+            <p>{{ '%d resource files updated' | format(result.updated_files) | i18n }}</p>
         </div>
 
         {% for error in result.errors %}
