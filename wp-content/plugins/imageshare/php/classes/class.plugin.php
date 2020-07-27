@@ -196,7 +196,10 @@ class Plugin {
 
     public function is_admin_search() {
         global $pagenow;
-        return is_admin() && !(isset($_POST['action']) && $_POST['action'] === 'wpftsi_submit_testsearch') && $pagenow === 'edit.php';
+        return is_admin() &&
+            $pagenow === 'edit.php' &&
+            (!isset($_POST['action']) || !(isset($_POST['action']) && $_POST['action'] === 'wpftsi_submit_testsearch'))
+        ;
     }
 
     public function patch_admin_search_join($join) {

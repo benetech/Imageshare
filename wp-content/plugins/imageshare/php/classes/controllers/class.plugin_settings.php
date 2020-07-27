@@ -79,12 +79,12 @@ class PluginSettings {
                 }
 
                 array_push($result['resources'], $is_resource_update
-                    ? sprintf(__('Resource updated: %s', 'imageshare'), $key)
-                    : sprintf(__('Resource created: %s', 'imageshare'), $key)
+                    ? sprintf(__('Resource updated: %s (%d)', 'imageshare'), $key, $resource)
+                    : sprintf(__('Resource created: %s (%d)', 'imageshare'), $key, $resource)
                 );
 
                 foreach ($files as $file) {
-                    [$name, $is_file_update] = $file;
+                    [$name, $id, $is_file_update] = $file;
 
                     if ($is_file_update) {
                         $result['updated_files']++;
@@ -93,8 +93,8 @@ class PluginSettings {
                     }
 
                     array_push($result['resources'], $is_file_update
-                        ? sprintf(__('File updated: %s', 'imageshare'), $name)
-                        : sprintf(__('File associated: %s', 'imageshare'), $name)
+                        ? sprintf(__('File updated: %s (%d)', 'imageshare'), $name, $id)
+                        : sprintf(__('File created and associated: %s (%d)', 'imageshare'), $name, $id)
                     );
                 }
             } catch (\Exception $error) {
@@ -141,7 +141,7 @@ class PluginSettings {
                     ResourceModel::associate_resource_file($resource_id, $file_id);
                 }
 
-                array_push($files, [$file->display_name, $is_file_update]);
+                array_push($files, [$file->display_name, $file_id, $is_file_update]);
             } catch (Exception $error) {
                 Logger::log("Error creating resource file: " . $error->getMessage());
             }
