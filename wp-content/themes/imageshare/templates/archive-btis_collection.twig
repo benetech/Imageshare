@@ -4,26 +4,18 @@
 
 {% block content %}
   <div class="main-inner width-12/12">
-    <section aria-labelledby="collections">
-      <h2 class="h2 collections-heading" id="collections">
+    <section aria-labelledby="collections" class="search-results">
+      <h2 class="h2 collections-heading" id="collections-heading">
         {{ 'Collections' | i18n }}
       </h2>
       <ul
-        class="collections grid"
-        aria-labelledby="collections"
+        id="collections"
+        class="search-results"
+        aria-labelledby="collections-heading"
         role="list"
       >
       {% for collection in posts %}
-        <li
-          class="collection background66209c width-3/12 width-6/12@medium width-12/12@small"
-        >
-          <a href="{{ collection.permalink }}" class="collection-link">
-          {% if collection.thumbnail | length > 3 %}
-            <img class="collection-img" src="{{ collection.thumbnail }}" alt="" />
-          {% endif %}
-            <div class="collection-heading">{{ collection.title | e }}</div>
-          </a>
-        </li>
+        {{ include('partial/collection-list-item.twig') }}
       {% endfor %}
       </ul>
     </section>
