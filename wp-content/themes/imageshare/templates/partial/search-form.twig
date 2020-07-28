@@ -74,7 +74,7 @@
           <label for="source">{{ 'Source' | i18n }}</label>
           <select id="source" name="src">
             <option value="">--{{ 'choose a source' | i18n }}--</option>
-          {% for source in sources %}
+          {% for source in sources | filter(s => s | trim | length > 2) %}
             <option value="{{ source | e }}">{{ source | e }}</option>
           {% endfor %}
           </select>
