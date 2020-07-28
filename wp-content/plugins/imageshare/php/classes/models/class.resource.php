@@ -16,7 +16,9 @@ class Resource {
     const type = 'btis_resource';
 
     public static function available_subjects($hide_empty = false) {
-        return Model::get_hierarchical_terms('subjects', $hide_empty);
+        return array_map(function($terms) {
+            return array_reverse($terms);
+        }, Model::get_hierarchical_terms('subjects', $hide_empty));
     }
 
     public static function create($args) {
