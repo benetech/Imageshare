@@ -86,7 +86,8 @@ class Search {
 
     public static function get_available_sources() {
         global $wpdb;
-        $results = $wpdb->get_col("select distinct meta_value as source from wp_benetech_postmeta where meta_key=\"source\" order by source ASC;");
+        $prefix = $wpdb->prefix;
+        $results = $wpdb->get_col("select distinct meta_value as source from {$prefix}postmeta where meta_key=\"source\" order by source ASC;");
         return $results;
     }
 
