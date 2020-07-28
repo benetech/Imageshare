@@ -202,7 +202,8 @@ class Search {
         $results['has_filters'] =
             count($filters['subject']) ||
             count($filters['type'])    ||
-            count($filters['acc'])
+            count($filters['acc'])     ||
+            isset($filters['source'])
         ;
 
         $results['search_filters'] = $filters;

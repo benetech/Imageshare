@@ -49,6 +49,14 @@
         {% for filter in filters %}
           {{ block('search_filter') }}
         {% endfor %}
+
+        {% if results.search_filters.source %}
+          <li>
+            <input name="src" data-filter="src" class="search-filter" type="checkbox" id="search-filter-{{ 'src' }}" checked="checked" value="{{ results.search_filters.source | e }}">
+            <label for="search-filter-src">{{ '%s: "%s"' | format('Source' | i18n, results.search_filters.source | e) }}</label>
+          </li>
+        {% endif %}
+
         </ul>
       </div>
     {% endif %}
