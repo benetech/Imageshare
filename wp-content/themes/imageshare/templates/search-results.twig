@@ -98,7 +98,7 @@
 
     {{ include('partial/resource-table.twig', {results: results.resources.posts, level: 4, labelledby: 'resources-heading'}, with_context = false) }}
 
-    <nav class="paging">
+    <nav class="paging" aria-labelledby="resource-paging-heading">
       <h3 id="resource-paging-heading">{{ 'Resource pagination' | i18n }}</h3>
 
       <ul role="list" aria-labelledby="resource-paging-heading">
@@ -167,7 +167,7 @@
 
     {{ include('partial/collection-table.twig', {results: results.collections.posts, labelledby: 'collections-heading'}, with_context = false) }}
 
-    <nav class="paging">
+    <nav class="paging" aria-labelledby="collection-paging-heading">
       <h3 id="collection-paging-heading">{{ 'Collection pagination' | i18n }}</h3>
 
       <ul role="list" aria-labelledby="collection-paging-heading">
