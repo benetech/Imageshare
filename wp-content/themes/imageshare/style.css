@@ -517,6 +517,10 @@ h3.expanded + .submit-btn-wrapper {
   }
 }
 
+section#collections {
+  margin-top: 1em;
+}
+
 .collections-heading {
   display: inline-block;
 }
