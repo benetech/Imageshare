@@ -2,7 +2,7 @@
  * Theme Name: Imageshare
  * Description: Benetech Imageshare default theme
  * Author: Prime Access Consulting
- * Version: 0.2.16
+ * Version: 0.2.17
 */
 
 body {
@@ -463,6 +463,7 @@ h3.expanded + .submit-btn-wrapper {
     align-self: flex-start;
   }
 }
+
 @media (min-width: 320px) and (max-width: 480px) {
   .footer .width-12\/12\@small {
     grid-column: span 12;
@@ -517,9 +518,13 @@ h3.expanded + .submit-btn-wrapper {
 }
 
 .collections-heading {
-  margin-bottom: 20px;
-  padding-top: 30px;
+  display: inline-block;
 }
+
+.collections-heading + .counter {
+  margin-top: -.5em;
+}
+
 .collections {
   list-style-type: none;
   padding: 0;

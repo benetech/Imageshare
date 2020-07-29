@@ -5,9 +5,10 @@
 {% block content %}
   <div class="main-inner width-12/12">
     <section aria-labelledby="collections" class="search-results">
-      <h1 class=" collections-heading" id="collections-heading">
+      <h1 class="collections-heading" id="collections-heading">
         {{ 'Collections' | i18n }}
       </h1>
+      <span class="counter">{{ posts | length }}</span>
       <ul
         id="collections"
         class="search-results"
