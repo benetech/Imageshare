@@ -134,21 +134,23 @@
 {% endblock %}
 
 {% block filter_args %}
-    {% spaceless %}
-        {% if args.src is defined %}
-            &src={{ args.src | url_encode }}
-        {% endif %}
-        {% for filter in [result.search_filters.subject, result.search_filters.type, result.search_filters.acc] %}
-            {{ block('filter_arg') | trim }}
-        {% endfor %}
-    {% endspaceless %}
+    {%- if results.search_filters.source is defined -%}
+        &src={{ results.search_filters.source | trim | url_encode }}
+    {%- endif -%}
+    {%- for filter in [
+        {id : 'subject', value: results.search_filters.subject},
+        {id : 'type',    value: results.search_filters.type},
+        {id : 'acc',     value: results.search_filters.acc}
+    ] -%}
+        {{ block('filter_arg') | trim }}
+    {%- endfor -%}
 {% endblock %}
 
-{% block filter_arg %}
-    {% for term in filter.value %}
+{%- block filter_arg -%}
+    {%- for term in filter.value -%}
         &{{ filter.id }}_{{ loop.index }}={{ term.term_id }}
-    {% endfor %}
-{% endblock %}
+    {%- endfor -%}
+{%- endblock -%}
 
 {% block collections %}
     {% set paging = results.collections.paging %}
