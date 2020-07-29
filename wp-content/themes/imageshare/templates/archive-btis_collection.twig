@@ -5,9 +5,9 @@
 {% block content %}
   <div class="main-inner width-12/12">
     <section aria-labelledby="collections" class="search-results">
-      <h2 class="h2 collections-heading" id="collections-heading">
+      <h1 class=" collections-heading" id="collections-heading">
         {{ 'Collections' | i18n }}
-      </h2>
+      </h1>
       <ul
         id="collections"
         class="search-results"
@@ -15,7 +15,7 @@
         role="list"
       >
       {% for collection in posts %}
-        {{ include('partial/collection-list-item.twig') }}
+        {{ include('partial/collection-list-item.twig', {level : 2}) }}
       {% endfor %}
       </ul>
     </section>

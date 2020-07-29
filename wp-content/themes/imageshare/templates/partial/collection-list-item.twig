@@ -1,8 +1,8 @@
 <li class="result">
   <div class="header">
-    <h4>
+    <h{{ level }}>
       <a href="{{ collection.permalink }}">{{ collection.title | e }}</a>
-    </h4>
+    </h{{ level }}>
 
     <ul aria-label="{{ 'File types' | i18n }}" role="list" class="resource-file-types">
     {% for type in collection.get_constituting_file_types() %}
