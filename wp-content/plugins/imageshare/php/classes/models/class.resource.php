@@ -16,7 +16,9 @@ class Resource {
     const type = 'btis_resource';
 
     public static function available_subjects($hide_empty = false) {
-        return Model::get_hierarchical_terms('subjects', $hide_empty);
+        return array_map(function($terms) {
+            return array_reverse($terms);
+        }, Model::get_hierarchical_terms('subjects', $hide_empty));
     }
 
     public static function create($args) {
@@ -132,6 +134,7 @@ class Resource {
     }
 
     public static function reindex_resources_containing_resource_file($resource_file_id) {
+        Logger::log("Reindexing resources containing resource file {$resource_file_id}");
         $existing = self::containing($resource_file_id);
 
         $collection_ids = [];
@@ -409,8 +412,6 @@ class Resource {
         $thumbnails = array_filter(array_map(function ($file) {
             return $file->get_display_thumbnail_with_type();
         }, $published), function ($t) { return !isset($t['custom']); });
-
-        Logger::log($thumbnails);
 
         $known_ids = [];
         $types = [];

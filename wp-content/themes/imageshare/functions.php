@@ -93,7 +93,7 @@ class StarterSite extends Timber\Site {
             global $imageshare;
             $context['imageshare'] = $imageshare;
             $context['site'] = $this;
-
+            $context['footer_menu'] = new Timber\Menu('Footer');
 
         return $context;
     }

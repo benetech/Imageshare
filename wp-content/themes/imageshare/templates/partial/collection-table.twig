@@ -1,6 +1,6 @@
 <ul id="collections" role="list" {{ labelledby ? 'aria-labelledby="%s"' | format(labelledby) : '' }}>
   {% for collection in results %}
-    {{ include('partial/collection-list-item.twig') }}
+    {{ include('partial/collection-list-item.twig', {level: 4}) }}
   {% endfor %}
 </ul>
 

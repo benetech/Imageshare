@@ -23,7 +23,7 @@
           <h2 id="main-navigation-heading" class="sr-only">
             Page Navigation
           </h2>
-          <a href="mailto:imageshare-issues@diagramcenter.org?subject={{ 'Imageshare page issue' | url_encode }}&body={{ post.permalink | url_encode }}">Report Issue</a>
+          <a href="mailto:imageshare-issues@diagramcenter.org?subject={{ 'Imageshare page issue' | url_encode }}&body={{ 'Issue: ' }}{{ post.permalink | url_encode }}{{ '%0D%0A Add more details below %0D%0A' }}">Report Issue</a>
       </div>
     </nav>
 {% endblock %}
@@ -55,8 +55,9 @@
           </div>
 
         </div>
+          <h2 id="resource-details-heading" class="sr-only">{{ 'Metadata' | i18n }}</h2>
 
-          <dl class="resource-details">
+          <dl class="resource-details" aria-labelledby="resource-details-heading">
             <div>
                 <dt>{{ 'Subject' | i18n }}:</dt>
                 <dd>
@@ -124,6 +125,12 @@
       {% if not file.downloadable and file.uri | length > 5 %}
         <a target="_blank" aria-label="{{ 'Visit %s - %s' | format(file.title, file.type | i18n) }}" class="download" href="{{ file.uri }}">{{ 'Visit' | i18n }}</a>
       {% endif %}
+
+    {# disabled for content-disposition reasons 
+      {% if file.previewable and file.uri | length > 5 %}
+        <a target="_blank" aria-label="{{ 'Preview %s - %s' | format(file.title, file.type | i18n) }}" class="download" href="{{ file.uri }}">{{ 'Preview' | i18n }}</a>
+      {% endif %}
+    #}
    </div>
  
     

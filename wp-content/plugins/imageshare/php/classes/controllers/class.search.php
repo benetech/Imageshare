@@ -84,6 +84,13 @@ class Search {
         return $index;
     }
 
+    public static function get_available_sources() {
+        global $wpdb;
+        $prefix = $wpdb->prefix;
+        $results = $wpdb->get_col("select distinct meta_value as source from {$prefix}postmeta where meta_key=\"source\" order by source ASC;");
+        return $results;
+    }
+
     public static function get_available_terms() {
         return [
             'subjects'       => ResourceModel::available_subjects($hide_empty = true),
@@ -108,6 +115,10 @@ class Search {
                     }
                 }
             }
+        }
+
+        if (isset($args['source']) && strlen($args['source'])) {
+            $results['source'] = $args['source'];
         }
 
         return $results;
@@ -191,7 +202,8 @@ class Search {
         $results['has_filters'] =
             count($filters['subject']) ||
             count($filters['type'])    ||
-            count($filters['acc'])
+            count($filters['acc'])     ||
+            isset($filters['source'])
         ;
 
         $results['search_filters'] = $filters;
@@ -233,6 +245,16 @@ class Search {
             }
         }
 
+        $meta_query = [];
+
+        if (isset($terms['source'])) {
+            array_push($meta_query, [
+                'key' => 'source',
+                'value' => $terms['source'],
+                'compare' => '='
+            ]);
+        }
+
         $results = [];
 
         $wpq = new \WP_Query([
@@ -244,7 +266,8 @@ class Search {
             'cluster_weights' => $cluster_weights,
             's' => implode(' ', $query),
             'posts_per_page' => $paging['size'],
-            'paged' => $paging['page']
+            'paged' => $paging['page'],
+            'meta_query' => $meta_query
         ]);
 
         while ($wpq->have_posts()) {

@@ -305,11 +305,16 @@ class ResourceFile {
         return get_post_meta($this->post_id, 'format', true);
     }
 
+    public function previewable() {
+        $format_term = get_term($this->get_format_term_id());
+        return get_field('allow_preview', 'category_' . $format_term->term_id) ?? false;
+    }
+
     public function get_display_thumbnail() {
         $type_term = get_term($this->get_type_term_id());
         $format_term = get_term($this->get_format_term_id());
 
-        $use_uri_as_thumbnail =  get_field('use_resource_uri_as_thumbnail', 'category_' . $format_term->term_id);
+        $use_uri_as_thumbnail = get_field('use_resource_uri_as_thumbnail', 'category_' . $format_term->term_id);
 
         if ($use_uri_as_thumbnail) {
             return $this->uri;
@@ -329,12 +334,6 @@ class ResourceFile {
     public function get_display_thumbnail_with_type() {
         $type_term = get_term($this->get_type_term_id());
         $format_term = get_term($this->get_format_term_id());
-
-        $use_uri_as_thumbnail =  get_field('use_resource_uri_as_thumbnail', 'category_' . $format_term->term_id);
-
-        if ($use_uri_as_thumbnail) {
-            return ['custom' => true, 'path' => $this->uri];
-        }
 
         $format_thumbnail = get_field('thumbnail', 'category_' . $format_term->term_id);
 
