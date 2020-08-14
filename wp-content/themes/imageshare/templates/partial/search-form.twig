@@ -58,11 +58,16 @@
             <div class="left-area">
               <span id="exp_elem" class="listbox-label">{{ 'Type' | i18n }}</span>
               <div id="exp_wrapper">
-                <button type="button" aria-haspopup="listbox" aria-labelledby="exp_elem exp_button" id="exp_button">--choose a type--
+                <button type="button" aria-haspopup="listbox" aria-labelledby="exp_elem exp_button" id="exp_button">
+                  <span class="content">--{{ 'choose a type' | i18n }}--</span>
                   <span class="glyph expand" aria-hidden="true">&#8964;</span>
                   <span class="glyph collapse" aria-hidden="true">&#8963;</span>
                 </button>
                 <ul id="exp_elem_list" tabindex="-1" role="listbox" aria-labelledby="exp_elem" class=" hidden" aria-activedescendant="" data-choice-store="type">
+                  <li role="option" id="0">
+                    --{{ 'choose a type' | i18n }}--
+                  </li>
+
                 {% for id, term in search_terms.types %}
                   <li role="option" id="{{ id }}">
                     <img src="{{ term.thumbnail }}" alt="">

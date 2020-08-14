@@ -7,13 +7,15 @@
 window.addEventListener('load', function () {
   var button = document.getElementById('exp_button');
   var exListbox = new aria.Listbox(document.getElementById('exp_elem_list'));
-  var listboxButton = new aria.ListboxButton(button, exListbox);
+  var buttonContent = document.querySelector('#exp_button .content');
+  var listboxButton = new aria.ListboxButton(button, exListbox, buttonContent);
 });
 
 var aria = aria || {};
 
-aria.ListboxButton = function (button, listbox) {
+aria.ListboxButton = function (button, listbox, buttonContent) {
   this.button = button;
+  this.buttonContent = buttonContent;
   this.listbox = listbox;
   this.registerEvents();
 };
@@ -64,5 +66,5 @@ aria.ListboxButton.prototype.hideListbox = function () {
 };
 
 aria.ListboxButton.prototype.onFocusChange = function (focusedItem) {
-  this.button.innerText = focusedItem.innerText;
+  this.buttonContent.innerHTML = focusedItem.innerHTML;
 };

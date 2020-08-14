@@ -12,6 +12,10 @@
   line-height: 1.8em;
 }
 
+[aria-haspopup="listbox"] img {
+    max-height: 1em;
+}
+
 [role="option"] img {
   max-width: 1.5em;
 }
@@ -22,7 +26,9 @@
 
 button[aria-haspopup="listbox"] {
   position: relative;
-  width: 10em;
+  min-width: 10em;
+  max-width: 16em;
+  padding-right: 1.5em;
   text-align: left;
   background-color: #fff;
   border: 1px solid #000;
