@@ -53,13 +53,26 @@
           </select>
         </li>
         <li class="refinement">
-          <label for="type">{{ 'Type' | i18n }}</label>
-          <select id="type" name="type">
-            <option value="">--{{ 'choose a type' | i18n }}--</option>
-          {% for id, term in search_terms.types %}
-            <option value="{{ id }}">{{ term | i18n }}</option>
-          {% endfor %}
-          </select>
+
+            <input type="hidden" id="type" name="type" value="">
+            <div class="left-area">
+              <span id="exp_elem" class="listbox-label">{{ 'Type' | i18n }}</span>
+              <div id="exp_wrapper">
+                <button type="button" aria-haspopup="listbox" aria-labelledby="exp_elem exp_button" id="exp_button">--choose a type--
+                  <span class="glyph expand" aria-hidden="true">&#8964;</span>
+                  <span class="glyph collapse" aria-hidden="true">&#8963;</span>
+                </button>
+                <ul id="exp_elem_list" tabindex="-1" role="listbox" aria-labelledby="exp_elem" class=" hidden" aria-activedescendant="" data-choice-store="type">
+                {% for id, term in search_terms.types %}
+                  <li role="option" id="{{ id }}">
+                    <img src="{{ term.thumbnail }}" alt="">
+                    {{ term.name | i18n }}
+                  </li>
+                {% endfor %}
+                </ul>
+              </div>
+            </div>
+
         </li>
         <li class="refinement">
           <label for="acc">{{ 'Accommodation' | i18n }}</label>
