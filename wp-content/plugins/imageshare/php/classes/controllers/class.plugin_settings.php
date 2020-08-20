@@ -42,7 +42,14 @@ class PluginSettings {
 
             if ($records === null) {
                 $error = __('Unable to load records from supplied file.', 'imageshare');
-                return ['resources' => [], 'errors' => [$error]];
+                return [
+                    'resources' => [],
+                    'errors' => [$error],
+                    'new_resources' => 0,
+                    'new_files' => 0,
+                    'updated_resources' => 0,
+                    'updated_files' => 0
+                ];
             }
 
             try {
