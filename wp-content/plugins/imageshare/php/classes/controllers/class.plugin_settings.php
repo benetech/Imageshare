@@ -42,6 +42,7 @@ class PluginSettings {
 
             if ($records === null) {
                 $error = __('Unable to load records from supplied file.', 'imageshare');
+
                 return [
                     'resources' => [],
                     'errors' => [$error],
@@ -56,7 +57,15 @@ class PluginSettings {
                 ResourceModel::validate($records);
             } catch (\Exception $validation_error) {
                 Logger::log('Validation exception: ' . $validation_error->getMessage());
-                return ['resources' => [], 'errors' => [$validation_error->getMessage()]];
+
+                return [
+                    'resources' => [],
+                    'errors' => [$validation_error->getMessage()],
+                    'new_resources' => 0,
+                    'new_files' => 0,
+                    'updated_resources' => 0,
+                    'updated_files' => 0
+                ];
             }
 
             return $this->create_resources($records);
