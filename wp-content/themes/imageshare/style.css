@@ -584,6 +584,8 @@ section#collections {
 li.collection {
   background-color: #0c4471;
   border: 1px solid #000;
+  max-width: 18em;
+  overflow: hidden;
 }
 
 .background205d9c {
