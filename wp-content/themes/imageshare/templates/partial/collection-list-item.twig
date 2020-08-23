@@ -17,6 +17,7 @@
     <img
       data-click-navigate="{{ collection.permalink }}"
       src="{{ collection.thumbnail }}"
+      srcset="{{ collection.all_thumbnails() | map(t => "%s %dw" | format(t.src, t.width)) | join(', ') }}"
       alt=""
       class="thumbnail"
     />

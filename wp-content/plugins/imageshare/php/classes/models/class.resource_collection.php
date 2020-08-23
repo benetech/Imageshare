@@ -140,6 +140,30 @@ class ResourceCollection {
         return null;
     }
 
+    public function all_thumbnails() {
+        $thumbnail_id = get_post_meta($this->post_id, 'thumbnail', true);
+        $seen = [];
+        $thumbnails = [];
+
+        Logger::log(Model::get_image_sizes());
+
+        foreach (Model::get_image_sizes() as $size) {
+            $thumbnail = wp_get_attachment_image_src($thumbnail_id, [$size['width'], $size['height']]);
+            if (!empty($thumbnail) && !in_array($thumbnail[0], $seen)) {
+                array_push($thumbnails, [
+                    'src' => $thumbnail[0],
+                    'width' => $thumbnail[1],
+                    'height' => $thumbnail[2]
+                ]);
+                array_push($seen, $thumbnail[0]);
+            }
+        }
+
+        Logger::log($thumbnails);
+
+        return $thumbnails;
+    }
+
     private function get_resource_ids() {
         $resource_ids = get_post_meta($this->post_id, 'resources', true);
         if (is_array($resource_ids)) {
