@@ -23,6 +23,7 @@ aria.ListboxButton = function (button, listbox, buttonContent) {
 aria.ListboxButton.prototype.registerEvents = function () {
   this.button.addEventListener('click', this.showListbox.bind(this));
   this.button.addEventListener('keyup', this.checkShow.bind(this));
+  this.listbox.listboxNode.addEventListener('click', this.hideListbox.bind(this));
   this.listbox.listboxNode.addEventListener('blur', this.hideListbox.bind(this));
   this.listbox.listboxNode.addEventListener('keydown', this.checkHide.bind(this));
   this.listbox.setHandleFocusChange(this.onFocusChange.bind(this));
