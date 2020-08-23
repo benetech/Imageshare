@@ -572,8 +572,8 @@ section#collections {
 
 .collection-heading {
   font-size: 1.5em;
-  margin: .5em;
-  padding: 0;
+  padding: .5em;
+  border-top: 1px solid #fff;
 }
 
 .collection-description {
