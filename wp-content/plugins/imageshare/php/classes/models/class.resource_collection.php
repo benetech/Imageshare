@@ -145,8 +145,6 @@ class ResourceCollection {
         $seen = [];
         $thumbnails = [];
 
-        Logger::log(Model::get_image_sizes());
-
         foreach (Model::get_image_sizes() as $size) {
             $thumbnail = wp_get_attachment_image_src($thumbnail_id, [$size['width'], $size['height']]);
             if (!empty($thumbnail) && !in_array($thumbnail[0], $seen)) {
@@ -158,8 +156,6 @@ class ResourceCollection {
                 array_push($seen, $thumbnail[0]);
             }
         }
-
-        Logger::log($thumbnails);
 
         return $thumbnails;
     }
