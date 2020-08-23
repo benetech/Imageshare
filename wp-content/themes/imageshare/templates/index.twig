@@ -32,7 +32,13 @@
         >
           <a href="{{ collection.permalink }}" class="collection-link">
           {% if collection.thumbnail | length > 3 %}
-            <img class="collection-img" src="{{ collection.thumbnail }}" alt="" />
+            <img
+                class="collection-img"
+                src="{{ collection.thumbnail }}"
+                alt=""
+                srcset="{{ collection.all_thumbnails() | map(t => "%s %dw" | format(t.src, t.width)) | join(', ') }}"
+            />
+
           {% endif %}
             <div class="collection-heading">{{ collection.title | e }}</div>
           </a>
