@@ -278,7 +278,7 @@ aria.Listbox.prototype.clearKeysSoFarAfterDelay = function () {
   this.keyClear = setTimeout((function () {
     this.keysSoFar = '';
     this.keyClear = null;
-  }).bind(this), 500);
+  }).bind(this), 300);
 };
 
 aria.Listbox.prototype.findMatchInRange = function (list, startIndex, endIndex) {
