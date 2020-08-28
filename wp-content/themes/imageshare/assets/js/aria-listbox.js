@@ -117,7 +117,7 @@ aria.Listbox.prototype.checkKeyPress = function (evt) {
     case aria.KeyCode.DOWN:
       evt.preventDefault();
 
-      if (!this.activeDescendant) {
+      if (this.activeDescendant === undefined || !this.activeDescendant.length) {
         // focus first option if no option was previously focused, and perform no other actions
         this.focusFirstItem();
         break;
@@ -360,7 +360,7 @@ aria.Listbox.prototype.defocusItem = function (element) {
 aria.Listbox.prototype.focusItem = function (element) {
   this.defocusItem(document.getElementById(this.activeDescendant));
 
-  this.choiceStore.value = element.id;
+  this.choiceStore.value = element.getAttribute('value');
 
   if (!this.multiselectable) {
     element.setAttribute('aria-selected', 'true');

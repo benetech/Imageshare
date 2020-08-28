@@ -5,10 +5,15 @@
  */
 
 window.addEventListener('load', function () {
-  var button = document.getElementById('exp_button');
-  var exListbox = new aria.Listbox(document.getElementById('exp_elem_list'));
-  var buttonContent = document.querySelector('#exp_button .content');
-  var listboxButton = new aria.ListboxButton(button, exListbox, buttonContent);
+  var custom_listboxes = ['search-type', 'search-acc', 'search-subject', 'search-source'];
+
+  for (var i = 0, j = custom_listboxes.length; i < j; i++) {
+    var prefix = custom_listboxes[i];
+    var button = document.getElementById(prefix + '-button');
+    var exListbox = new aria.Listbox(document.getElementById(prefix + '-list'));
+    var buttonContent = document.querySelector('#' + prefix + '-button .content');
+    var listboxButton = new aria.ListboxButton(button, exListbox, buttonContent);
+  }
 });
 
 var aria = aria || {};
