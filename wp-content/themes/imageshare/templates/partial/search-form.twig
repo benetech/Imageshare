@@ -56,7 +56,7 @@
 
             <input type="hidden" id="type" name="type" value="">
             <div class="left-area">
-              <span id="exp_elem" class="listbox-label">{{ 'Type' | i18n }}</span>
+              <span id="exp_elem" class="listbox-label">{{ 'Type' | i18n }}<span class="sr-only">:</span></span>
               <div id="exp_wrapper">
                 <button type="button" aria-haspopup="listbox" aria-labelledby="exp_elem exp_button" id="exp_button">
                   <span class="content">--{{ 'choose a type' | i18n }}--</span>
@@ -70,7 +70,8 @@
 
                 {% for id, term in search_terms.types %}
                   <li role="option" id="{{ id }}">
-                    <img src="{{ term.thumbnail }}" alt="">
+                    <!-- aria-hidden=true stops the image from being interpreted as a space by NVDA -->
+                    <img src="{{ term.thumbnail }}" alt="" aria-hidden="true">
                     {{ term.name | i18n }}
                   </li>
                 {% endfor %}

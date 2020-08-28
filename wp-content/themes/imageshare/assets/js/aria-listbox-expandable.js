@@ -55,9 +55,12 @@ aria.ListboxButton.prototype.checkHide = function (evt) {
   }
 };
 
-aria.ListboxButton.prototype.showListbox = function () {
+aria.ListboxButton.prototype.showListbox = function (evt) {
   aria.Utils.removeClass(this.listbox.listboxNode, 'hidden');
   this.button.setAttribute('aria-expanded', 'true');
+  if (evt && (evt.which == 1 || !evt.keyCode)) {
+      this.listbox.focusFirst = true;
+  }
   this.listbox.listboxNode.focus();
 };
 

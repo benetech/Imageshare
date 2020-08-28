@@ -17,6 +17,7 @@ var aria = aria || {};
  *  The DOM node pointing to the listbox
  */
 aria.Listbox = function (listboxNode) {
+  this.focusFirst = false;
   this.listboxNode = listboxNode;
   this.activeDescendant = this.listboxNode.getAttribute('aria-activedescendant');
   this.multiselectable = this.listboxNode.hasAttribute('aria-multiselectable');
@@ -49,6 +50,9 @@ aria.Listbox.prototype.registerEvents = function () {
 aria.Listbox.prototype.setupFocus = function () {
   if (this.activeDescendant) {
     return;
+  }
+  if (this.focusFirst) {
+      this.focusFirstItem();
   }
 };
 
@@ -115,7 +119,7 @@ aria.Listbox.prototype.checkKeyPress = function (evt) {
 
       if (!this.activeDescendant) {
         // focus first option if no option was previously focused, and perform no other actions
-        this.focusItem(nextItem);
+        this.focusFirstItem();
         break;
       }
 
@@ -229,6 +233,7 @@ aria.Listbox.prototype.findItemToFocus = function (key) {
     searchIndex + 1,
     itemList.length
   );
+
   if (!nextMatch) {
     nextMatch = this.findMatchInRange(
       itemList,
@@ -280,7 +285,7 @@ aria.Listbox.prototype.findMatchInRange = function (list, startIndex, endIndex) 
   // Find the first item starting with the keysSoFar substring, searching in
   // the specified range of items
   for (var n = startIndex; n < endIndex; n++) {
-    var label = list[n].innerText;
+    var label = list[n].innerText.trim();
     if (label && label.toUpperCase().indexOf(this.keysSoFar) === 0) {
       return list[n];
     }
