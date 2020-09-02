@@ -14,6 +14,19 @@ p {
   margin: 0;
 }
 
+/* FAQ */
+.faq-question {
+  font-size: 1.625em;
+  font-weight: bold;
+  color: #0c4471;
+  margin: 0;
+}
+
+.faq-answer {
+  font-size: 1.125em;
+  margin: 0;
+}
+
 .skip-link {
   padding-top: 10px;
   padding: .5em 2em;
@@ -1203,19 +1216,5 @@ ul.resource-file-types img {
 
 ul.resource-file-types li + li {
     margin-left: .2em;
-}
-
-/* FAQ */
-.faq-question {
-  font-size: 1.625em;
-  font-weight: bold;
-  color: #0c4471;
-  margin: 0;
-}
-
-.faq-answer {
-  font-size: 1.125em;
-  color: #0c4471;
-  margin: 0;
 }
 
