@@ -55,7 +55,7 @@
         "plural": "Types",
         "singular": "Type",
         "hierarchical": false,
-        "terms": ["2D Tactile Graphic", "3D Model", "Audio File", "Image", "Lesson Plan", "Manipulative", "Text Document", "URL", "Video", "Handmade Object"]
+        "terms": ["2D Tactile Graphic", "3D Model", "Audio File", "Image", "Lesson Plan", "Manipulative", "Text Document", "Simulation", "URL", "Video", "Handmade Object"]
     },
     "subjects": {
         "applies_to": ["btis_resource"],

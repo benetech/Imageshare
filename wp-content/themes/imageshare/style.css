@@ -2,7 +2,7 @@
  * Theme Name: Imageshare
  * Description: Benetech Imageshare default theme
  * Author: Prime Access Consulting
- * Version: 0.2.17
+ * Version: 0.2.24
 */
 
 body {
@@ -75,12 +75,22 @@ button {
 .app {
   overflow: hidden;
 }
+
 .footer-inner,
 .header-inner,
-.nav-inner, 
+.nav-inner,
 .main-inner {
   max-width: 90em;
   margin: 0 auto;
+}
+
+@media screen and (max-width: 90em) {
+  .footer-inner,
+  .header-inner,
+  .nav-inner,
+  .main-inner {
+    max-width: 75em;
+  }
 }
 
 .nav-inner a {
@@ -539,26 +549,32 @@ section#collections {
   text-align: center;
   color: #ffffff;
 }
+
 .collection-link {
   color: #ffffff;
   text-decoration: none;
-  display: block;
+  display: flex;
+  flex-direction: column;
   outline-offset: -1px;
 }
+
 .collection-link:hover,
 .collection-link:focus {
   text-decoration: 3px underline white;
 }
+
 .collection-img {
-  width: 100%;
-  display: block;
-  border-bottom: 1px solid #fff;
+  display: inline-block;
+  object-fit: cover;
+  max-height: 15em;
 }
+
 .collection-heading {
   font-size: 1.5em;
-  margin: .2em;
-  padding: 0;
+  padding: .5em;
+  border-top: 1px solid #fff;
 }
+
 .collection-description {
   font-size: 1.25em;
   margin: 0;
@@ -568,8 +584,8 @@ section#collections {
 li.collection {
   background-color: #0c4471;
   border: 1px solid #000;
-  display: flex;
-  flex-direction: column-reverse;
+  max-width: 18em;
+  overflow: hidden;
 }
 
 .background205d9c {

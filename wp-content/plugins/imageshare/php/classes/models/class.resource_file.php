@@ -16,7 +16,20 @@ class ResourceFile {
     }
 
     public static function available_types($hide_empty = false) {
-        return Model::get_terms('file_types', $hide_empty);
+        $terms = get_terms([
+            'taxonomy' => 'file_types',
+            'orderby' => 'name',
+            'hide_empty' => $hide_empty
+        ]);
+
+        return array_reduce($terms, function ($list, $term) {
+            $thumbnail = get_field('thumbnail', 'category_' . $term->term_id);
+            $list[$term->term_id] = [
+                'name' => $term->name,
+                'thumbnail' => $thumbnail
+            ];
+            return $list;
+        });
     }
 
     public static function create($args) {

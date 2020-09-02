@@ -1,0 +1,70 @@
+[role="listbox"] {
+  margin: 1em 0 0;
+  padding: 0;
+  border: 1px solid #aaa;
+  background: white;
+}
+
+[role="option"] {
+  position: relative;
+  display: block;
+  padding: .2em;
+  line-height: 1.8em;
+}
+
+[aria-haspopup="listbox"] img {
+    max-height: 1em;
+}
+
+[role="option"] img {
+  max-width: 2em;
+}
+
+[role="option"].focused {
+  background: #bde4ff;
+}
+
+button[aria-haspopup="listbox"] {
+  position: relative;
+  min-width: 10em;
+  max-width: 16em;
+  padding-right: 1.5em;
+  text-align: left;
+  background-color: #fff;
+  border: 1px solid #000;
+  border-radius: 3px;
+}
+
+button[aria-haspopup="listbox"] .glyph {
+    display: none;
+    font-weight: bold;
+    font-size: 1.2em;
+    right: 5px;
+    top: -5px;
+    position: absolute;
+}
+
+button[aria-haspopup="listbox"] .glyph.collapse {
+    font-size: 1em;
+    top: 3px;
+}
+
+button[aria-haspopup="listbox"] .glyph.expand,
+button[aria-haspopup="listbox"][aria-expanded="true"] .glyph.collapse {
+    display: inline;
+}
+
+button[aria-haspopup="listbox"][aria-expanded="true"] .glyph.expand {
+    display: none;
+}
+
+button[aria-haspopup="listbox"] + [role="listbox"] {
+  position: absolute;
+  margin: 0;
+  max-width: 15em;
+  max-height: 100%;
+  border-top: 0;
+  overflow-y: auto;
+  z-index: 1;
+}
+

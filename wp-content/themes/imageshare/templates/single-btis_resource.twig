@@ -118,19 +118,17 @@
 
    </div>
    <div>
-      {% if file.downloadable %}
-        <a download="{{ file.uri | basename }}" aria-label="{{ 'Download %s - %s' | format(file.title, file.type | i18n) }}" class="download" href="{{ file.uri }}">{{ 'Download' | i18n }}</a>
+      {% if file.downloadable and file.uri | length > 5 %}
+        <a download="{{ file.uri | basename }}" aria-label="{{ 'Download %s - %s' | format(file.title, file.type | i18n) }}" class="download" href="{{ file.uri }}?response-content-disposition=attachment">{{ 'Download' | i18n }}</a>
       {% endif %}
 
-      {% if not file.downloadable and file.uri | length > 5 %}
+      {% if not file.downloadable and not file.previewable and file.uri | length > 5 %}
         <a target="_blank" aria-label="{{ 'Visit %s - %s' | format(file.title, file.type | i18n) }}" class="download" href="{{ file.uri }}">{{ 'Visit' | i18n }}</a>
       {% endif %}
 
-    {# disabled for content-disposition reasons 
       {% if file.previewable and file.uri | length > 5 %}
         <a target="_blank" aria-label="{{ 'Preview %s - %s' | format(file.title, file.type | i18n) }}" class="download" href="{{ file.uri }}">{{ 'Preview' | i18n }}</a>
       {% endif %}
-    #}
    </div>
  
     

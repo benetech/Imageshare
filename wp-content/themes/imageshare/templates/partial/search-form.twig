@@ -44,40 +44,100 @@
     <div class="refinements-wrapper">
       <ul class="refinements" aria-labelledby="advanced-btn" role="list">
         <li class="refinement">
-          <label for="subject">{{ 'Subject' | i18n }}</label>
-          <select id="subject" name="subject">
-            <option value="">--{{ 'choose a subject' | i18n }}--</option>
-          {% for id, terms in search_terms.subjects %}
-            <option value="{{ id }}">{{ terms | map(t => t | i18n) | join(' - ') }}</option>
-          {% endfor %}
-          </select>
+          <input type="hidden" id="subject" name="subject" value="">
+          <span class="aria-listbox" id="search-subject" class="listbox-label">{{ 'Subject' | i18n }}:</span>
+          <div>
+            <button type="button" aria-haspopup="listbox" aria-labelledby="search-subject search-subject-button" id="search-subject-button" class="listbox-button">
+              <span class="content">--{{ 'choose a subject' | i18n }}--</span>
+              <span class="glyph expand" aria-hidden="true">&#8964;</span>
+              <span class="glyph collapse" aria-hidden="true">&#8963;</span>
+            </button>
+            <ul id="search-subject-list" tabindex="-1" role="listbox" aria-labelledby="search-subject" class="hidden" aria-activedescendant="" data-choice-store="subject">
+              <li role="option" id="search-subject-0" value="0">
+                --{{ 'choose a subject' | i18n }}--
+              </li>
+
+              {% for id, terms in search_terms.subjects %}
+              <li role="option" id="subject-{{ id }}" value="{{ id }}">
+                {{ terms | map(t => t | i18n) | join(' - ') }}
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
         </li>
+
         <li class="refinement">
-          <label for="type">{{ 'Type' | i18n }}</label>
-          <select id="type" name="type">
-            <option value="">--{{ 'choose a type' | i18n }}--</option>
-          {% for id, term in search_terms.types %}
-            <option value="{{ id }}">{{ term | i18n }}</option>
-          {% endfor %}
-          </select>
+        <div>
+          <input type="hidden" id="type" name="type" value="">
+          <span class="aria-listbox" id="search-type" class="listbox-label">{{ 'Type' | i18n }}:</span>
+          <div>
+            <button type="button" aria-haspopup="listbox" aria-labelledby="search-type search-type-button" id="search-type-button" class="listbox-button">
+              <span class="content">--{{ 'choose a type' | i18n }}--</span>
+              <span class="glyph expand" aria-hidden="true">&#8964;</span>
+              <span class="glyph collapse" aria-hidden="true">&#8963;</span>
+            </button>
+            <ul id="search-type-list" tabindex="-1" role="listbox" aria-labelledby="search-type" class="hidden" aria-activedescendant="" data-choice-store="type">
+              <li role="option" id="search-type-0" value="0">
+                --{{ 'choose a type' | i18n }}--
+              </li>
+
+            {% for id, term in search_terms.types %}
+              <li role="option" id="search-type-{{ id }}" value="{{ id }}">
+                <!-- aria-hidden=true stops the image from being interpreted as a space by NVDA -->
+                <img src="{{ term.thumbnail }}" alt="" aria-hidden="true">
+                {{ term.name | i18n }}
+              </li>
+            {% endfor %}
+            </ul>
+          </div>
+        </div>
         </li>
+
         <li class="refinement">
-          <label for="acc">{{ 'Accommodation' | i18n }}</label>
-          <select id="acc" name="acc">
-            <option value="">--{{ 'choose an accommodation' | i18n }}--</option>
-          {% for id, terms in search_terms.accommodations %}
-            <option value="{{ id }}">{{ terms | map(t => t | i18n) | join(' - ') }}</option>
-          {% endfor %}
-          </select>
+          <input type="hidden" id="acc" name="acc" value="">
+          <span class="aria-listbox" id="search-acc" class="listbox-label">{{ 'Accommodation' | i18n }}:</span>
+          <div>
+            <button type="button" aria-haspopup="listbox" aria-labelledby="search-acc search-acc-button" id="search-acc-button" class="listbox-button">
+              <span class="content">--{{ 'choose an accommodation' | i18n }}--</span>
+              <span class="glyph expand" aria-hidden="true">&#8964;</span>
+              <span class="glyph collapse" aria-hidden="true">&#8963;</span>
+            </button>
+            <ul id="search-acc-list" tabindex="-1" role="listbox" aria-labelledby="search-acc" class="hidden" aria-activedescendant="" data-choice-store="acc">
+              <li role="option" id="search-acc-{{id}}" value="0">
+                --{{ 'choose an accommodation' | i18n }}--
+              </li>
+
+              {% for id, terms in search_terms.accommodations %}
+              <li role="option" id="search-acc-{{id}}" value="{{ id }}">
+                {{ terms | map(t => t | i18n) | join(' - ') }}
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
         </li>
+
         <li class="refinement">
-          <label for="source">{{ 'Source' | i18n }}</label>
-          <select id="source" name="src">
-            <option value="">--{{ 'choose a source' | i18n }}--</option>
-          {% for source in sources | filter(s => s | trim | length > 2) %}
-            <option value="{{ source | e }}">{{ source | e }}</option>
-          {% endfor %}
-          </select>
+          <input type="hidden" id="source" name="src" value="">
+          <span class="aria-listbox" id="search-source" class="listbox-label">{{ 'Source' | i18n }}:</span>
+          <div>
+            <button type="button" aria-haspopup="listbox" aria-labelledby="search-source search-source-button" id="search-source-button" class="listbox-button">
+              <span class="content">--{{ 'choose a source' | i18n }}--</span>
+              <span class="glyph expand" aria-hidden="true">&#8964;</span>
+              <span class="glyph collapse" aria-hidden="true">&#8963;</span>
+            </button>
+            <ul id="search-source-list" tabindex="-1" role="listbox" aria-labelledby="search-source" class="hidden" aria-activedescendant="" data-choice-store="source">
+              <li role="option" id="search-source-0" value="">
+                --{{ 'choose a source' | i18n }}--
+              </li>
+
+              {% for source in sources | filter(s => s | trim | length > 2) %}
+              <li role="option" id="search-source-{{ source | replace({' ': ''}) }}" value="{{ source }}">
+                {{ source | e }}
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+
         </li>
       </ul>
       <div class="submit-btn-wrapper">
