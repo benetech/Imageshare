@@ -2,7 +2,7 @@
  * Theme Name: Imageshare
  * Description: Benetech Imageshare default theme
  * Author: Prime Access Consulting
- * Version: 0.2.33
+ * Version: 0.2.34
 */
 
 body {
@@ -16,7 +16,7 @@ p {
 
 /* FAQ */
 
-.faq-section {
+.faq-section h2{
   font-size: 1.8em;
   font-weight: bold;
   color: #0c4471;
@@ -24,7 +24,7 @@ p {
 }
 
 
-.faq-question {
+.faq-question h3{
   font-size: 1.5em;
   color: #0c4488;
   margin: 0;
