@@ -66,10 +66,11 @@
     <script src="{{ site.theme.link }}/assets/js/aria-listbox.js?{{ theme.version }}"></script>
     <script src="{{ site.theme.link }}/assets/js/aria-listbox-expandable.js?{{ theme.version }}"></script>
     
-    #test 11
+    #test 12
  
-      {% set foo = 'bar' %}
-      {{ foo }}
+      {% set url_link = path(app.request.attributes.get('_route'),
+                       app.request.attributes.get('_route_params')) %}
+      {{ url_link }}
       
   </body>
 </html>
