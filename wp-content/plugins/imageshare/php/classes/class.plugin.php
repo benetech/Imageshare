@@ -13,6 +13,7 @@ require_once imageshare_php_file('classes/controllers/class.resource_collection.
 require_once imageshare_php_file('classes/controllers/class.plugin_settings.php');
 require_once imageshare_php_file('classes/controllers/class.search.php');
 require_once imageshare_php_file('classes/controllers/class.post.php');
+require_once imageshare_php_file('classes/controllers/class.json_api.php');
 
 use Imageshare\Logger;
 
@@ -25,6 +26,7 @@ use Imageshare\Controllers\ResourceCollection as ResourceCollectionController;
 use Imageshare\Controllers\PluginSettings as PluginSettingsController;
 use Imageshare\Controllers\Search as SearchController;
 use Imageshare\Controllers\Post as PostController;
+use Imageshare\Controllers\JSONAPI as JSONAPIController;
 
 class Plugin {
     private $is_activated = false;
@@ -59,6 +61,7 @@ class Plugin {
         $this->controllers->resource_collection = new ResourceCollectionController();
         $this->controllers->search = new SearchController();
         $this->controllers->post = new PostController();
+        $this->controllers->json_api = new JSONAPIController();
 
         if ($this->is_admin) {
             $this->controllers->plugin_settings = new PluginSettingsController();
