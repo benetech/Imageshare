@@ -123,11 +123,18 @@ class ResourceFile {
     }
 
     public static function language_codes_to_term_ids($language_codes) {
-        $term_ids = array_map(function ($lc) {
+        $term_ids = array_reduce($language_codes, function ($list, $lc) {
+            if(!strlen($lc)) {
+                //empty language code '', means the schema allowed for this
+                //via taxonomy "accept empty value" setting
+                return $list;
+            }
+
             $term = get_term_by('name', $lc, 'languages');
 
             if ($term) {
-               return $term->term_id;
+                $list[] = $term->term_id;
+                return $list;
             }
 
             // not found. A language alias?
@@ -145,11 +152,12 @@ class ResourceFile {
             ]);
 
             if (count($terms)) {
-                return $terms[0]->term_id;
+                $list[] = $terms[0]->term_id;
+                return $list;
             }
 
-            throw new \Exception(sprintf(__('Term %s was not found in taxonomy %s', 'imageshare'), $lc, 'languages'));
-        }, $language_codes);
+            throw new \Exception(sprintf(__('Term "%s" was not found in taxonomy %s', 'imageshare'), $lc, 'languages'));
+        }, []);
 
         return $term_ids;
     }
