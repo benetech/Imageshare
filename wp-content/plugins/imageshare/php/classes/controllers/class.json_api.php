@@ -6,7 +6,10 @@ use Imageshare\Logger;
 
 class JSONAPI {
     const api_controllers = [
-        'types'
+        'types',
+        'subjects',
+        'accommodations',
+        'sources'
     ];
 
     public function __construct() {
