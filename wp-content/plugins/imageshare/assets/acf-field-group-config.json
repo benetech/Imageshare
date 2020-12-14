@@ -405,22 +405,6 @@
                 "placeholder": ""
             },
             {
-                "key": "field_5fd7605842035",
-                "label": "Source URI",
-                "name": "source_uri",
-                "type": "url",
-                "instructions": "The original source for this resource file (such as a manufacturer's website url)",
-                "required": 0,
-                "conditional_logic": 0,
-                "wrapper": {
-                    "width": "",
-                    "class": "",
-                    "id": ""
-                },
-                "default_value": "",
-                "placeholder": ""
-            },
-            {
                 "key": "field_5ea1814f9e00f",
                 "label": "Type",
                 "name": "type",
