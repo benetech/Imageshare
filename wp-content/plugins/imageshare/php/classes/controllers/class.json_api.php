@@ -10,7 +10,8 @@ class JSONAPI {
         'subjects',
         'accommodations',
         'sources',
-        'collections'
+        'collections',
+        'resources'
     ];
 
     public function __construct() {

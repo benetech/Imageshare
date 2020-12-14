@@ -4,12 +4,14 @@
     require_once imageshare_php_file('classes/controllers/json_api/class.accommodations.php');
     require_once imageshare_php_file('classes/controllers/json_api/class.sources.php');
     require_once imageshare_php_file('classes/controllers/json_api/class.collections.php');
+    require_once imageshare_php_file('classes/controllers/json_api/class.resources.php');
 
     use Imageshare\Controllers\JSONAPI\Types as TypesController;
     use Imageshare\Controllers\JSONAPI\Subjects as SubjectsController;
     use Imageshare\Controllers\JSONAPI\Accommodations as AccommodationsController;
     use Imageshare\Controllers\JSONAPI\Sources as SourcesController;
     use Imageshare\Controllers\JSONAPI\Collections as CollectionsController;
+    use Imageshare\Controllers\JSONAPI\Resources as ResourcesController;
 
     $controller = get_query_var('btis_api');
 
@@ -33,4 +35,9 @@
         case 'collections':
             CollectionsController::render();
             break;
+
+        case 'resources':
+            ResourcesController::render();
+            break;
+
     }
