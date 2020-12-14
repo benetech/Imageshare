@@ -129,6 +129,7 @@ class PluginSettings {
             'thumbnail_src' => $record->featured_image_URI,
             'thumbnail_alt' => $record->featured_image_alt,
             'source'        => $record->source,
+            'source_uri'    => $record->source_URI ?? '',
             'description'   => $record->description,
             'subject'       => $record->subject,
             'tags'          => $record->tags,

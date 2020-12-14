@@ -28,6 +28,16 @@
     </nav>
 {% endblock %}
 
+{% block source %}
+    {%- if post.source_uri -%}
+        <a href="{{ post.source_uri | e }}">
+    {%- endif -%}
+    {{ 'Source' | i18n }}: {{ post.source | e }}
+    {%- if post.source_uri -%}
+        </a>
+    {%- endif -%}
+{% endblock %}
+
 
 {% block content %}
   <div id="resource" class="main-inner">
@@ -50,9 +60,9 @@
 
 
           <p class="source">
-            ({{ 'Source' | i18n }}: {{ post.source | e }})
+            ({{- block('source') -}})
           </p>
-          </div>
+        </div>
 
         </div>
           <h2 id="resource-details-heading" class="sr-only">{{ 'Metadata' | i18n }}</h2>

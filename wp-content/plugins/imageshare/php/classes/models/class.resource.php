@@ -79,6 +79,12 @@ class Resource {
         update_field('source', $args['source'], $post_id);
         update_field('subject', $subject, $post_id);
 
+        if (strlen($args['source_uri'])) {
+            update_field('source_uri', $args['source_uri'], $post_id);
+        } else {
+            update_field('source_uri', null, $post_id);
+        }
+
         if (strlen($args['download_uri'])) {
             update_field('download_uri', $args['download_uri'], $post_id);
         } else {
@@ -230,6 +236,8 @@ class Resource {
         $columns['subject'] = self::i18n('Subject');
         $columns['tags'] = self::i18n('Tags');
         $columns['files'] = self::i18n('File(s)');
+        $columns['download_uri'] = self::i18n('Download URI');
+        $columns['source_uri'] = self::i18n('Source URI');
 
         return $columns;
     }
@@ -252,6 +260,14 @@ class Resource {
 
             case 'source':
                 echo $post->source;
+                break;
+
+            case 'download_uri':
+                echo '(' . (strlen($post->download_uri) ? self::i18n('Yes') : self::i18n('No')) . ')';
+                break;
+
+            case 'source_uri':
+                echo '(' . (strlen($post->source_uri) ? self::i18n('Yes') : self::i18n('No')) . ')';
                 break;
 
             case 'subject':
@@ -359,6 +375,7 @@ class Resource {
             $this->source        = get_post_meta($this->post_id, 'source', true);
             $this->file_ids      = get_post_meta($this->post_id, 'files', true);
             $this->download_uri  = get_post_meta($this->post_id, 'download_uri', true);
+            $this->source_uri    = get_post_meta($this->post_id, 'source_uri', true);
             $this->subject       = Model::get_meta_term_name($this->post_id, 'subject', 'subjects', true);
             $this->tags          = $this->get_tags();
 
