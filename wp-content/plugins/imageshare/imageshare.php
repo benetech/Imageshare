@@ -2,7 +2,7 @@
 /*
 Plugin Name: Imageshare
 Description: Benetech Imageshare resource management
-Plugin URI: https://imageshare.benetech.com
+Plugin URI: https://imageshare.benetech.org
 Author: Prime Access Consulting
 Version: 0.0.1
 Author URI: https://pac.bz
