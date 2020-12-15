@@ -15,13 +15,27 @@ class JSONAPI {
     ];
 
     public function __construct() {
+        // /json-api/types/
         add_rewrite_rule('json-api/([a-z]+)[/]?$', 'index.php?btis_api=$matches[1]', 'top');
+
+        // /json-api/types/1
+        add_rewrite_rule('json-api/([a-z]+)/([0-9]+)[/]?$', 'index.php?btis_api=$matches[1]&btis_api_id=$matches[2]', 'top');
+
+        // /json-api/types/1/relationships/parent
+        add_rewrite_rule('json-api/([a-z]+)/([0-9]+)/relationships/([a-z]+)[/]?$', 'index.php?btis_api=$matches[1]&btis_api_id=$matches[2]&btis_api_relationship=$matches[3]', 'top');
+
+        // /json-api/types/1/parent
+        add_rewrite_rule('json-api/([a-z]+)/([0-9]+)/([a-z]+)[/]?$', 'index.php?btis_api=$matches[1]&btis_api_id=$matches[2]&btis_api_relationship=$matches[3]', 'top');
+
         add_filter('query_vars', [$this, 'filter_query_vars']);
         add_filter('template_include', [$this, 'filter_template_include']);
     }
 
     public function filter_query_vars($query_vars) {
         $query_vars[] = 'btis_api';
+        $query_vars[] = 'btis_api_id';
+        $query_vars[] = 'btis_api_relationship';
+
         return $query_vars;
     }
 

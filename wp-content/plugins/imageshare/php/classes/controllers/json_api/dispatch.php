@@ -5,6 +5,8 @@
     require_once imageshare_php_file('classes/controllers/json_api/class.sources.php');
     require_once imageshare_php_file('classes/controllers/json_api/class.collections.php');
     require_once imageshare_php_file('classes/controllers/json_api/class.resources.php');
+    
+    use Imageshare\Logger;
 
     use Imageshare\Controllers\JSONAPI\Types as TypesController;
     use Imageshare\Controllers\JSONAPI\Subjects as SubjectsController;
@@ -15,13 +17,21 @@
 
     $controller = get_query_var('btis_api');
 
+    $id = get_query_var('btis_api_id');
+    $relationship = get_query_var('btis_api_relationship');
+
+    Logger::log([$controller, $id, $relationship]);
+
     switch ($controller) {
         case 'types':
             TypesController::render();
             break;
 
         case 'subjects':
-            SubjectsController::render();
+            SubjectsController::render([
+                'id' => $id,
+                'relationship' => $relationship
+            ]);
             break;
 
         case 'accommodations':
