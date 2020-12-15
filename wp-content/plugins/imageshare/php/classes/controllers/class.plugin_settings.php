@@ -151,7 +151,9 @@ class PluginSettings {
                     'accommodations' => $file->accommodations,
                     'languages'      => $file->languages,
                     'length_minutes' => $file->length_minutes,
-                    'downloadable'   => $file->downloadable
+                    'downloadable'   => $file->downloadable,
+                    'print_service'  => $file->print_service ?? '',
+                    'print_uri'      => $file->print_URI ?? ''
                 ]);
 
                 if (!$is_file_update) {

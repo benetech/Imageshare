@@ -103,6 +103,8 @@ class ResourceFile {
         update_field('accommodations', $accommodations, $post_id);
         update_field('languages', $languages, $post_id);
         update_field('downloadable', $args['downloadable'], $post_id);
+        update_field('print_uri', $args['print_uri'], $post_id);
+        update_field('print_service', $args['print_service'], $post_id);
 
         if (!$is_update) {
             Model::finish_importing($post_id);
@@ -199,6 +201,7 @@ class ResourceFile {
         $columns['license'] = self::i18n('License');
         $columns['length'] = self::i18n('Length');
         $columns['downloadable'] = self::i18n('Downloadable');
+        $columns['printable'] = self::i18n('Printable');
 
         return $columns;
     }
@@ -246,6 +249,10 @@ class ResourceFile {
             case 'downloadable':
                 echo $post->downloadable ? self::i18n('Yes') : self::i18n('No');
                 break;
+
+            case 'printable':
+                echo $post->printable ? self::i18n('Yes') : self::i18n('No');
+                break;
         }
     }
 
@@ -292,6 +299,10 @@ class ResourceFile {
             $this->format = Model::get_meta_term_name($this->post_id, 'format', 'file_formats');
 
             $this->languages = $this->get_languages();
+
+            $this->print_service = get_post_meta($this->post_id, 'print_service', true);
+            $this->print_uri = get_post_meta($this->post_id, 'print_uri', true);
+            $this->printable = strlen($this->print_uri) > 0;
 
             $this->accommodations = array_map(function ($a) {
                 return join(' - ', $a);

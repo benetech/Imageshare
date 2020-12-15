@@ -553,6 +553,41 @@
                 "ui": 0,
                 "ui_on_text": "",
                 "ui_off_text": ""
+            },
+            {
+                "key": "field_5fd89d000c3fa",
+                "label": "Print URI",
+                "name": "print_uri",
+                "type": "url",
+                "instructions": "The URL to an external print service",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "default_value": "",
+                "placeholder": ""
+            },
+            {
+                "key": "field_5fd89d1f0c3fb",
+                "label": "Print Service",
+                "name": "print_service",
+                "type": "text",
+                "instructions": "The service to order the print from, e.g. \"Kinkos\", \"CopyShop\"",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "default_value": "",
+                "placeholder": "",
+                "prepend": "",
+                "append": "",
+                "maxlength": ""
             }
         ],
         "location": [

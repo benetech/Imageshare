@@ -115,6 +115,16 @@
   </div>
 {% endblock %}
 
+{% block printable %}
+    {% if file.printable %}
+        {% if file.print_service %}
+            <a aria-label="{{ 'Order %s %s print at %s' | i18n | format(file.title, file.type, file.print_service) | e }}" target="_blank" class="download" href="{{ file.print_uri }}">{{ 'Order %s print at %s' | i18n | format(file.type, file.print_service) | e }}</a>
+        {% else %}
+            <a aria-label="{{ 'Order %s %s print' | i18n | format(file.title, file.type) | e }}" target="_blank" class="download" href="{{ file.print_uri }}">{{ 'Order %s print' | i18n | format(file.type) | e }}</a>
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
 {% block file %}
   <li class="result">
     <div class="header">
@@ -139,6 +149,8 @@
       {% if file.previewable and file.uri | length > 5 %}
         <a target="_blank" aria-label="{{ 'Preview %s - %s' | format(file.title, file.type | i18n) }}" class="download" href="{{ file.uri }}">{{ 'Preview' | i18n }}</a>
       {% endif %}
+
+      {{ block('printable') }}
    </div>
  
     
@@ -185,7 +197,6 @@
         <dd>{{ file.length_formatted_string() | e }}</dd>
       </div>
     {% endif %}
-
 
     </dl>
   </li>
