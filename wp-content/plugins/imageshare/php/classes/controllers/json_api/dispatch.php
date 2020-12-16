@@ -50,8 +50,7 @@
             break;
 
         case 'resources':
-            // TODO argument support
-            ResourcesController::render();
+            ResourcesController::render($args);
             break;
 
     }

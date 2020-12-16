@@ -342,6 +342,16 @@ class Resource {
         return $value;
     }
 
+    public static function by_id($id) {
+        $post = get_post($id);
+
+        if ($post !== null && $post->post_type === static::type) {
+            return self::from_post($post);
+        }
+
+        return null;
+    }
+
     private function get_post($post_id) {
         $this->post = get_post($post_id);
         return $this->load_custom_attributes();

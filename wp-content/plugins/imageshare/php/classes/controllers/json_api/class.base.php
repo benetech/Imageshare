@@ -18,6 +18,11 @@ class Base {
         return self::abs_link("/{$name}/{$id}/{$relationship}");
     }
 
+    public static function id_link($id) {
+        $name = static::plural_name;
+        return self::abs_link("/{$name}/{$id}");
+    }
+
     public static function render_response($data) {
         header('Content-Type: vnd.api+json');
 
