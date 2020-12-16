@@ -22,26 +22,22 @@
 
     Logger::log([$controller, $id, $relationship]);
 
+    $args = [
+        'id' => $id,
+        'relationship' => $relationship
+    ];
+
     switch ($controller) {
         case 'types':
-            TypesController::render([
-                'id' => $id,
-                'relationship' => $relationship
-            ]);
+            TypesController::render($args);
             break;
 
         case 'subjects':
-            SubjectsController::render([
-                'id' => $id,
-                'relationship' => $relationship
-            ]);
+            SubjectsController::render($args);
             break;
 
         case 'accommodations':
-            AccommodationsController::render([
-                'id' => $id,
-                'relationship' => $relationship
-            ]);
+            AccommodationsController::render($args);
             break;
 
         case 'sources':
@@ -49,10 +45,12 @@
             break;
 
         case 'collections':
+            // TODO argument support
             CollectionsController::render();
             break;
 
         case 'resources':
+            // TODO argument support
             ResourcesController::render();
             break;
 

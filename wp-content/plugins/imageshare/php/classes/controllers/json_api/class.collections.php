@@ -41,6 +41,7 @@ class Collections extends Base {
                 'type' => 'collection',
                 'id' => (string) $collection->id,
                 'attributes' => [
+                    'status' => $collection->post->post_status,
                     'title' => $collection->title,
                     'description' => $collection->description,
                     'featured' => $collection->is_featured,
