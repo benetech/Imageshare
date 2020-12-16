@@ -8,6 +8,16 @@ class Base {
         'not_found' => '404'
     ];
 
+    public static function relationship_link($id, $relationship) {
+        $name = static::plural_name;
+        return self::abs_link("/{$name}/{$id}/relationships/{$relationship}");
+    }
+
+    public static function resource_link($id, $relationship) {
+        $name = static::plural_name;
+        return self::abs_link("/{$name}/{$id}/{$relationship}");
+    }
+
     public static function render_response($data) {
         header('Content-Type: vnd.api+json');
 

@@ -24,7 +24,10 @@
 
     switch ($controller) {
         case 'types':
-            TypesController::render();
+            TypesController::render([
+                'id' => $id,
+                'relationship' => $relationship
+            ]);
             break;
 
         case 'subjects':
@@ -35,7 +38,10 @@
             break;
 
         case 'accommodations':
-            AccommodationsController::render();
+            AccommodationsController::render([
+                'id' => $id,
+                'relationship' => $relationship
+            ]);
             break;
 
         case 'sources':
