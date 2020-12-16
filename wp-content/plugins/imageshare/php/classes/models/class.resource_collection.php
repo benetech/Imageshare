@@ -106,6 +106,16 @@ class ResourceCollection {
         }, $posts);
     }
 
+    public static function by_id($id) {
+        $post = get_post($id);
+
+        if ($post !== null && $post->post_type === static::type) {
+            return self::from_post($post);
+        }
+
+        return null;
+    }
+
     public static function from_post(\WP_Post $post) {
         $wrapped = new ResourceCollection();
         $wrapped->post = $post;

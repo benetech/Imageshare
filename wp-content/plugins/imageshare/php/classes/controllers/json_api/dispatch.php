@@ -45,8 +45,7 @@
             break;
 
         case 'collections':
-            // TODO argument support
-            CollectionsController::render();
+            CollectionsController::render($args);
             break;
 
         case 'resources':

@@ -139,6 +139,7 @@ class Resources extends Base {
             ]
         ];
 
+        // TODO add collection membership
         return self::add_relationships($resource, $data);
     }
 
