@@ -6,7 +6,7 @@ require_once imageshare_php_file('classes/controllers/json_api/class.base.php');
 require_once imageshare_php_file('classes/controllers/json_api/class.resources.php');
 
 use Imageshare\Logger;
-use Imageshare\Models\ResourceCollection as Collection;
+use Imageshare\Models\ResourceCollection as CollectionModel;
 use Imageshare\Controllers\JSONAPI\Resources as ResourceController;
 
 class Collections extends Base {
@@ -30,7 +30,7 @@ class Collections extends Base {
     }
 
     public static function get_members($id) {
-        $collection = Collection::by_id($id);
+        $collection = CollectionModel::by_id($id);
 
         if ($collection === null) {
             return parent::error('not_found', 'No such collection');
@@ -54,13 +54,7 @@ class Collections extends Base {
         }
     }
 
-    public static function get_single($id) {
-        $collection = Collection::by_id($id);
-
-        if ($collection === null) {
-            return parent::error('not_found', 'No such collection');
-        }
-
+    public static function _as_data($collection) {
         $data = [
             'type' => 'collection',
             'id' => (string) $collection->id,
@@ -86,6 +80,16 @@ class Collections extends Base {
         return $data;
     }
 
+    public static function get_single($id) {
+        $collection = CollectionModel::by_id($id);
+
+        if ($collection === null) {
+            return parent::error('not_found', 'No such collection');
+        }
+
+        return self::_as_data($collection);
+    }
+
     public static function render($args) {
         if (!empty($args['id'])) {
            if (!empty($args['relationship'])) {
@@ -105,4 +109,38 @@ class Collections extends Base {
 
         return parent::render_response($collections);
     }
+
+    public static function sanitise_search_params($params) {
+        return array_reduce(array_keys($params), function ($map, $key) use ($params) {
+            $value = $params[$key];
+
+            $sanitised = preg_replace('/[^\w]+/', '', $key);
+
+            if (strlen($sanitised) && self::is_valid_key($sanitised)) {
+                $map[$sanitised] = $value;
+            }
+
+            return $map;
+        }, []);
+    }
+
+    public static function is_valid_key($key) {
+        return in_array($key, ['query', 'type', 'format', 'source']);
+    }
+
+    public static function search($args) {
+        $params = self::sanitise_search_params($args);
+        $params['_single_type'] = CollectionModel::type;
+
+        global $imageshare;
+        $search_results = $imageshare->controllers->search->query($params);
+
+        return self::render_search_results($search_results);
+    }
+
+    public static function render_search_results($results) {
+        $data = array_map(['self', '_as_data'], $results['collections']['posts']);
+        return parent::render_response($data);
+    }
+
 }

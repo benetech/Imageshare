@@ -19,8 +19,14 @@
 
     $id = get_query_var('btis_api_id');
     $relationship = get_query_var('btis_api_relationship');
+    $is_search = get_query_var('btis_api_search');
 
-    Logger::log([$controller, $id, $relationship]);
+    Logger::log($controller);
+
+    if ($is_search && in_array($controller, ['resources', 'collections'])) {
+        $params = ($_GET);
+        return $controller === 'resources' ? ResourcesController::search($params) : CollectionsController::search($params);
+    }
 
     $args = [
         'id' => $id,

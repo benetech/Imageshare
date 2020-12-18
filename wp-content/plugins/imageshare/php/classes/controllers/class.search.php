@@ -107,7 +107,7 @@ class Search {
         ];
 
         foreach (['subject', 'type', 'acc'] as $filter) {
-            if (self::is_nonempty_array($args[$filter])) {
+            if (isset($args[$filter]) && self::is_nonempty_array($args[$filter])) {
                 foreach ($args[$filter] as $term_id) {
                     $term = get_term($term_id);
                     if (!is_wp_error($term) && $term !== null) {
@@ -161,43 +161,81 @@ class Search {
         ];
     }
 
-    public function query($args) {
-        $query = trim($args['query']);
-        $terms = self::get_terms($args);
+    private function _query_resources($results, $args, $query, $terms) {
+        $page = $args['rp'] ?? null;
+        $size = $args['rs'] ?? null;
+
+        $paging = self::get_paging($args, $page, $size);
 
         [$resources, $total_resources] = self::post_type_query(
-            ResourceModel::type, $query, $terms, self::get_paging($args, $args['rp'], $args['rs'])
+            ResourceModel::type, $query, $terms, $paging
         );
-
-        [$collections, $total_collections] = self::post_type_query(
-            ResourceCollectionModel::type, $query, $terms, self::get_paging($args, $args['cp'], $args['cs'])
-        );
-
-        $filters = array_merge(['query' => $query], $terms);
-
-        $results = [
-            'resources'   => [],
-            'collections' => [] 
-        ];
 
         $resources = array_map(function ($p) {
             return ResourceModel::from_post($p);
         }, $resources);
 
+
+        $results['resources'] = [
+            'posts' => $resources,
+            'total' => $total_resources,
+            'paging' => self::get_paging($args, $page, $size, count($resources), $total_resources)
+        ];
+
+        $results['total_count'] += count($resources);
+
+        return $results;
+    }
+
+    private function _query_collections($results, $args, $query, $terms) {
+        $page = $args['cp'] ?? null;
+        $size = $args['cs'] ?? null;
+
+        $paging = self::get_paging($args, $page, $size);
+
+        [$collections, $total_collections] = self::post_type_query(
+            ResourceCollectionModel::type, $query, $terms, $paging
+        );
+
         $collections = array_map(function ($p) {
             return ResourceCollectionModel::from_post($p);
         }, $collections);
 
-        $results['total_count'] = count($resources) + count($collections);
+        $results['collections'] = [
+            'posts' => $collections,
+            'total' => $total_collections,
+            'paging' => self::get_paging($args, $page, $size, count($collections), $total_collections)
+        ];
 
-        $results['resources']['paging'] = self::get_paging($args, $args['rp'], $args['rs'], count($resources), $total_resources);
-        $results['collections']['paging'] = self::get_paging($args, $args['cp'], $args['cs'], count($collections), $total_collections);
+        $results['total_count'] += count($collections);
 
-        $results['resources']['posts'] = $resources;
-        $results['collections']['posts'] = $collections;
+        return $results;
+    }
 
-        $results['resources']['total'] = $total_resources;
-        $results['collections']['total'] = $total_collections;
+    public function query($args) {
+        $query = trim($args['query']);
+        $terms = self::get_terms($args);
+
+        $results = [
+            'total_count' => 0
+        ];
+
+        if (isset($args['_single_type'])) {
+            $type = $args['_single_type'];
+            if ($type === ResourceModel::type) {
+                $results = $this->_query_resources($results, $args, $query, $terms);
+            } else if ($type === ResourceCollectionModel::type) {
+                $results = $this->_query_collections($results, $args, $query, $terms);
+            } else {
+                $results = $this->_query_resources($results, $args, $query, $terms);
+                $results = $this->_query_collections($results, $args, $query, $terms);
+            }
+        } else {
+            $results = $this->_query_resources($results, $args, $query, $terms);
+            $results = $this->_query_collections($results, $args, $query, $terms);
+        }
+
+        $filters = array_merge(['query' => $query], $terms);
 
         $results['has_filters'] =
             count($filters['subject']) ||

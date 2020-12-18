@@ -15,6 +15,8 @@ class JSONAPI {
     ];
 
     public function __construct() {
+        add_rewrite_rule('json-api/(resources|collections)/search[/]?(.*)$', 'index.php?btis_api_search=1&btis_api=$matches[1]$matches[2]', 'top');
+
         // /json-api/types/
         add_rewrite_rule('json-api/([a-z]+)[/]?$', 'index.php?btis_api=$matches[1]', 'top');
 
@@ -35,18 +37,20 @@ class JSONAPI {
         $query_vars[] = 'btis_api';
         $query_vars[] = 'btis_api_id';
         $query_vars[] = 'btis_api_relationship';
+        $query_vars[] = 'btis_api_search';
 
         return $query_vars;
     }
 
     public function filter_template_include($template) {
         $controller = get_query_var('btis_api');
+        $is_search = get_query_var('btis_api_search');
 
-        if (!isset($controller) || !in_array($controller, self::api_controllers)) {
-            return $template;
+        if ($is_search || (isset($controller) && in_array($controller, self::api_controllers))) {
+            return imageshare_php_file("classes/controllers/json_api/dispatch.php");
         }
 
-        return imageshare_php_file("classes/controllers/json_api/dispatch.php");
+        return $template;
     }
 }
 
