@@ -183,11 +183,16 @@ class Resources extends Base {
     }
 
     public static function is_valid_key($key) {
-        return in_array($key, ['query', 'type', 'format', 'source']);
+        return in_array($key, ['query', 'type', 'format', 'source', 'page']);
     }
 
     public static function search($args) {
         $params = self::sanitise_search_params($args);
+
+        if (!array_key_exists('query', $params)) {
+            $params['query'] = '';
+        }
+
         $params['_single_type'] = ResourceModel::type;
 
         global $imageshare;
@@ -196,8 +201,25 @@ class Resources extends Base {
         return self::render_search_results($search_results);
     }
 
+    public static function render_links($results) {
+        $paging = $results['resources']['paging'];
+
+        $links = [];
+
+        foreach (['first', 'prev', 'next', 'last'] as $page) {
+            $link = array_key_exists($page, $paging) && strlen($paging[$page])
+                ? add_query_arg('page', $paging[$page])
+                : null;
+
+            $links[$page] = $link ? get_site_url() . $link : null;
+        }
+
+        return $links;
+    }
+
     public static function render_search_results($results) {
         $data = array_map(['self', '_as_data'], $results['resources']['posts']);
-        return parent::render_response($data);
+        $links = self::render_links($results);
+        return parent::render_response($data, $links);
     }
 }

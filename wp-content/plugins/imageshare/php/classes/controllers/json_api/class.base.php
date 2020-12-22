@@ -23,13 +23,17 @@ class Base {
         return self::abs_link("/{$name}/{$id}");
     }
 
-    public static function render_response($data) {
+    public static function render_response($data, $links = null) {
         header('Content-Type: vnd.api+json');
 
         if (isset($data['is_error'])) {
             echo json_encode(['errors' => [$data['error']]], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
         } else {
-            echo json_encode(['data' => $data], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+            $response = ['data' => $data];
+            if ($links !== null) {
+                $response['links'] = $links;
+            }
+            echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
         }
     }
 

@@ -15,7 +15,7 @@ class JSONAPI {
     ];
 
     public function __construct() {
-        add_rewrite_rule('json-api/(resources|collections)/search[/]?(.*)$', 'index.php?btis_api_search=1&btis_api=$matches[1]$matches[2]', 'top');
+        add_rewrite_rule('json-api/(resources|collections)/filter[/]?(.*)$', 'index.php?btis_api_search=1&btis_api=$matches[1]$matches[2]', 'top');
 
         // /json-api/types/
         add_rewrite_rule('json-api/([a-z]+)[/]?$', 'index.php?btis_api=$matches[1]', 'top');
