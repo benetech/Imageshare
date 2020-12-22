@@ -93,8 +93,23 @@
         {% endif %}
 
         <ul role="list" aria-label="{{ 'Files' | i18n }}">
-        {% for file in post.published_files %}
-          {{ block('file') }}
+
+        {# for group in post.file_groups %}
+            {% if group != '__none__' %}
+                {{ block('file_group') }}
+            {% endif %}
+        {% endfor %#}
+
+        {# TODO implement group layout when group styling consensus exists #}
+
+        {% for group in post.file_groups %}
+            {% for file in post.files_by_group(group) %}
+                {{ block('file') }}
+            {% endfor %}
+        {% endfor %}
+
+        {% for file in post.files_by_group('__none__') %}
+            {{ block('file') }}
         {% endfor %}
         </ul>
       </section>
@@ -123,6 +138,16 @@
             <a aria-label="{{ 'Order %s %s print' | i18n | format(file.title, file.type) | e }}" target="_blank" class="download" href="{{ file.print_uri }}">{{ 'Order %s print' | i18n | format(file.type) | e }}</a>
         {% endif %}
     {% endif %}
+{% endblock %}
+
+{% block file_group %}
+    {% set files = post.files_by_group(group) %}
+    <h3>{{ group }}</h3>
+    <ul>
+    {% for file in files %}
+        {{ block('file') }}
+    {% endfor %}
+    </ul>
 {% endblock %}
 
 {% block file %}

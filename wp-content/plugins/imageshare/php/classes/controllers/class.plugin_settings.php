@@ -153,7 +153,8 @@ class PluginSettings {
                     'length_minutes' => $file->length_minutes,
                     'downloadable'   => $file->downloadable,
                     'print_service'  => $file->print_service ?? '',
-                    'print_uri'      => $file->print_URI ?? ''
+                    'print_uri'      => $file->print_URI ?? '',
+                    'group'          => $file->group ?? ''
                 ]);
 
                 if (!$is_file_update) {

@@ -105,6 +105,7 @@ class ResourceFile {
         update_field('downloadable', $args['downloadable'], $post_id);
         update_field('print_uri', $args['print_uri'], $post_id);
         update_field('print_service', $args['print_service'], $post_id);
+        update_field('group', $args['group'], $post_id);
 
         if (!$is_update) {
             Model::finish_importing($post_id);
@@ -200,6 +201,7 @@ class ResourceFile {
         $columns['accommodations'] = self::i18n('Accommodation(s)');
         $columns['license'] = self::i18n('License');
         $columns['length'] = self::i18n('Length');
+        $columns['group'] = self::i18n('Group');
         $columns['downloadable'] = self::i18n('Downloadable');
         $columns['printable'] = self::i18n('Printable');
 
@@ -253,6 +255,10 @@ class ResourceFile {
             case 'printable':
                 echo $post->printable ? self::i18n('Yes') : self::i18n('No');
                 break;
+
+            case 'group':
+                echo $post->group;
+                break;
         }
     }
 
@@ -291,6 +297,7 @@ class ResourceFile {
             $this->author = get_post_meta($this->post_id, 'author', true);
             $this->uri = get_post_meta($this->post_id, 'uri', true);
             $this->downloadable = get_post_meta($this->post_id, 'downloadable', true);
+            $this->group = get_post_meta($this->post_id, 'group', true);
             $this->length_minutes = get_post_meta($this->post_id, 'length_minutes', true);
             $this->length = $this->get_length();
             $this->license = Model::get_meta_term_name($this->post_id, 'license', 'licenses');

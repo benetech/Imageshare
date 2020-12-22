@@ -536,6 +536,25 @@
                 "step": ""
             },
             {
+                "key": "field_5fe08fbea4bb8",
+                "label": "Group",
+                "name": "group",
+                "type": "text",
+                "instructions": "",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "default_value": "",
+                "placeholder": "",
+                "prepend": "",
+                "append": "",
+                "maxlength": 40
+            },
+            {
                 "key": "field_5eda41fb0d809",
                 "label": "Downloadable",
                 "name": "downloadable",
