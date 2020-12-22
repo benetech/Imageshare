@@ -3,9 +3,12 @@
 namespace Imageshare\Controllers\JSONAPI;
 
 require_once imageshare_php_file('classes/controllers/json_api/class.base.php');
+require_once imageshare_php_file('classes/controllers/json_api/class.resources.php');
 
 use Imageshare\Logger;
 use Imageshare\Models\Resource as ResourceModel;
+use Imageshare\Models\ResourceCollection as CollectionModel;
+use Imageshare\Controllers\JSONAPI\Collections as CollectionController;
 
 class Resources extends Base {
     const plural_name = 'resources';
@@ -27,6 +30,24 @@ class Resources extends Base {
         ];
     }
 
+    public static function add_collections($id, $collections) {
+        $data = array_map(function ($collection) {
+            return [
+                'type' => 'collection',
+                'id' => (string) $collection->id
+            ];
+        }, $collections);
+
+        return [
+            'links' => [
+                'self' => parent::relationship_link($id, 'collections'),
+                'related' => parent::resource_link($id, 'collections')
+            ],
+            'data' => count($data) > 1 ? $data : $data[0],
+        ];
+
+    }
+
     public static function add_subject($resource) {
          $data = [
             'type' => 'subject',
@@ -46,12 +67,17 @@ class Resources extends Base {
         $relationships = [];
 
         $files = $resource->files();
+        $collections = CollectionModel::containing($resource->id);
 
         if (count($files)) {
             $relationships['files'] = self::add_files($resource->id, $files);
         }
 
         $relationships['subject'] = self::add_subject($resource);
+
+        if (count($collections)) {
+            $relationships['collections'] = self::add_collections($resource->id, $collections);
+        }
 
         if (count(array_keys($relationships))) {
             $data['relationships'] = $relationships;
@@ -65,6 +91,9 @@ class Resources extends Base {
             case 'files':
                 return self::get_files($id);
                 break;
+            case 'collections':
+                return self::get_collections($id);
+                break;
             case 'subject':
                 return self::get_subject($id);
                 break;
@@ -72,6 +101,14 @@ class Resources extends Base {
                 return parent::error('invalid_request', "Unknown relationship \"{$relationship}\"");
                 break;
         }
+    }
+
+    public static function get_collections($id) {
+        $collection_ids = CollectionModel::ids_containing($id);
+
+        return array_map(function ($id) {
+            return CollectionController::get_single($id);
+        }, $collection_ids);
     }
 
     public static function get_files($id) {

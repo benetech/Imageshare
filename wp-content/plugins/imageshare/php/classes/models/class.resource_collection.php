@@ -92,14 +92,28 @@ class ResourceCollection {
         }
     }
 
-    public static function containing($resource_id) {
-        $posts = get_posts([
+    public static function ids_containing($resource_id) {
+        return self::containing($resource_id, true);
+    }
+
+    public static function containing($resource_id, $ids_only = false) {
+        $args = [
             'numberposts'   => -1,
             'post_type'     => [ResourceCollection::type],
             'post_status'   => 'publish',
             'meta_key'      => 'resource_id',
             'meta_value'    => $resource_id
-        ]);
+        ];
+
+        if ($ids_only) {
+            $args['fields'] = 'ids';
+        }
+
+        $posts = get_posts($args);
+
+        if ($ids_only) {
+            return $posts;
+        }
 
         return array_map(function ($post) {
             return ResourceCollection::from_post($post);

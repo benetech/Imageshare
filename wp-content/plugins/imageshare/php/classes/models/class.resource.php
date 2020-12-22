@@ -3,6 +3,7 @@
 namespace Imageshare\Models;
 
 require_once imageshare_php_file('classes/models/class.model.php');
+require_once imageshare_php_file('classes/controllers/json_api/class.resources.php');
 
 use Imageshare\Views\View;
 use Imageshare\Logger;
