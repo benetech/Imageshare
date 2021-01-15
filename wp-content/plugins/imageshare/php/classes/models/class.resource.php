@@ -416,39 +416,6 @@ class Resource {
         return $this->_collections = ResourceCollection::containing($this->post_id);
     }
 
-    public function file_groups() {
-        return array_keys($this->grouped_published_files());
-    }
-
-    public function files_by_group($group) {
-        $files = $this->grouped_published_files();
-        if (array_key_exists($group, $files)) {
-            return $files[$group];
-        }
-
-        return [];
-    }
-
-    private function grouped_published_files() {
-        if (isset($this->_grouped_files)) {
-            return $this->_grouped_files;
-        }
-
-        $published = $this->published_files();
-
-        return $this->_grouped_files = array_reduce($published, function ($list, $file) {
-            $group = strlen($file->group) ? $file->group : '__none__';
-
-            if (!array_key_exists($group, $list)) {
-                $list[$group] = [];
-            }
-
-            $list[$group][] = $file;
-
-            return $list;
-        }, []);
-    }
-
     public function published_files() {
         return array_filter($this->files(), function ($file) {
             return $file->post->post_status === 'publish';
