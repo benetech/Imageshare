@@ -25,6 +25,7 @@ Available details are documented below; specific records can be queried via thei
                 "thumbnail": "[url]"
             }
         },
+    ]
 }
 ```
 
