@@ -9,7 +9,7 @@ use Imageshare\Views\View;
 use Imageshare\Logger;
 use Swaggest\JsonSchema\Schema;
 use Imageshare\Models\Model;
-use Imageshare\Models\ResourceFile;
+use Imageshare\Models\ResourceFileGroup;
 use Imageshare\Models\ResourceCollection;
 
 class Resource {
@@ -101,17 +101,6 @@ class Resource {
         return [$post_id, $is_update];
     }
 
-    public static function associate_resource_file($resource_id, $resource_file_id) {
-        $files = get_post_meta($resource_id, 'files', true);
-
-        if (in_array($resource_file_id, $files)) {
-            return;
-        }
-
-        array_push($files, $resource_file_id);
-        update_field('files', $files, $resource_id);
-    }
-
     public static function remove_resource_file($resource_file_id) {
         $resources = self::containing($resource_file_id);
 
@@ -130,19 +119,33 @@ class Resource {
         }
     }
 
-    public static function containing($resource_file_id) {
-        return get_posts([
+    public static function containing_file_group($resource_file_group_id, $ids_only = false) {
+        return array_map(function ($post) {
+            return self::from_post($post);
+        }, get_posts([
             'post_type' => self::type,
             'post_status' => 'publish',
-            'meta_key' => 'resource_file_id',
-            'meta_value' => $resource_file_id,
+            'meta_key' => 'resource_file_group_id',
+            'meta_value' => $resource_file_group_id,
             'meta_compare' => '==='
-        ]);
+        ]));
+    }
+
+    public static function containing_resource_file($resource_file_id) {
+        $groups = ResourceFileGroup::containing_resource_file($resource_file_id, true);
+        return array_reduce($groups, function ($carry, $group) {
+            $resources = Resource::containing_file_group($group->post_id);
+            return array_merge($carry, $resources);
+        }, []);
+    }
+
+    public static function set_default_file_group($resource_id, $file_group_id) {
+        update_field('default_file_group', $file_group_id, $resource_id);
     }
 
     public static function reindex_resources_containing_resource_file($resource_file_id) {
         Logger::log("Reindexing resources containing resource file {$resource_file_id}");
-        $existing = self::containing($resource_file_id);
+        $existing = self::containing_resource_file($resource_file_id);
 
         $collection_ids = [];
 
@@ -237,6 +240,7 @@ class Resource {
         $columns['subject'] = self::i18n('Subject');
         $columns['tags'] = self::i18n('Tags');
         $columns['files'] = self::i18n('File(s)');
+        $columns['groups'] = self::i18n('Group(s)');
         $columns['download_uri'] = self::i18n('Download URI');
         $columns['source_uri'] = self::i18n('Source URI');
 
@@ -289,6 +293,10 @@ class Resource {
 
                 break;
 
+            case 'groups':
+                echo count($post->group_ids) ?? '0';
+                break;
+
             case 'tags':
                 echo join(', ', $post->tags);
                 break;
@@ -296,9 +304,9 @@ class Resource {
     }
 
     public static function on_acf_relationship_result($post_id, $related_post, $field) {
-        // this can only be a file
-        $file = ResourceFile::from_post($related_post);
-        return sprintf('%s (%s - %s)', $file->title, $file->type, $file->format);
+        // this can only be a published file group
+        $file = ResourceFileGroup::from_post($related_post);
+        return sprintf('%s', $file->title);
     }
 
     public static function on_insert_post_data($post_id, $data) {
@@ -324,18 +332,18 @@ class Resource {
 
         if ($new_status === 'publish') {
             Logger::log("Resource {$post_id} going from {$old_status} to {$new_status}");
-            Model::force_publish_children($resource->files());
+            Model::force_publish_children($resource->groups());
         }
     }
 
     public function acf_update_value($field, $value) {
         switch($field['name']) {
-        case 'files':
-            // also store resource file ids as flat database records for meta search
+        case 'groups':
+            // also store resource file group ids as flat database records for meta search
             // use $this->post->ID as the resource might not be finished creating
-                delete_post_meta($this->post->ID, 'resource_file_id');
-                foreach ($value as $file_id) {
-                    add_post_meta($this->post->ID, 'resource_file_id', $file_id);
+                delete_post_meta($this->post->ID, 'resource_file_group_id');
+                foreach ($value as $file_group_id) {
+                    add_post_meta($this->post->ID, 'resource_file_group_id', $file_group_id);
                 }
             break;
         }
@@ -384,12 +392,16 @@ class Resource {
             $this->thumbnail_alt = get_post_meta($this->post_id, 'thumbnail_alt', true);
             $this->description   = get_post_meta($this->post_id, 'description', true);
             $this->source        = get_post_meta($this->post_id, 'source', true);
-            $this->file_ids      = get_post_meta($this->post_id, 'files', true);
+
+            // TODO the ?: [] guard can go eventually
+            $this->group_ids     = get_post_meta($this->post_id, 'groups', true) ?: [];
+
             $this->download_uri  = get_post_meta($this->post_id, 'download_uri', true);
             $this->source_uri    = get_post_meta($this->post_id, 'source_uri', true);
             $this->subject       = Model::get_meta_term_name($this->post_id, 'subject', 'subjects', true);
             $this->tags          = $this->get_tags();
 
+            $this->default_file_group_id = get_post_meta($this->post_id, 'default_file_group', true);
             $this->subject_term_id = get_post_meta($this->post_id, 'subject', true);
 
             return $this->id;
@@ -416,20 +428,57 @@ class Resource {
         return $this->_collections = ResourceCollection::containing($this->post_id);
     }
 
-    public function published_files() {
-        return array_filter($this->files(), function ($file) {
-            return $file->post->post_status === 'publish';
+    public function ordered_published_groups() {
+        $groups = $this->published_groups();
+
+        $default = array_filter($groups, function ($group) {
+            return $group->is_default_for_parent();
+        });
+
+        $rest = array_filter($groups, function ($group) {
+            return !$group->is_default_for_parent();
+        });
+
+        usort($rest, function ($a, $b) {
+            $al = strtolower($a->title);
+            $bl = strtolower($b->title);
+
+            if ($al == $bl) {
+                return 0;
+            }
+
+            return ($al > $bl) ? +1 : -1;
+        });
+
+        return array_merge($default, $rest);
+    }
+
+    public function published_groups() {
+        return array_filter($this->groups(), function ($group) {
+            return $group->post->post_status === 'publish';
         });
     }
 
+    public function published_files() {
+        return array_reduce($this->published_groups(), function ($carry, $group) {
+            return array_merge($carry, $group->published_files());
+        }, []);
+    }
+
     public function files() {
-        if (isset($this->_files) && is_array($this->_files)) {
-            return $this->_files;
+        return array_reduce($this->groups(), function ($carry, $group) {
+            return array_merge($carry, $group->files());
+        }, []);
+    }
+
+    public function groups() {
+        if (isset($this->_groups) && is_array($this->_groups)) {
+            return $this->_groups;
         }
 
-        return $this->_files = array_reduce($this->file_ids, function ($carry, $file_id) {
-            $resource_file = new ResourceFile($file_id);
-            array_push($carry, $resource_file);
+        return $this->_groups = array_reduce($this->group_ids, function ($carry, $group_id) {
+            $group = new ResourceFileGroup($group_id);
+            array_push($carry, $group);
             return $carry;
         }, []);
     }

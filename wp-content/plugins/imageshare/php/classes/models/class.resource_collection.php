@@ -99,7 +99,7 @@ class ResourceCollection {
     public static function containing($resource_id, $ids_only = false) {
         $args = [
             'numberposts'   => -1,
-            'post_type'     => [ResourceCollection::type],
+            'post_type'     => [self::type],
             'post_status'   => 'publish',
             'meta_key'      => 'resource_id',
             'meta_value'    => $resource_id
@@ -116,7 +116,7 @@ class ResourceCollection {
         }
 
         return array_map(function ($post) {
-            return ResourceCollection::from_post($post);
+            return self::from_post($post);
         }, $posts);
     }
 
@@ -236,6 +236,7 @@ class ResourceCollection {
 
             update_field('resources', $other_resource_ids, $collection->post_id);
             $collection->resource_ids = $other_resource_ids;
+            unset($collection->_resource_ids);
             wpfts_post_reindex($collection->post_id);
         }
     }

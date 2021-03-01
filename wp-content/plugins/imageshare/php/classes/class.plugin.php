@@ -8,6 +8,7 @@ require_once imageshare_php_file('classes/models/class.resource_collection.php')
 require_once imageshare_php_file('classes/models/class.resource.php');
 require_once imageshare_php_file('classes/models/class.term.php');
 require_once imageshare_php_file('classes/models/class.resource_file.php');
+require_once imageshare_php_file('classes/models/class.resource_file_group.php');
 
 require_once imageshare_php_file('classes/controllers/class.resource_collection.php');
 require_once imageshare_php_file('classes/controllers/class.plugin_settings.php');
@@ -21,6 +22,7 @@ use Imageshare\Models\Term;
 use Imageshare\Models\ResourceCollection;
 use Imageshare\Models\Resource;
 use Imageshare\Models\ResourceFile;
+use Imageshare\Models\ResourceFileGroup;
 
 use Imageshare\Controllers\ResourceCollection as ResourceCollectionController;
 use Imageshare\Controllers\PluginSettings as PluginSettingsController;
@@ -132,6 +134,9 @@ class Plugin {
         add_filter('acf/fields/relationship/result', [$this, 'on_acf_relationship_result'], 20, 4);
     }
 
+    /**
+     * Used when Advanced Custom Fields dropdown fields query posts
+     */
     public function on_acf_relationship_result($text, $post, $field, $post_id) {
         $post_type = get_post_type($post_id);
 
@@ -141,6 +146,9 @@ class Plugin {
                 break;
             case ResourceCollection::type:
                 $text = ResourceCollection::on_acf_relationship_result($post_id, $post, $field);
+                break;
+            case ResourceFileGroup::type:
+                $text = ResourceFileGroup::on_acf_relationship_result($post_id, $post, $field);
                 break;
         }
 
@@ -162,6 +170,10 @@ class Plugin {
 
         if ($post->post_type === ResourceCollection::type) {
             return ResourceCollection::from_post($post)->acf_update_value($field, $value);
+        }
+
+        if ($post->post_type === ResourceFileGroup::type) {
+            return ResourceFileGroup::from_post($post)->acf_update_value($field, $value);
         }
 
         return $value;
@@ -256,7 +268,10 @@ class Plugin {
                 ResourceCollection::remove_resource($post_id);
                 break;
              case ResourceFile::type:
-                Resource::remove_resource_file($post_id);
+                ResourceFileGroup::remove_resource_file($post_id);
+                break;
+             case ResourceFileGroup::type:
+                Resource::remove_resource_file_group($post_id);
                 break;
         }
     }
@@ -313,6 +328,9 @@ class Plugin {
             case ResourceCollection::type:
                 ResourceCollection::on_insert_post_data($postarr['ID'], $postarr);
                 break;
+            case ResourceFileGroup::type:
+                ResourceFileGroup::on_insert_post_data($postarr['ID'], $postarr);
+                break;
         }
 
         return $data;
@@ -344,11 +362,15 @@ class Plugin {
 
         add_filter('manage_btis_resource_file_posts_columns', array(self::model('ResourceFile'), 'manage_columns'), 10, 1);
         add_action('manage_btis_resource_file_posts_custom_column', array(self::model('ResourceFile'), 'manage_custom_column'), 10, 2);
+
+        add_filter('manage_btis_file_group_posts_columns', array(self::model('ResourceFileGroup'), 'manage_columns'), 10, 1);
+        add_action('manage_btis_file_group_posts_custom_column', array(self::model('ResourceFileGroup'), 'manage_custom_column'), 10, 2);
     }
 
     private function register_custom_post_types() {
         register_post_type(Resource::type, Resource::typedef());
         register_post_type(ResourceFile::type, ResourceFile::typedef());
+        register_post_type(ResourceFileGroup::type, ResourceFileGroup::typedef());
         register_post_type(ResourceCollection::type, ResourceCollection::typedef());
     }
 
