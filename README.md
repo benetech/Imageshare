@@ -5,7 +5,7 @@
 Imageshare exposes a read-only JSON API implemented using [the json-api spec](https://jsonapi.org/).
 Available details are documented below; specific records can be queried via their ID, e.g. `/json-api/types/226` to query a single type.
 
-### Types: `/json-api/types
+### Types: `/json-api/types`
 ```json
 {
     "data": [
