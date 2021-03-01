@@ -83,6 +83,7 @@
           </dl>
       </div>
 
+
     {% if post.published_files | length > 0 %}
       <section id="files">
         <h2 id="files-heading">{{ 'Files' | i18n }} <span class="counter">{{ post.published_files | length }}</span></h2>
@@ -92,13 +93,23 @@
           </a>
         {% endif %}
 
-        <ul role="list" aria-label="{{ 'Files' | i18n }}">
-
-        {% for file in post.published_files %}
-            {{ block('file') }}
+        {% for group in post.ordered_published_groups() %}
+            <ul role="list" aria-label="{{ 'Files' | i18n }}">
+            {% if group.is_default_for_parent() %}
+              {% with %}
+                {% set file_heading_level = 3 %}
+                {% for file in group.published_files %}
+                    {{ block('file') }}
+                {% endfor %}
+              {% endwith %}
+            {% else %}
+              {% with %}
+                {% set file_heading_level = 4 %}
+                {{ block('group') }}
+              {% endwith %}  
+            {% endif %}
+            </ul>
         {% endfor %}
-
-        </ul>
       </section>
     {% endif %}
 
@@ -127,10 +138,25 @@
     {% endif %}
 {% endblock %}
 
+{% block group %}
+  {% if group.published_files | length > 0 %}
+    <li class="result group">
+        <button class="file-group-toggle" aria-expanded="true" aria-controls="file-group-{{ group.id }}">
+          <h3>{{ group.title | e }}</h3>
+        </button>
+        <ul id="file-group-{{ group.id }}" class="file-group">
+          {% for file in group.published_files %}
+            {{ block('file') }}
+          {% endfor %}
+        </ul>
+    </li>
+  {% endif %}
+{% endblock %}
+
 {% block file %}
   <li class="result">
     <div class="header">
-      <h3>{{ file.title | e }}</h3>
+      <h{{ file_heading_level }}>{{ file.title | e }}</h{{ file_heading_level }}>
 
       <img
         class="resource-img"

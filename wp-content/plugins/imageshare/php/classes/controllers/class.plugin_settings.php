@@ -136,6 +136,16 @@ class PluginSettings {
             'download_uri'  => $record->URI ?? ''
         ]);
 
+        if (!$is_resource_update) {
+            $resource_file_group_id = ResourceFileGroupModel::create([
+                'title' => $record->unique_name
+            ]);
+
+            ResourceModel::set_default_file_group($resource_id, $resource_file_group_id);
+        } else {
+            $resource_file_group_id = ResourceModel::get_default_group_id($resource_id);
+        }
+
         $files = [];
 
         foreach ($record->files as $file) {
@@ -158,7 +168,7 @@ class PluginSettings {
                 ]);
 
                 if (!$is_file_update) {
-                    ResourceModel::associate_resource_file($resource_id, $file_id);
+                    ResourceFileGroupModel::associate_resource_file($resource_file_group_id, $file_id);
                 }
 
                 array_push($files, [$file->display_name, $file_id, $is_file_update]);
