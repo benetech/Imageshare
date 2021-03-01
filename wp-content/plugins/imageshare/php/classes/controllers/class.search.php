@@ -125,7 +125,7 @@ class Search {
     }
 
     public function get_paging($args, $page = 1, $size = 20, $amount = 0, $total = 0) {
-        $valid_size_steps = [20, 50, 100];
+        $valid_size_steps = [2, 20, 50, 100];
         $default_size = 20;
         $default_page = 1;
 

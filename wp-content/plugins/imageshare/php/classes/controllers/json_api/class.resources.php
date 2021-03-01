@@ -243,6 +243,11 @@ class Resources extends Base {
             $params['query'] = '';
         }
 
+        if (array_key_exists('page', $params)) {
+            $params['rp'] = intval($params['page']);
+            unset($params['page']);
+        }
+
         $params['_single_type'] = ResourceModel::type;
 
         global $imageshare;
@@ -256,7 +261,7 @@ class Resources extends Base {
 
         $links = [];
 
-        foreach (['first', 'prev', 'next', 'last'] as $page) {
+        foreach (['first_page', 'prev_page', 'next_page', 'last_page'] as $page) {
             $link = array_key_exists($page, $paging) && strlen($paging[$page])
                 ? add_query_arg('page', $paging[$page])
                 : null;
