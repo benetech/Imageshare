@@ -9,6 +9,7 @@ use Imageshare\Logger;
 use Imageshare\Models\Resource as ResourceModel;
 use Imageshare\Models\ResourceCollection as CollectionModel;
 use Imageshare\Controllers\JSONAPI\Collections as CollectionController;
+use Imageshare\Controllers\JSONAPI\Subjects as SubjectsController;
 
 class Resources extends Base {
     const plural_name = 'resources';
@@ -101,6 +102,18 @@ class Resources extends Base {
                 return parent::error('invalid_request', "Unknown relationship \"{$relationship}\"");
                 break;
         }
+    }
+
+    public static function get_subject($id) {
+        $resource = ResourceModel::by_id($id);
+
+        if ($resource === null) {
+            return parent::error('not_found', 'No such resource');
+        }
+
+        return array_map(function ($id) {
+            return SubjectsController::get_single($id);
+        }, [$resource->subject_term_id]);
     }
 
     public static function get_collections($id) {
