@@ -10,6 +10,25 @@ class ResourceFileGroup {
 
     const type = 'btis_file_group';
 
+    public static function create($title) {
+        $post_data = [
+            'post_type' => self::type,
+            'post_title' => $title,
+            'post_name' => sanitize_title_with_dashes($title),
+            'comment_status' => 'closed',
+            'post_category' => [],
+        ];
+
+        $post_id = wp_insert_post($post_data, true);
+
+        if (is_wp_error($post_id)) {
+            // the original WP_Error for inserting a post is empty for some reason
+            throw new \Exception(sprintf(__('Unable to create resource file group "%s"', 'imageshare'), $args['title']));
+        }
+
+        return $post_id;
+    }
+
     public function __construct($post_id = null) {
         if (!empty($post_id)) {
             $this->get_post($post_id);
@@ -212,6 +231,10 @@ class ResourceFileGroup {
             unset($group->_files);
             wpfts_post_reindex($group->post_id);
         }
+    }
+
+    public function reindex() {
+        wpfts_post_reindex($this->id);
     }
 
     public static function on_acf_relationship_result($post_id, $related_post, $field) {

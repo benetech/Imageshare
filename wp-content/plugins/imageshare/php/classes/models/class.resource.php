@@ -101,7 +101,10 @@ class Resource {
         return [$post_id, $is_update];
     }
 
-    public static function remove_resource_file($resource_file_id) {
+    /**
+     * FIXME deprecated
+     */
+    public static function xremove_resource_file($resource_file_id) {
         $resources = self::containing($resource_file_id);
 
         foreach ($resources as $resource) {
@@ -124,7 +127,7 @@ class Resource {
             return self::from_post($post);
         }, get_posts([
             'post_type' => self::type,
-            'post_status' => 'publish',
+            'post_status' => ['publish', 'draft', 'pending', 'private'],
             'meta_key' => 'resource_file_group_id',
             'meta_value' => $resource_file_group_id,
             'meta_compare' => '==='
@@ -139,8 +142,42 @@ class Resource {
         }, []);
     }
 
+    /**
+     * Utility function used by the settings page
+     */
+    public static function migrate_files_to_default_group($resource_id, $group_id) {
+        $file_ids = get_post_meta($resource_id, 'files', true);
+
+        if (!is_array($file_ids)) {
+            $file_ids = [];
+        }
+
+        // remove file metadata from the resource
+        update_post_meta($resource_id, 'files', []);
+
+        // add it to the group
+        update_post_meta($group_id, 'files', $file_ids);
+
+        // delete flat id list of files associated with resource
+        delete_post_meta($resource_id, 'resource_file_id');
+
+        // reproduce flat list for the group
+        foreach ($file_ids as $file_id) {
+            add_post_meta($group_id, 'file_id', $file_id);
+        }
+
+        // reindex the resource and resourcefilegroup
+        self::by_id($resource_id)->reindex();
+        ResourceFileGroup::by_id($group_id)->reindex();
+    }
+
     public static function set_default_file_group($resource_id, $file_group_id) {
         update_field('default_file_group', $file_group_id, $resource_id);
+        add_post_meta($resource_id, 'resource_file_group_id', $file_group_id);
+    }
+
+    public function has_default_file_group() {
+        return isset($this->default_file_group_id) && intval($this->default_file_group_id) > 0;
     }
 
     public static function reindex_resources_containing_resource_file($resource_file_id) {
@@ -341,10 +378,13 @@ class Resource {
         case 'groups':
             // also store resource file group ids as flat database records for meta search
             // use $this->post->ID as the resource might not be finished creating
-                delete_post_meta($this->post->ID, 'resource_file_group_id');
+            delete_post_meta($this->post->ID, 'resource_file_group_id');
+
+            if (is_array($value)) {
                 foreach ($value as $file_group_id) {
                     add_post_meta($this->post->ID, 'resource_file_group_id', $file_group_id);
                 }
+            };
             break;
         }
 

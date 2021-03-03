@@ -32,6 +32,10 @@ function imageshare_asset_file(string $path) {
     return _imageshare_file('assets', $path);
 }
 
+function imageshare_asset_url(string $path) {
+    return plugin_dir_url(__FILE__) . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . $path;
+}
+
 function _imageshare_file(string $type, string $path) {
     return IMAGESHARE_PLUGIN_PATH . DIRECTORY_SEPARATOR . $type . DIRECTORY_SEPARATOR . $path;
 }
