@@ -15,3 +15,13 @@
 .settings-page dt {
     font-weight: bold;
 }
+
+.settings-page section + section {
+    border-top: 1px solid silver;
+    margin-top: 1em;
+}
+
+.settings-page .imageshare-tool {
+    border: 1px solid #aaa;
+    padding: 0 .5em;
+}

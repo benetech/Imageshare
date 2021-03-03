@@ -11,14 +11,75 @@ use Imageshare\Logger;
 use ImageShare\Views\PluginSettings as View;
 use ImageShare\Models\Resource as ResourceModel;
 use ImageShare\Models\ResourceFile as ResourceFileModel;
+use ImageShare\Models\ResourceFileGroup as ResourceFileGroupModel;
 
 class PluginSettings {
     const i18n_ns    = 'imageshare';
     const capability = 'manage_options';
     const page_slug  = 'imageshare_settings';
 
+    public static function ajax_verify_default_resource_file_group() {
+        $offset = intval(isset($_POST['offset']) ? $_POST['offset'] : 0);
+        $fixed = intval(isset($_POST['fixed']) ? $_POST['fixed'] : 0);
+        $errors = intval(isset($_POST['errors']) ? $_POST['errors'] : 0);
+
+        $batch = get_posts(array(
+            'order'       => 'ASC',
+            'order_by'    => 'ID',
+            'offset'      => $offset,
+            'numberposts' => 50,
+            'post_type'   => [ResourceModel::type],
+            'post_status' => ['publish', 'pending', 'draft'],
+            'post_parent' => null,
+        ));
+
+        foreach ($batch as $post) {
+            $resource = ResourceModel::from_post($post);
+
+            if ($resource->has_default_file_group()) {
+                continue;
+            }
+
+            try {
+                $resource_file_group_id = ResourceFileGroupModel::create($resource->title);
+                ResourceModel::set_default_file_group($resource->id, $resource_file_group_id);
+                ResourceModel::migrate_files_to_default_group($resource->id, $resource_file_group_id);
+                $fixed++;
+            } catch (\Exception $e) {
+                Logger::log("Unexpected error migrating to resource file groups: " . $e->getMessage());
+                $errors++;
+            }
+        }
+
+        $batch_size = count($batch);
+
+        echo json_encode([
+            'size' => $batch_size,
+            'offset' => $offset + $batch_size,
+            'fixed' => $fixed,
+            'errors' => $errors
+        ]);
+
+        return wp_die();
+    }
+
     public function __construct() {
-        add_action('admin_menu', array($this, 'add_admin_menu'));
+        add_action('admin_menu', [$this, 'add_admin_menu']);
+        add_action('admin_enqueue_scripts', [$this, 'enqueue_scripts']);
+        add_action('wp_ajax_imageshare_verify_default_resource_file_group', [self::class, 'ajax_verify_default_resource_file_group']);
+    }
+
+    public function enqueue_scripts() {
+        wp_enqueue_script(
+            'imageshare_settings_js',
+            imageshare_asset_url('settings.js'),
+            false
+        );
+
+        wp_localize_script('imageshare_settings_js', 'imageshare_ajax_obj', array(
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('imageshare_ajax'),
+        ));
     }
 
     public function add_admin_menu() {

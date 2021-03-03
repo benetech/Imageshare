@@ -73,4 +73,14 @@
         </form>
     </section>
 
+    <section id="imageshare-tools">
+        <h3>{{ 'Tools' | i18n }}</h3>
+        <div class="imageshare-tool">
+            <h4>{{ 'Ensure default resource groups' | i18n }}</h4>
+            <p>Resources require a default group - this tool creates one for each group unless pre-existing.</p>
+            <button id="imageshare-ensure-groups" type="button" class="button button-primary">{{ 'Ensure groups' | i18n }}</button>
+            <p id="imageshare-ensure-groups-status" role="status"></p>
+        </div>
+    </section>
+
 </div>
