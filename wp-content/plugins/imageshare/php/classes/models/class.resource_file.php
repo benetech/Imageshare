@@ -5,6 +5,7 @@ namespace Imageshare\Models;
 use Imageshare\Logger;
 use Imageshare\Models\Model;
 use Imageshare\Models\Resource as ResourceModel;
+use Imageshare\Models\ResourceFileGroup as ResourceFileGroupModel;
 
 class ResourceFile {
 
@@ -105,7 +106,6 @@ class ResourceFile {
         update_field('downloadable', $args['downloadable'], $post_id);
         update_field('print_uri', $args['print_uri'], $post_id);
         update_field('print_service', $args['print_service'], $post_id);
-        update_field('group', $args['group'], $post_id);
 
         if (!$is_update) {
             Model::finish_importing($post_id);
@@ -257,7 +257,10 @@ class ResourceFile {
                 break;
 
             case 'group':
-                echo $post->group;
+                echo isset($post->group)
+                    ? '<a href="' . get_permalink($post->group->id) . '">' . esc_html($post->group->title) . '</a>'
+                    : self::i18n('None &#9888;')
+                ;
                 break;
         }
     }
@@ -297,7 +300,7 @@ class ResourceFile {
             $this->author = get_post_meta($this->post_id, 'author', true);
             $this->uri = get_post_meta($this->post_id, 'uri', true);
             $this->downloadable = get_post_meta($this->post_id, 'downloadable', true);
-            $this->group = get_post_meta($this->post_id, 'group', true);
+            $this->group = $this->get_parent_group();
             $this->length_minutes = get_post_meta($this->post_id, 'length_minutes', true);
             $this->length = $this->get_length();
             $this->license = Model::get_meta_term_name($this->post_id, 'license', 'licenses');
@@ -319,6 +322,19 @@ class ResourceFile {
         }
         
         return null;
+    }
+
+    private function get_parent_group() {
+        if (!isset($this->_parent_group)) {
+            $containing = ResourceFileGroupModel::containing_resource_file($this->id);
+            if (count($containing)) {
+                $this->_parent_group = $containing[0];
+            } else {
+                $this->_parent_group = null;
+            }
+        }
+
+        return $this->_parent_group;
     }
 
     public function length_formatted_string() {
@@ -410,6 +426,11 @@ class ResourceFile {
 
     private function get_languages() {
         $languages = get_post_meta($this->post_id, 'languages', true);
+
+        if (!is_array($languages)) {
+            $languages = [];
+        }
+
         return array_map(function ($term_id) {
             return get_term($term_id, 'languages')->name;
         }, $languages);
