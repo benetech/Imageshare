@@ -160,6 +160,35 @@ Available details are documented below; specific records can be queried via thei
 }
 ```
 
+### Keywords: `/json-api/keywords`
+```
+{
+    "data": [
+        {
+            "type": "keyword",
+            "id": 2773,
+            "attributes": {
+                "name": "3d"
+            }
+        },
+        {
+            "type": "keyword",
+            "id": 2724,
+            "attributes": {
+                "name": "3d print"
+            }
+        },
+        {
+            "type": "keyword",
+            "id": 2807,
+            "attributes": {
+                "name": "3d technology"
+            }
+        },
+    ]
+}
+```
+
 ### Collections: `/json-api/collections`
 
 ```json
@@ -290,36 +319,6 @@ Available details are documented below; specific records can be queried via thei
                         "id": "16820"
                     }
                 }
-            }
-        },
-    ]
-}
-```
-
-
-### Keywords: `/json-api/keywords`
-```
-{
-    "data": [
-        {
-            "type": "keyword",
-            "id": 2773,
-            "attributes": {
-                "name": "3d"
-            }
-        },
-        {
-            "type": "keyword",
-            "id": 2724,
-            "attributes": {
-                "name": "3d print"
-            }
-        },
-        {
-            "type": "keyword",
-            "id": 2807,
-            "attributes": {
-                "name": "3d technology"
             }
         },
     ]
