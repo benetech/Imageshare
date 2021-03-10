@@ -5,6 +5,7 @@
     require_once imageshare_php_file('classes/controllers/json_api/class.sources.php');
     require_once imageshare_php_file('classes/controllers/json_api/class.collections.php');
     require_once imageshare_php_file('classes/controllers/json_api/class.resources.php');
+    require_once imageshare_php_file('classes/controllers/json_api/class.tags.php');
     
     use Imageshare\Logger;
 
@@ -14,6 +15,7 @@
     use Imageshare\Controllers\JSONAPI\Sources as SourcesController;
     use Imageshare\Controllers\JSONAPI\Collections as CollectionsController;
     use Imageshare\Controllers\JSONAPI\Resources as ResourcesController;
+    use Imageshare\Controllers\JSONAPI\Tags as TagsController;
 
     $controller = get_query_var('btis_api');
 
@@ -54,6 +56,10 @@
 
         case 'resources':
             ResourcesController::render($args);
+            break;
+
+        case 'keywords':
+            TagsController::render();
             break;
 
     }
