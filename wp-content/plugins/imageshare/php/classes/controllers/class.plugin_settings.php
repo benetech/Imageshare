@@ -225,7 +225,6 @@ class PluginSettings {
                     'downloadable'   => $file->downloadable,
                     'print_service'  => $file->print_service ?? '',
                     'print_uri'      => $file->print_URI ?? '',
-                    'group'          => $file->group ?? ''
                 ]);
 
                 if (!$is_file_update) {
