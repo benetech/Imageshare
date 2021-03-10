@@ -147,6 +147,72 @@
         "description": ""
     },
     {
+        "key": "group_6001a1ccc7231",
+        "title": "btis_file_group",
+        "fields": [
+            {
+                "key": "field_6001a1ccccdd3",
+                "label": "Files",
+                "name": "files",
+                "type": "imgs_relationship",
+                "instructions": "",
+                "required": 1,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "post_type": [
+                    "btis_resource_file"
+                ],
+                "post_status": [
+                    "publish"
+                ],
+                "taxonomy": "",
+                "filters": [
+                    "search"
+                ],
+                "elements": "",
+                "min": "",
+                "max": "",
+                "return_format": "id"
+            }
+        ],
+        "location": [
+            [
+                {
+                    "param": "post_type",
+                    "operator": "==",
+                    "value": "btis_file_group"
+                }
+            ]
+        ],
+        "menu_order": 0,
+        "position": "normal",
+        "style": "seamless",
+        "label_placement": "top",
+        "instruction_placement": "label",
+        "hide_on_screen": [
+            "permalink",
+            "the_content",
+            "excerpt",
+            "discussion",
+            "comments",
+            "revisions",
+            "slug",
+            "author",
+            "format",
+            "page_attributes",
+            "featured_image",
+            "categories",
+            "tags",
+            "send-trackbacks"
+        ],
+        "active": true,
+        "description": ""
+    },
+    {
         "key": "group_5ea1890299104",
         "title": "btis_resource",
         "fields": [
@@ -246,9 +312,9 @@
                 "maxlength": ""
             },
             {
-                "key": "field_5ea189783edd7",
-                "label": "File(s)",
-                "name": "files",
+                "key": "field_6001a3d0cf648",
+                "label": "File Groups",
+                "name": "groups",
                 "type": "imgs_relationship",
                 "instructions": "",
                 "required": 1,
@@ -259,19 +325,41 @@
                     "id": ""
                 },
                 "post_type": [
-                    "btis_resource_file"
+                    "btis_file_group"
                 ],
-                "post_status": "",
+                "post_status": [
+                    "publish"
+                ],
                 "taxonomy": "",
                 "filters": [
-                    "search",
-                    "post_status",
-                    "taxonomy"
+                    "search"
                 ],
                 "elements": "",
                 "min": "",
                 "max": "",
                 "return_format": "id"
+            },
+            {
+                "key": "field_6001a42ccf649",
+                "label": "Default file group",
+                "name": "default_file_group",
+                "type": "post_object",
+                "instructions": "",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "post_type": [
+                    "btis_file_group"
+                ],
+                "taxonomy": "",
+                "allow_null": 0,
+                "multiple": 0,
+                "return_format": "id",
+                "ui": 1
             },
             {
                 "key": "field_5ed65c22117b1",
@@ -868,3 +956,4 @@
         "description": "JSON import validation settings"
     }
 ]
+
