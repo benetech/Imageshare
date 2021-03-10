@@ -296,6 +296,36 @@ Available details are documented below; specific records can be queried via thei
 }
 ```
 
+
+### Keywords: `/json-api/keywords
+```
+{
+    "data": [
+        {
+            "type": "keyword",
+            "id": 2773,
+            "attributes": {
+                "name": "3d"
+            }
+        },
+        {
+            "type": "keyword",
+            "id": 2724,
+            "attributes": {
+                "name": "3d print"
+            }
+        },
+        {
+            "type": "keyword",
+            "id": 2807,
+            "attributes": {
+                "name": "3d technology"
+            }
+        },
+    ]
+}
+```
+
 #### Resource search
 
 Resources can be queried for specific details. The following parameters are supported:
