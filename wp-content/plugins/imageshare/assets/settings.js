@@ -8,6 +8,7 @@ window.addEventListener('DOMContentLoaded', function () {
         let offset = 0;
         let fixed = 0;
         let errors = 0;
+        let size = 0;
 
         ensureGroupsBtn.setAttribute('disabled', '');
 
@@ -20,6 +21,10 @@ window.addEventListener('DOMContentLoaded', function () {
             formData.append('fixed', fixed);
             formData.append('errors', errors);
 
+            if (size) {
+                formData.append('size', size);
+            }
+
             fetch(imageshare_ajax_obj.ajax_url, {
                 mode: 'cors',
                 method: 'POST',
@@ -30,10 +35,20 @@ window.addEventListener('DOMContentLoaded', function () {
                     return response.json();
                 }
 
-                throw new Error('Unexpected response code: ' . response.status);
+                size = 5;
+
+                console.debug(response);
+
+                ensureGroupsStatus.textContent = ('Unexpected response code. Decreasing batch size to 5.');
+                
+                return null;
             })
             .then(response => {
                 console.debug(response);
+
+                if (response === null) {
+                    return doRequest();
+                }
 
                 offset = response.offset;
                 fixed = response.fixed;

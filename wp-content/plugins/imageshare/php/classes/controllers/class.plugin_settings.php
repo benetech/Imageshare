@@ -22,12 +22,13 @@ class PluginSettings {
         $offset = intval(isset($_POST['offset']) ? $_POST['offset'] : 0);
         $fixed = intval(isset($_POST['fixed']) ? $_POST['fixed'] : 0);
         $errors = intval(isset($_POST['errors']) ? $_POST['errors'] : 0);
+        $size = intval(isset($_POST['size']) ? $_POST['size'] : 50);
 
         $batch = get_posts(array(
             'order'       => 'ASC',
             'order_by'    => 'ID',
             'offset'      => $offset,
-            'numberposts' => 25,
+            'numberposts' => $size,
             'post_type'   => [ResourceModel::type],
             'post_status' => ['publish', 'pending', 'draft'],
             'post_parent' => null,
