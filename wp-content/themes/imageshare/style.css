@@ -1112,6 +1112,10 @@ h2.resource-section {
   margin-bottom: .5em;
 }
 
+#resource .result + .file-group {
+    margin-top: .5em;
+}
+
 #resource .file-group {
     background-color: #eee;
     border-radius: .5em;
