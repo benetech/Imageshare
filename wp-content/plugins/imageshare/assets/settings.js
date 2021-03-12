@@ -25,7 +25,13 @@ window.addEventListener('DOMContentLoaded', function () {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+
+                throw new Error('Unexpected response code: ' . response.status);
+            })
             .then(response => {
                 console.debug(response);
 

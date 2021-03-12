@@ -27,7 +27,7 @@ class PluginSettings {
             'order'       => 'ASC',
             'order_by'    => 'ID',
             'offset'      => $offset,
-            'numberposts' => 50,
+            'numberposts' => 25,
             'post_type'   => [ResourceModel::type],
             'post_status' => ['publish', 'pending', 'draft'],
             'post_parent' => null,
@@ -203,6 +203,7 @@ class PluginSettings {
             ]);
 
             ResourceModel::set_default_file_group($resource_id, $resource_file_group_id);
+            Resource::update_resource_file_group_ids($resource_id);
         } else {
             $resource_file_group_id = ResourceModel::get_default_group_id($resource_id);
         }
