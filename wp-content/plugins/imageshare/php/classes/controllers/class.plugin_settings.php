@@ -41,7 +41,7 @@ class PluginSettings {
             }
 
             try {
-                $resource_file_group_id = ResourceFileGroupModel::create($resource->title);
+                $resource_file_group_id = ResourceFileGroupModel::create($resource->title, $resource->post->post_status);
                 ResourceModel::set_default_file_group($resource->id, $resource_file_group_id);
                 ResourceModel::migrate_files_to_default_group($resource->id, $resource_file_group_id);
                 $fixed++;

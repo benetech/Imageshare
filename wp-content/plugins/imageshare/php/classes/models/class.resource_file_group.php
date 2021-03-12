@@ -10,10 +10,11 @@ class ResourceFileGroup {
 
     const type = 'btis_file_group';
 
-    public static function create($title) {
+    public static function create($title, $status = 'draft') {
         $post_data = [
             'post_type' => self::type,
             'post_title' => $title,
+            'post_status' => $status,
             'post_name' => sanitize_title_with_dashes($title),
             'comment_status' => 'closed',
             'post_category' => [],
