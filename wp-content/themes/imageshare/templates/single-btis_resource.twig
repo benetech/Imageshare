@@ -93,8 +93,8 @@
           </a>
         {% endif %}
 
+        <ul role="list" aria-label="{{ 'Files' | i18n }}">
         {% for group in post.ordered_published_groups() %}
-            <ul role="list" aria-label="{{ 'Files' | i18n }}">
             {% if group.is_default_for_parent() %}
               {% with %}
                 {% set file_heading_level = 3 %}
@@ -108,8 +108,8 @@
                 {{ block('group') }}
               {% endwith %}  
             {% endif %}
-            </ul>
         {% endfor %}
+        </ul>
       </section>
     {% endif %}
 
@@ -140,11 +140,13 @@
 
 {% block group %}
   {% if group.published_files | length > 0 %}
-    <li class="result group">
+    <li class="file-group">
         <button class="file-group-toggle" aria-expanded="true" aria-controls="file-group-{{ group.id }}">
           <h3>{{ group.title | e }}</h3>
+          <span aria-hidden="true" class="expand-file-group">{{ 'expand' | i18n }} &#x25BC;</span>
+          <span aria-hidden="true" class="collapse-file-group">{{ 'collapse' | i18n }} &#x25B2;</span>
         </button>
-        <ul id="file-group-{{ group.id }}" class="file-group">
+        <ul id="file-group-{{ group.id }}" class="file-group-list" aria-label="{{ "%s group files" | i18n | format(group.title) | e }}">
           {% for file in group.published_files %}
             {{ block('file') }}
           {% endfor %}
