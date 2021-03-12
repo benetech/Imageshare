@@ -46,3 +46,12 @@ for (var i = 0, j = navigateImages.length; i < j; i++) {
         document.location.href = this.dataset.clickNavigate;    
     }.bind(image));
 }
+
+var fileGroupToggleButtons = document.querySelectorAll('button.file-group-toggle');
+for (var i = 0, j = fileGroupToggleButtons.length; i < j; i++) {
+    var toggleButton = fileGroupToggleButtons[i];
+    toggleButton.addEventListener('click', function () {
+        var isExpanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', !isExpanded);
+    }.bind(toggleButton));
+}
