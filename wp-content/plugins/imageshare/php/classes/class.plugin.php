@@ -207,6 +207,7 @@ class Plugin {
         add_action('posts_join', [$this, 'patch_admin_search_join']);
         add_action('posts_where', [$this, 'patch_admin_search_where']);
         add_action('posts_groupby', [$this, 'patch_admin_search_groupby']);
+        add_action('acf/save_post', [$this, 'on_pre_acf_save_post'], 9);
     }
 
     public function is_admin_search() {
@@ -258,6 +259,16 @@ class Plugin {
         }
 
         return $query;
+    }
+
+    public function on_pre_acf_save_post($post_id) {
+        $post_type = get_post_type($post_id);
+
+        switch ($post_type) {
+            case Resource::type:
+                Resource::on_pre_acf_save_post($post_id);
+                break;
+        }
     }
 
     public function on_delete_post($post_id) {

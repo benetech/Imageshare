@@ -174,6 +174,7 @@ class Resource {
     public static function set_default_file_group($resource_id, $file_group_id) {
         update_field('default_file_group', $file_group_id, $resource_id);
         add_post_meta($resource_id, 'resource_file_group_id', $file_group_id);
+        self::update_resource_file_group_ids($resource_id);
     }
 
     public function has_default_file_group() {
@@ -373,19 +374,56 @@ class Resource {
         }
     }
 
+    public static function update_resource_file_group_ids($post_id) {
+        $group_ids = get_post_meta($post_id, 'groups', true) ?: [];
+        $default = get_post_meta($post_id, 'default_file_group', true);
+        $default = is_null($default) ? [] : [$default];
+
+        $ids = array_unique(array_merge($group_ids, $default));
+
+        delete_post_meta($post_id, 'resource_file_group_id');
+
+        foreach ($ids as $file_group_id) {
+            add_post_meta($post_id, 'resource_file_group_id', $file_group_id);
+        }
+
+        update_post_meta($post_id, 'groups', $ids);
+    }
+
+    public static function on_pre_acf_save_post($post_id) {
+        // monkey patch the POST data to prevent race conditions
+        // between group file ids being saved and the default id being saved
+        // so we explicitly merge the two.
+
+        $groups_field = get_field_object('groups', $post_id);
+        $default_field = get_field_object('default_file_group', $post_id);
+
+        $groups_field_key = $groups_field['key'];
+        $default_field_key = $default_field['key'];
+
+        $groups_value = $_POST['acf'][$groups_field_key] ?: [];
+        $default_value = $_POST['acf'][$default_field_key] ?: null;
+
+        $default_value = is_null($default_value) ? [] : [$default_value];
+
+        $all_ids = array_unique(array_merge($groups_value, $default_value));
+
+        $_POST['acf'][$groups_field_key] = $all_ids;
+    }
+
     public function acf_update_value($field, $value) {
         switch($field['name']) {
-        case 'groups':
-            // also store resource file group ids as flat database records for meta search
-            // use $this->post->ID as the resource might not be finished creating
-            delete_post_meta($this->post->ID, 'resource_file_group_id');
+            case 'groups':
+                // also store resource file group ids as flat database records for meta search
+                // use $this->post->ID as the resource might not be finished creating
+                delete_post_meta($this->post->ID, 'resource_file_group_id');
 
-            if (is_array($value)) {
-                foreach ($value as $file_group_id) {
-                    add_post_meta($this->post->ID, 'resource_file_group_id', $file_group_id);
-                }
-            };
-            break;
+                if (is_array($value)) {
+                    foreach ($value as $file_group_id) {
+                        add_post_meta($this->post->ID, 'resource_file_group_id', $file_group_id);
+                    }
+                };
+                break;
         }
 
         return $value;
@@ -442,6 +480,7 @@ class Resource {
             $this->tags          = $this->get_tags();
 
             $this->default_file_group_id = get_post_meta($this->post_id, 'default_file_group', true);
+
             $this->subject_term_id = get_post_meta($this->post_id, 'subject', true);
 
             return $this->id;
