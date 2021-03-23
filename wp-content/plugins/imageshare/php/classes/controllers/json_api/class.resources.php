@@ -173,6 +173,7 @@ class Resources extends Base {
         $data = [
             'type' => 'resource',
             'status' => $resource->post->post_status,
+            'permalink' => $resource->permalink,
             'id' => (string) $resource->id,
             'attributes' => [
                 'title' => $resource->title,
