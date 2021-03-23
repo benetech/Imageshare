@@ -180,7 +180,7 @@ class Resources extends Base {
                 'description' => $resource->description,
                 'source' => $resource->source,
                 'tags' => $resource->tags,
-                'files' => count($resource->file_ids)
+                'files' => count($resource->files())
             ]
         ];
 
