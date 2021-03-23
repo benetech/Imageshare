@@ -37,10 +37,8 @@ window.addEventListener('DOMContentLoaded', function () {
 
                 size = 5;
 
-                console.debug(response);
-
                 ensureGroupsStatus.textContent = ('Unexpected response code. Decreasing batch size to 5.');
-                
+
                 return null;
             })
             .then(response => {
