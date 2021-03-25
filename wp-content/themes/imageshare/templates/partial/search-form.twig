@@ -131,7 +131,7 @@
               </li>
 
               {% for source in sources | filter(s => s | trim | length > 2) %}
-              <li role="option" id="search-source-{{ source | replace({' ': ''}) }}" value="{{ source }}">
+              <li role="option" id="search-source-{{ source | replace({' ': ''}) | e }}" value="{{ source | e }}">
                 {{ source | e }}
               </li>
               {% endfor %}
