@@ -14,6 +14,18 @@ use Imageshare\Controllers\JSONAPI\Subjects as SubjectsController;
 class Resources extends Base {
     const plural_name = 'resources';
 
+    public static function published_or_null($resource) {
+        if (is_null($resource)) {
+            return null;
+        }
+
+        if ($resource->post->post_status !== 'publish') {
+            return null;
+        }
+
+        return $resource;
+    }
+
     public static function add_files($id, $files) {
         $data = array_map(function ($file) {
             return [
@@ -105,7 +117,7 @@ class Resources extends Base {
     }
 
     public static function get_subject($id) {
-        $resource = ResourceModel::by_id($id);
+        $resource = self::published_or_null(ResourceModel::by_id($id));
 
         if ($resource === null) {
             return parent::error('not_found', 'No such resource');
@@ -125,7 +137,7 @@ class Resources extends Base {
     }
 
     public static function get_files($id) {
-        $resource = ResourceModel::by_id($id);
+        $resource = self::published_or_null(ResourceModel::by_id($id));
 
         if ($resource === null) {
             return parent::error('not_found', 'No such resource');
@@ -189,7 +201,7 @@ class Resources extends Base {
     }
 
     public static function get_single($id) {
-        $resource = ResourceModel::by_id($id);
+        $resource = self::published_or_null(ResourceModel::by_id($id));
 
         if ($resource === null) {
             return parent::error('not_found', 'No such resource');
