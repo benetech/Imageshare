@@ -218,17 +218,42 @@ class Resources extends Base {
            return parent::render_response(self::get_single($args['id']));
         }
 
-        $post_ids = get_posts([
+        $page = 1;
+
+        if (isset($args['page'])) {
+            $page = intval($args['page']);
+        }
+
+        if (!$page) {
+            $page = 1;
+        }
+
+        $query = new \WP_Query([
             'post_type' => 'btis_resource',
             'order_by' => 'ID',
             'order' => 'asc',
-            'fields' => 'ids'
+            'fields' => 'ids',
+            'posts_per_page' => 5,
+            'paged' => $page,
         ]);
 
+        $url = get_site_url() . '/json-api/resources/page/';
 
-        $resources = array_map(['self', 'get_single'], $post_ids);
+        if (intval($query->max_num_pages) === 0) {
+            return parent::render_response(parent::error('invalid_request', "Page index out of bounds"));
+        } else {
+            $resources = array_map(['self', 'get_single'], $query->posts);
+            $links = [
+                'first_page' => $url . 1,
+                'prev_page' => $page === 1 ? null : $url . ($page -1),
+                'cur_page' => $url . $page,
+                'next_page' => $page >= intval($query->max_num_pages) ? null : $url . ($page +1),
+                'last_page' => $url . $query->max_num_pages
+            ];
+        }
 
-        return parent::render_response($resources);
+
+        return parent::render_response($resources, $links);
     }
 
     public static function sanitise_search_params($params) {

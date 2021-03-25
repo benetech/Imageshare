@@ -20,6 +20,7 @@
     $controller = get_query_var('btis_api');
 
     $id = get_query_var('btis_api_id');
+    $page = get_query_var('btis_api_page');
     $relationship = get_query_var('btis_api_relationship');
     $is_search = get_query_var('btis_api_search');
 
@@ -30,6 +31,7 @@
 
     $args = [
         'id' => $id,
+        'page' => $page,
         'relationship' => $relationship
     ];
 
