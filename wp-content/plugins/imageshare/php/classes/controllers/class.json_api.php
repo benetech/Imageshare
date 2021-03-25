@@ -19,9 +19,10 @@ class JSONAPI {
         add_rewrite_rule('json-api/(resources|collections)/filter[/]?(.*)$', 'index.php?btis_api_search=1&btis_api=$matches[1]$matches[2]', 'top');
 
         // /json-api/resources/page/n
+        add_rewrite_rule('json-api/resources/page/([0-9]+)[/]?$', 'index.php?btis_api=resources&btis_api_page=$matches[1]', 'top');
 
         // /json-api/types/
-        add_rewrite_rule('json-api/resources/page/([0-9]+)[/]?$', 'index.php?btis_api=resources&btis_api_page=$matches[1]', 'top');
+        add_rewrite_rule('json-api/([a-z]+)[/]?$', 'index.php?btis_api=$matches[1]', 'top');
 
         // /json-api/types/1
         add_rewrite_rule('json-api/([a-z]+)/([0-9]+)[/]?$', 'index.php?btis_api=$matches[1]&btis_api_id=$matches[2]', 'top');
