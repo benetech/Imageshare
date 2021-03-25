@@ -340,14 +340,13 @@ class ResourceFile {
     public function length_formatted_string() {
         $length = $this->get_length();
         if (($length['hours'] + $length['minutes']) === 0) {
-            echo "0";
+            return "0";
         } else if ($length['hours'] === 0) {
-            echo sprintf(_n('%d minute', '%d minutes', $length['minutes'], 'imageshare'), $length['minutes']); 
+            return sprintf(_n('%d minute', '%d minutes', $length['minutes'], 'imageshare'), $length['minutes']);
         } else {
-            echo sprintf(_n('%d hour', '%d hours', $length['hours'], 'imageshare'), $length['hours']);
+            return sprintf(_n('%d hour', '%d hours', $length['hours'], 'imageshare'), $length['hours']);
             if ($length['minutes']) {
-                echo " ";
-                echo sprintf(_n('%d minute', '%d minutes', $length['minutes'], 'imageshare'), $length['minutes']); 
+                return sprintf(_n(' %d minute', ' %d minutes', $length['minutes'], 'imageshare'), $length['minutes']);
             }
         }
     }
