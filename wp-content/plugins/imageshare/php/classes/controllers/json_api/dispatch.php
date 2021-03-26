@@ -1,5 +1,6 @@
 <?php
     require_once imageshare_php_file('classes/controllers/json_api/class.types.php');
+    require_once imageshare_php_file('classes/controllers/json_api/class.formats.php');
     require_once imageshare_php_file('classes/controllers/json_api/class.subjects.php');
     require_once imageshare_php_file('classes/controllers/json_api/class.accommodations.php');
     require_once imageshare_php_file('classes/controllers/json_api/class.sources.php');
@@ -10,6 +11,7 @@
     use Imageshare\Logger;
 
     use Imageshare\Controllers\JSONAPI\Types as TypesController;
+    use Imageshare\Controllers\JSONAPI\Formats as FormatsController;
     use Imageshare\Controllers\JSONAPI\Subjects as SubjectsController;
     use Imageshare\Controllers\JSONAPI\Accommodations as AccommodationsController;
     use Imageshare\Controllers\JSONAPI\Sources as SourcesController;
@@ -38,6 +40,10 @@
     switch ($controller) {
         case 'types':
             TypesController::render($args);
+            break;
+
+        case 'formats':
+            FormatsController::render($args);
             break;
 
         case 'subjects':
