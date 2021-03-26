@@ -271,7 +271,7 @@ class Resources extends Base {
     }
 
     public static function is_valid_key($key) {
-        return in_array($key, ['query', 'type', 'format', 'source', 'page']);
+        return in_array($key, ['query', 'type', 'format', 'source', 'page', 'subject']);
     }
 
     public static function search($args) {
@@ -284,6 +284,10 @@ class Resources extends Base {
         if (array_key_exists('page', $params)) {
             $params['rp'] = intval($params['page']);
             unset($params['page']);
+        }
+
+        if (array_key_exists('subject', $params) && !is_array($params['subject'])) {
+            $params['subject'] = [$params['subject']];
         }
 
         $params['_single_type'] = ResourceModel::type;
