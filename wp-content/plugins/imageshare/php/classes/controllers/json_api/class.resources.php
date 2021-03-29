@@ -8,8 +8,10 @@ require_once imageshare_php_file('classes/controllers/json_api/class.resources.p
 use Imageshare\Logger;
 use Imageshare\Models\Resource as ResourceModel;
 use Imageshare\Models\ResourceCollection as CollectionModel;
+use Imageshare\Models\ResourceFile as ResourceFileModel;
 use Imageshare\Controllers\JSONAPI\Collections as CollectionController;
 use Imageshare\Controllers\JSONAPI\Subjects as SubjectsController;
+use Imageshare\Controllers\JSONAPI\Types as TypesController;
 
 class Resources extends Base {
     const plural_name = 'resources';
@@ -171,9 +173,27 @@ class Resources extends Base {
                         ],
                         'data' => [
                             'type' => 'resource',
-                            'id' => (string) $id
+                            'id' => (string) $id,
                         ]
                     ],
+                    'file_type' => [
+                        'data' => [
+                            'name' => $file->type,
+                            'id' => $file->type_term->term_id,
+                        ]
+                    ],
+                    'file_format' => [
+                        'data' => [
+                            'name' => $file->format,
+                            'id' => $file->format_term->term_id,
+                        ]
+                    ],
+                    'accommodations' => [
+                        'links' => [
+                            'self' => parent::relationship_link($id, 'accommodations')
+                        ],
+                        'data' => $file->get_accommodations_with_id()
+                    ]
                 ]
             ];
 
@@ -286,8 +306,10 @@ class Resources extends Base {
             unset($params['page']);
         }
 
-        if (array_key_exists('subject', $params) && !is_array($params['subject'])) {
-            $params['subject'] = [$params['subject']];
+        foreach (['subject', 'type', 'acc'] as $search_term) {
+            if (array_key_exists($search_term, $params) && !is_array($params[$search_term])) {
+                $params[$search_term] = [$params[$search_term]];
+            }
         }
 
         $params['_single_type'] = ResourceModel::type;

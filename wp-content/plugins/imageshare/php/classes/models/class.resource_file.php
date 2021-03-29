@@ -33,6 +33,16 @@ class ResourceFile {
         });
     }
 
+    public static function by_id($id) {
+        $post = get_post($id);
+
+        if ($post !== null && $post->post_type === static::type) {
+            return self::from_post($post);
+        }
+
+        return null;
+    }
+
     public static function create($args) {
         $is_update = false;
 
@@ -308,6 +318,9 @@ class ResourceFile {
             $this->type = Model::get_meta_term_name($this->post_id, 'type', 'file_types');
             $this->format = Model::get_meta_term_name($this->post_id, 'format', 'file_formats');
 
+            $this->type_term = get_term($this->get_type_term_id(), 'file_types');
+            $this->format_term = get_term($this->get_format_term_id(), 'file_formats');
+
             $this->languages = $this->get_languages();
 
             $this->print_service = get_post_meta($this->post_id, 'print_service', true);
@@ -433,6 +446,26 @@ class ResourceFile {
         return array_map(function ($term_id) {
             return get_term($term_id, 'languages')->name;
         }, $languages);
+    }
+
+    public function get_accommodations_with_id() {
+        $accommodations = get_post_meta($this->post_id, 'accommodations', true);
+        return array_map(function ($term_id) {
+            $term = get_term($term_id, 'a11y_accs');
+
+            if ($parent_id = $term->parent) {
+                $parent_term = get_term($parent_id);
+                return [
+                    'id' => $term->term_id,
+                    'name' => implode(' - ', [$term->name, $parent_term->name])
+                ];
+            }
+
+            return [
+                'id' => $term->term_id,
+                'name' => $term->name
+            ];
+        }, $accommodations);
     }
 
     public function get_accommodations() {
