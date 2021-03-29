@@ -315,7 +315,7 @@
                 "key": "field_6001a3d0cf648",
                 "label": "File Groups",
                 "name": "groups",
-                "type": "imgs_relationship",
+                "type": "relationship",
                 "instructions": "",
                 "required": 1,
                 "conditional_logic": 0,
