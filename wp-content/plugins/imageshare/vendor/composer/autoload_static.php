@@ -56,11 +56,41 @@ class ComposerStaticInit4a8275ef4761dc6a4dc3f8913e3bc09f
         ),
     );
 
+    public static $classMap = array (
+        'Imageshare\\Controllers\\JSONAPI' => __DIR__ . '/../..' . '/php/classes/controllers/class.json_api.php',
+        'Imageshare\\Controllers\\JSONAPI\\Accommodations' => __DIR__ . '/../..' . '/php/classes/controllers/json_api/class.accommodations.php',
+        'Imageshare\\Controllers\\JSONAPI\\Base' => __DIR__ . '/../..' . '/php/classes/controllers/json_api/class.base.php',
+        'Imageshare\\Controllers\\JSONAPI\\Collections' => __DIR__ . '/../..' . '/php/classes/controllers/json_api/class.collections.php',
+        'Imageshare\\Controllers\\JSONAPI\\Formats' => __DIR__ . '/../..' . '/php/classes/controllers/json_api/class.formats.php',
+        'Imageshare\\Controllers\\JSONAPI\\Resources' => __DIR__ . '/../..' . '/php/classes/controllers/json_api/class.resources.php',
+        'Imageshare\\Controllers\\JSONAPI\\Sources' => __DIR__ . '/../..' . '/php/classes/controllers/json_api/class.sources.php',
+        'Imageshare\\Controllers\\JSONAPI\\Subjects' => __DIR__ . '/../..' . '/php/classes/controllers/json_api/class.subjects.php',
+        'Imageshare\\Controllers\\JSONAPI\\Tags' => __DIR__ . '/../..' . '/php/classes/controllers/json_api/class.tags.php',
+        'Imageshare\\Controllers\\JSONAPI\\Taxonomy' => __DIR__ . '/../..' . '/php/classes/controllers/json_api/class.taxonomy.php',
+        'Imageshare\\Controllers\\JSONAPI\\Types' => __DIR__ . '/../..' . '/php/classes/controllers/json_api/class.types.php',
+        'Imageshare\\Controllers\\PluginSettings' => __DIR__ . '/../..' . '/php/classes/controllers/class.plugin_settings.php',
+        'Imageshare\\Controllers\\Post' => __DIR__ . '/../..' . '/php/classes/controllers/class.post.php',
+        'Imageshare\\Controllers\\ResourceCollection' => __DIR__ . '/../..' . '/php/classes/controllers/class.resource_collection.php',
+        'Imageshare\\Controllers\\Search' => __DIR__ . '/../..' . '/php/classes/controllers/class.search.php',
+        'Imageshare\\Logger' => __DIR__ . '/../..' . '/php/classes/class.logger.php',
+        'Imageshare\\Models\\Model' => __DIR__ . '/../..' . '/php/classes/models/class.model.php',
+        'Imageshare\\Models\\Resource' => __DIR__ . '/../..' . '/php/classes/models/class.resource.php',
+        'Imageshare\\Models\\ResourceCollection' => __DIR__ . '/../..' . '/php/classes/models/class.resource_collection.php',
+        'Imageshare\\Models\\ResourceFile' => __DIR__ . '/../..' . '/php/classes/models/class.resource_file.php',
+        'Imageshare\\Models\\ResourceFileGroup' => __DIR__ . '/../..' . '/php/classes/models/class.resource_file_group.php',
+        'Imageshare\\Models\\Term' => __DIR__ . '/../..' . '/php/classes/models/class.term.php',
+        'Imageshare\\Plugin' => __DIR__ . '/../..' . '/php/classes/class.plugin.php',
+        'Imageshare\\Views\\PluginSettings' => __DIR__ . '/../..' . '/php/classes/views/class.plugin_settings.php',
+        'Imageshare\\Views\\View' => __DIR__ . '/../..' . '/php/classes/views/class.view.php',
+        'acf_custom_field_relationship' => __DIR__ . '/../..' . '/php/classes/class.acf.relationship.php',
+    );
+
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit4a8275ef4761dc6a4dc3f8913e3bc09f::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit4a8275ef4761dc6a4dc3f8913e3bc09f::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit4a8275ef4761dc6a4dc3f8913e3bc09f::$classMap;
 
         }, null, ClassLoader::class);
     }
