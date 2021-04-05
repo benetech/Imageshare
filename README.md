@@ -165,21 +165,21 @@ Available details are documented below; specific records can be queried via thei
 {
     "data": [
         {
-            "type": "keyword",
+            "type": "tag",
             "id": 2773,
             "attributes": {
                 "name": "3d"
             }
         },
         {
-            "type": "keyword",
+            "type": "tag",
             "id": 2724,
             "attributes": {
                 "name": "3d print"
             }
         },
         {
-            "type": "keyword",
+            "type": "tag",
             "id": 2807,
             "attributes": {
                 "name": "3d technology"
