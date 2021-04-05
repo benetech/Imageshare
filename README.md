@@ -160,7 +160,7 @@ Available details are documented below; specific records can be queried via thei
 }
 ```
 
-### Keywords: `/json-api/keywords`
+### Tags: `/json-api/tags`
 ```
 {
     "data": [

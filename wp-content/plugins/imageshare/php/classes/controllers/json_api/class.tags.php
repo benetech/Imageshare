@@ -2,11 +2,9 @@
 
 namespace Imageshare\Controllers\JSONAPI;
 
-require_once imageshare_php_file('classes/controllers/json_api/class.tags.php');
-
 class Tags extends Base {
-    const name = 'keyword';
-    const plural_name = 'keywords';
+    const name = 'tag';
+    const plural_name = 'tags';
 
     public static function render() {
         $tags = get_tags([

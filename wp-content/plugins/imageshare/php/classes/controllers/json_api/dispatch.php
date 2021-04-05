@@ -1,13 +1,4 @@
 <?php
-    require_once imageshare_php_file('classes/controllers/json_api/class.types.php');
-    require_once imageshare_php_file('classes/controllers/json_api/class.formats.php');
-    require_once imageshare_php_file('classes/controllers/json_api/class.subjects.php');
-    require_once imageshare_php_file('classes/controllers/json_api/class.accommodations.php');
-    require_once imageshare_php_file('classes/controllers/json_api/class.sources.php');
-    require_once imageshare_php_file('classes/controllers/json_api/class.collections.php');
-    require_once imageshare_php_file('classes/controllers/json_api/class.resources.php');
-    require_once imageshare_php_file('classes/controllers/json_api/class.tags.php');
-    
     use Imageshare\Logger;
 
     use Imageshare\Controllers\JSONAPI\Types as TypesController;
@@ -66,7 +57,7 @@
             ResourcesController::render($args);
             break;
 
-        case 'keywords':
+        case 'tags':
             TagsController::render();
             break;
 
