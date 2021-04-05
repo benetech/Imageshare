@@ -131,6 +131,7 @@ class Plugin {
 
     private function set_acf_hooks_and_filters() {
         add_filter('acf/update_value', [$this, 'on_acf_update_value'], 20, 3);
+        add_filter('acf/fields/relationship/query', [$this, 'on_acf_fields_relationship_query'], 10, 3);
         add_filter('acf/fields/relationship/result', [$this, 'on_acf_relationship_result'], 20, 4);
     }
 
@@ -376,6 +377,13 @@ class Plugin {
 
         add_filter('manage_btis_file_group_posts_columns', array(self::model('ResourceFileGroup'), 'manage_columns'), 10, 1);
         add_action('manage_btis_file_group_posts_custom_column', array(self::model('ResourceFileGroup'), 'manage_custom_column'), 10, 2);
+
+    }
+
+    public function on_acf_fields_relationship_query($args, $fields, $post_id) {
+        // disable full-text search for relationship querying
+        $args['wpfts_disable'] = 1;
+        return $args;
     }
 
     private function register_custom_post_types() {
