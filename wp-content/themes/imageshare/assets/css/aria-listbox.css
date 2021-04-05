@@ -22,6 +22,8 @@
 
 [role="option"].focused {
   background: #bde4ff;
+  outline: 1px solid darkblue;
+  text-decoration: underline;
 }
 
 button[aria-haspopup="listbox"] {
