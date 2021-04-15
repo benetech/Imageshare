@@ -518,17 +518,6 @@ class Resource {
             return !$group->is_default_for_parent();
         });
 
-        usort($rest, function ($a, $b) {
-            $al = strtolower($a->title);
-            $bl = strtolower($b->title);
-
-            if ($al == $bl) {
-                return 0;
-            }
-
-            return ($al > $bl) ? +1 : -1;
-        });
-
         return array_merge($default, $rest);
     }
 
