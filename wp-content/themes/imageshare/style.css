@@ -2,7 +2,7 @@
  * Theme Name: Imageshare
  * Description: Benetech Imageshare default theme
  * Author: Prime Access Consulting
- * Version: 0.2.37
+ * Version: 0.2.38
 */
 
 body {
@@ -1095,6 +1095,7 @@ h2.resource-section {
 
 #resource .file-group {
     background-color: #eee;
+    border: 1px solid black;
     border-radius: .5em;
     padding: .5em;
 }
