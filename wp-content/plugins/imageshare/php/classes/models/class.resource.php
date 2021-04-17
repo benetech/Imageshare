@@ -175,6 +175,7 @@ class Resource {
         ResourceFileGroup::by_id($group_id)->reindex();
     }
 
+    // FIXME this can go once we've switched over
     public static function set_default_file_group($resource_id, $file_group_id) {
         update_field('default_file_group', $file_group_id, $resource_id);
         add_post_meta($resource_id, 'resource_file_group_id', $file_group_id);
@@ -561,6 +562,15 @@ class Resource {
         }
 
         return $this->_groups = ResourceFileGroup::with_parent_resource($this->id);
+    }
+
+    public static function get_default_group_id($resource_id) {
+        $groups = ResourceFileGroup::with_parent_resource($resource_id);
+        $default = array_filter(function ($group) {
+            return $group->is_default_for_parent();
+        });
+
+        return count($default) === 1 ? $default[0]->id : null;
     }
 
     public function get_constituting_file_types() {

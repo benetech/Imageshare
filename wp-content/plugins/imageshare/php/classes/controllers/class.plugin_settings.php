@@ -2,72 +2,26 @@
 
 namespace Imageshare\Controllers;
 
-require_once imageshare_php_file('classes/class.logger.php');
-require_once imageshare_php_file('classes/views/class.plugin_settings.php');
-require_once imageshare_php_file('classes/models/class.resource.php');
-require_once imageshare_php_file('classes/models/class.resource_file.php');
-
 use Imageshare\Logger;
 use ImageShare\Views\PluginSettings as View;
 use ImageShare\Models\Resource as ResourceModel;
 use ImageShare\Models\ResourceFile as ResourceFileModel;
 use ImageShare\Models\ResourceFileGroup as ResourceFileGroupModel;
 
+use Imageshare\Migration\MigrateVerifyDefaultResourceFileGroup;
+use Imageshare\Migration\MigrateFileGroupsSettings;
+
 class PluginSettings {
     const i18n_ns    = 'imageshare';
     const capability = 'manage_options';
     const page_slug  = 'imageshare_settings';
 
-    public static function ajax_verify_default_resource_file_group() {
-        $offset = intval(isset($_POST['offset']) ? $_POST['offset'] : 0);
-        $fixed = intval(isset($_POST['fixed']) ? $_POST['fixed'] : 0);
-        $errors = intval(isset($_POST['errors']) ? $_POST['errors'] : 0);
-        $size = intval(isset($_POST['size']) ? $_POST['size'] : 50);
-
-        $batch = get_posts(array(
-            'order'       => 'ASC',
-            'order_by'    => 'ID',
-            'offset'      => $offset,
-            'numberposts' => $size,
-            'post_type'   => [ResourceModel::type],
-            'post_status' => ['publish', 'pending', 'draft'],
-            'post_parent' => null,
-        ));
-
-        foreach ($batch as $post) {
-            $resource = ResourceModel::from_post($post);
-
-            if ($resource->has_default_file_group()) {
-                continue;
-            }
-
-            try {
-                $resource_file_group_id = ResourceFileGroupModel::create($resource->title . ' [default]', $resource->post->post_status);
-                ResourceModel::set_default_file_group($resource->id, $resource_file_group_id);
-                ResourceModel::migrate_files_to_default_group($resource->id, $resource_file_group_id);
-                $fixed++;
-            } catch (\Exception $e) {
-                Logger::log("Unexpected error migrating to resource file groups: " . $e->getMessage());
-                $errors++;
-            }
-        }
-
-        $batch_size = count($batch);
-
-        echo json_encode([
-            'size' => $batch_size,
-            'offset' => $offset + $batch_size,
-            'fixed' => $fixed,
-            'errors' => $errors
-        ]);
-
-        return wp_die();
-    }
 
     public function __construct() {
         add_action('admin_menu', [$this, 'add_admin_menu']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_scripts']);
-        add_action('wp_ajax_imageshare_verify_default_resource_file_group', [self::class, 'ajax_verify_default_resource_file_group']);
+        add_action('wp_ajax_imageshare_verify_default_resource_file_group', [MigrateVerifyDefaultResourceFileGroup::class, 'ajax_verify_default_resource_file_group']);
+        add_action('wp_ajax_imageshare_migrate_file_groups_settings', [MigrateFileGroupsSettings::class, 'ajax_migrate_file_groups_settings']);
     }
 
     public function enqueue_scripts() {
@@ -203,8 +157,9 @@ class PluginSettings {
                 'title' => $record->unique_name
             ]);
 
-            ResourceModel::set_default_file_group($resource_id, $resource_file_group_id);
-            Resource::update_resource_file_group_ids($resource_id);
+            $group = ResourceFileGroupModel::by_id($resource_file_group_id);
+            $group->set_parent_resource_id($resource_id);
+            $group->set_as_default_for_parent();
         } else {
             $resource_file_group_id = ResourceModel::get_default_group_id($resource_id);
         }

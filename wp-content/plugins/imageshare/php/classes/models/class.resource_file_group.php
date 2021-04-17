@@ -2,8 +2,6 @@
 
 namespace Imageshare\Models;
 
-require_once imageshare_php_file('classes/class.logger.php');
-
 use Imageshare\Logger;
 
 class ResourceFileGroup {
@@ -114,6 +112,14 @@ class ResourceFileGroup {
     private function get_post($post_id) {
         $this->post = get_post($post_id);
         return $this->load_custom_attributes();
+    }
+
+    public function set_parent_resource_id($resource_id) {
+        update_post_meta($this->post_id, 'parent_resource', $resource_id);
+    }
+
+    public function set_as_default_for_parent() {
+        update_post_meta($this->post_id, 'is_default', 1);
     }
 
     private function get_parent_resource() {
