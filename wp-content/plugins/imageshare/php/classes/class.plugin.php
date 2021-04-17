@@ -12,6 +12,7 @@ require_once imageshare_php_file('classes/models/class.resource_file_group.php')
 
 require_once imageshare_php_file('classes/controllers/class.resource_collection.php');
 require_once imageshare_php_file('classes/controllers/class.plugin_settings.php');
+require_once imageshare_php_file('classes/controllers/class.file_group_controller.php');
 require_once imageshare_php_file('classes/controllers/class.search.php');
 require_once imageshare_php_file('classes/controllers/class.post.php');
 require_once imageshare_php_file('classes/controllers/class.json_api.php');
@@ -29,6 +30,7 @@ use Imageshare\Controllers\PluginSettings as PluginSettingsController;
 use Imageshare\Controllers\Search as SearchController;
 use Imageshare\Controllers\Post as PostController;
 use Imageshare\Controllers\JSONAPI as JSONAPIController;
+use Imageshare\Controllers\FileGroupController;
 
 class Plugin {
     private $is_activated = false;
@@ -133,6 +135,8 @@ class Plugin {
         add_filter('acf/update_value', [$this, 'on_acf_update_value'], 20, 3);
         add_filter('acf/fields/relationship/query', [$this, 'on_acf_fields_relationship_query'], 10, 3);
         add_filter('acf/fields/relationship/result', [$this, 'on_acf_relationship_result'], 20, 4);
+        add_action('acf/save_post', [$this, 'on_pre_acf_save_post'], 9);
+        add_filter('acf/validate_save_post', [FileGroupController::class, 'on_acf_validate_save_post'], 10, 1);
     }
 
     /**
@@ -208,7 +212,6 @@ class Plugin {
         add_action('posts_join', [$this, 'patch_admin_search_join']);
         add_action('posts_where', [$this, 'patch_admin_search_where']);
         add_action('posts_groupby', [$this, 'patch_admin_search_groupby']);
-        add_action('acf/save_post', [$this, 'on_pre_acf_save_post'], 9);
     }
 
     public function is_admin_search() {
@@ -280,7 +283,7 @@ class Plugin {
                 ResourceCollection::remove_resource($post_id);
                 break;
              case ResourceFile::type:
-                ResourceFileGroup::remove_resource_file($post_id);
+                ResourceFileGroup::remove_resource_file_from_all_containing_groups($post_id);
                 break;
              case ResourceFileGroup::type:
                 Resource::remove_resource_file_group($post_id);

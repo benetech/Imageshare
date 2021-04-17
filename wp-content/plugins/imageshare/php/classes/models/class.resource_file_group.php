@@ -81,14 +81,15 @@ class ResourceFileGroup {
                 break;
 
             case 'parent':
-                echo isset($post->parent)
-                    ? '<a href="' . get_permalink($post->parent->id) . '">' . $post->parent->title . '</a>'
+                $parent = $post->get_parent_resource();
+                echo isset($parent)
+                    ? '<a href="' . get_permalink($parent->id) . '">' . $parent->title . '</a>'
                     : self::i18n('None &#9888;')
                 ;
                 break;
 
             case 'is_default':
-                echo $post->is_default_for_parent() ? self::i18n('Yes') : self::i18n('No');
+                echo (bool) $post->is_default_for_parent() ? self::i18n('Yes') : self::i18n('No');
                 break;
         }
     }
@@ -115,9 +116,14 @@ class ResourceFileGroup {
         return $this->load_custom_attributes();
     }
 
-    private function get_parent() {
-        $resources = Resource::containing_file_group($this->post_id);
-        return count($resources) === 1 ? $resources[0] : null;
+    private function get_parent_resource() {
+        if (!isset($this->parent_resource)) {
+            return null;
+        }
+
+        return Resource::by_id($this->parent_resource);
+//        $resources = Resource::containing_file_group($this->post_id);
+//        return count($resources) === 1 ? $resources[0] : null;
     }
 
     public static function containing_resource_file($resource_file_id, $ids_only = false) {
@@ -145,9 +151,10 @@ class ResourceFileGroup {
     }
 
     public function is_default_for_parent() {
-        if ($parent = $this->parent) {
-            return $parent->default_file_group_id == $this->post_id;
-        }
+        return (bool) $this->is_default;
+//        if ($parent = $this->parent) {
+//            return $parent->default_file_group_id == $this->post_id;
+//        }
     }
 
     public function load_custom_attributes() {
@@ -157,8 +164,11 @@ class ResourceFileGroup {
             $this->title = $this->post->post_title;
             $this->permalink = get_permalink($this->post->ID);
 
+            $this->parent_resource = get_post_meta($this->post_id, 'parent_resource', true);
+            $this->is_default = get_post_meta($this->post_id, 'is_default', true);
+
             $this->file_ids = $this->get_file_ids();
-            $this->parent = $this->get_parent();
+//            $this->parent = $this->get_parent();
 
             return $this->id;
         }
@@ -219,19 +229,35 @@ class ResourceFileGroup {
         update_field('files', $files, $resource_file_group_id);
     }
 
-    public static function remove_resource_file($resource_file_id) {
+    public static function remove_resource_file_from_all_containing_groups_not_in($resource_file_id, $group_ids) {
         $groups = self::containing_resource_file($resource_file_id);
         foreach ($groups as $group) {
-            delete_post_meta($group->post_id, 'file_id', $resource_id);
-            $other_resource_file_ids = array_filter($group->get_file_ids(), function ($id) use ($resource_file_id) {
-                return $id != $resource_file_id;
-            });
-
-            update_field('resource_files', $other_resource_file_ids, $group->post_id);
-            $group->file_ids = $other_resource_file_ids;
-            unset($group->_files);
-            wpfts_post_reindex($group->post_id);
+            if (in_array($group->id, $group_ids)) {
+                continue;
+            }
+            $group->remove_resource_file($resource_file_id);
         }
+    }
+
+    public static function remove_resource_file_from_all_containing_groups($resource_file_id) {
+        $groups = self::containing_resource_file($resource_file_id);
+        foreach ($groups as $group) {
+            $group->remove_resource_file($resource_file_id);
+        }
+    }
+
+    public function remove_resource_file($resource_file_id) {
+        Logger::log("Removing resource file {$resource_file_id} from group {$this->id}");
+
+        delete_post_meta($this->id, 'file_id', $resource_file_id);
+        $other_resource_file_ids = array_filter($this->get_file_ids(), function ($id) use ($resource_file_id) {
+            return $id != $resource_file_id;
+        });
+
+        update_field('files', $other_resource_file_ids, $this->id);
+        $this->file_ids = $other_resource_file_ids;
+        unset($this->_files);
+        wpfts_post_reindex($this->id);
     }
 
     public function reindex() {

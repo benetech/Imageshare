@@ -93,8 +93,6 @@ class Resource {
         }
 
         if (!$is_update) {
-            // don't strip existing file associations when updating an existing resource
-            update_field('files', [], $post_id);
             Model::finish_importing($post_id);
         }
 
@@ -540,6 +538,8 @@ class Resource {
     }
 
     public function groups() {
+        // TODO find all resource_file_group posts where meta value parent_resource is the same as this post's id
+
         if (isset($this->_groups) && is_array($this->_groups)) {
             return $this->_groups;
         }
