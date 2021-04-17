@@ -57,6 +57,7 @@ class ComposerStaticInit4a8275ef4761dc6a4dc3f8913e3bc09f
     );
 
     public static $classMap = array (
+        'Imageshare\\Controllers\\FileGroupController' => __DIR__ . '/../..' . '/php/classes/controllers/class.file_group_controller.php',
         'Imageshare\\Controllers\\JSONAPI' => __DIR__ . '/../..' . '/php/classes/controllers/class.json_api.php',
         'Imageshare\\Controllers\\JSONAPI\\Accommodations' => __DIR__ . '/../..' . '/php/classes/controllers/json_api/class.accommodations.php',
         'Imageshare\\Controllers\\JSONAPI\\Base' => __DIR__ . '/../..' . '/php/classes/controllers/json_api/class.base.php',
@@ -73,6 +74,8 @@ class ComposerStaticInit4a8275ef4761dc6a4dc3f8913e3bc09f
         'Imageshare\\Controllers\\ResourceCollection' => __DIR__ . '/../..' . '/php/classes/controllers/class.resource_collection.php',
         'Imageshare\\Controllers\\Search' => __DIR__ . '/../..' . '/php/classes/controllers/class.search.php',
         'Imageshare\\Logger' => __DIR__ . '/../..' . '/php/classes/class.logger.php',
+        'Imageshare\\Migrations\\MigrateFileGroupSettings' => __DIR__ . '/../..' . '/php/classes/migrations/class.MigrateFileGroupsSettings.php',
+        'Imageshare\\Migrations\\MigrateVerifyDefaultResourceFileGroup' => __DIR__ . '/../..' . '/php/classes/migrations/class.MigrateVerifyDefaultResourceFileGroup.php',
         'Imageshare\\Models\\Model' => __DIR__ . '/../..' . '/php/classes/models/class.model.php',
         'Imageshare\\Models\\Resource' => __DIR__ . '/../..' . '/php/classes/models/class.resource.php',
         'Imageshare\\Models\\ResourceCollection' => __DIR__ . '/../..' . '/php/classes/models/class.resource_collection.php',

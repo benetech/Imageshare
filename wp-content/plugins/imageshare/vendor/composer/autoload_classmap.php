@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Imageshare\\Controllers\\FileGroupController' => $baseDir . '/php/classes/controllers/class.file_group_controller.php',
     'Imageshare\\Controllers\\JSONAPI' => $baseDir . '/php/classes/controllers/class.json_api.php',
     'Imageshare\\Controllers\\JSONAPI\\Accommodations' => $baseDir . '/php/classes/controllers/json_api/class.accommodations.php',
     'Imageshare\\Controllers\\JSONAPI\\Base' => $baseDir . '/php/classes/controllers/json_api/class.base.php',
@@ -22,6 +23,8 @@ return array(
     'Imageshare\\Controllers\\ResourceCollection' => $baseDir . '/php/classes/controllers/class.resource_collection.php',
     'Imageshare\\Controllers\\Search' => $baseDir . '/php/classes/controllers/class.search.php',
     'Imageshare\\Logger' => $baseDir . '/php/classes/class.logger.php',
+    'Imageshare\\Migrations\\MigrateFileGroupSettings' => $baseDir . '/php/classes/migrations/class.MigrateFileGroupsSettings.php',
+    'Imageshare\\Migrations\\MigrateVerifyDefaultResourceFileGroup' => $baseDir . '/php/classes/migrations/class.MigrateVerifyDefaultResourceFileGroup.php',
     'Imageshare\\Models\\Model' => $baseDir . '/php/classes/models/class.model.php',
     'Imageshare\\Models\\Resource' => $baseDir . '/php/classes/models/class.resource.php',
     'Imageshare\\Models\\ResourceCollection' => $baseDir . '/php/classes/models/class.resource_collection.php',
