@@ -120,7 +120,10 @@ class Resource {
         }
     }
 
-    public static function containing_file_group($resource_file_group_id, $ids_only = false) {
+    /*
+     * FIXME deprecated
+     */
+    public static function xcontaining_file_group($resource_file_group_id, $ids_only = false) {
         return array_map(function ($post) {
             return self::from_post($post);
         }, get_posts([
@@ -132,7 +135,10 @@ class Resource {
         ]));
     }
 
-    public static function containing_resource_file($resource_file_id) {
+    /*
+     * FIXME deprecated
+     */
+    public static function xcontaining_resource_file($resource_file_id) {
         $groups = ResourceFileGroup::containing_resource_file($resource_file_id, true);
         return array_reduce($groups, function ($carry, $group) {
             $resources = Resource::containing_file_group($group->post_id);
@@ -330,7 +336,7 @@ class Resource {
                 break;
 
             case 'groups':
-                echo count($post->group_ids) ?? '0';
+                echo count(ResourceFileGroup::with_parent_resource($post->id, true) ?? '0');
                 break;
 
             case 'tags':
@@ -339,6 +345,9 @@ class Resource {
         }
     }
 
+    /*
+     * FIXME this can go once we're not dealing with groups at this level anymore 
+     */
     public static function on_acf_relationship_result($post_id, $related_post, $field) {
         // this can only be a published file group
         $file = ResourceFileGroup::from_post($related_post);
@@ -372,6 +381,9 @@ class Resource {
         }
     }
 
+    /*
+     * FIXME this can go once we're not dealing with groups at this level anymore 
+     */
     public static function update_resource_file_group_ids($post_id) {
         $group_ids = get_post_meta($post_id, 'groups', true) ?: [];
         $default = get_post_meta($post_id, 'default_file_group', true);
@@ -388,6 +400,9 @@ class Resource {
         update_post_meta($post_id, 'groups', $ids);
     }
 
+    /*
+     * FIXME this can go once we're not dealing with groups at this level anymore 
+     */
     public static function on_pre_acf_save_post($post_id) {
         // monkey patch the POST data to prevent race conditions
         // between group file ids being saved and the default id being saved
@@ -409,6 +424,9 @@ class Resource {
         $_POST['acf'][$groups_field_key] = $all_ids;
     }
 
+    /*
+     * FIXME this can go once we're not dealing with groups at this level anymore 
+     */
     public function acf_update_value($field, $value) {
         switch($field['name']) {
             case 'groups':
@@ -470,7 +488,7 @@ class Resource {
             $this->source        = get_post_meta($this->post_id, 'source', true);
 
             // TODO the ?: [] guard can go eventually
-            $this->group_ids     = get_post_meta($this->post_id, 'groups', true) ?: [];
+            //$this->group_ids     = get_post_meta($this->post_id, 'groups', true) ?: [];
 
             $this->download_uri  = get_post_meta($this->post_id, 'download_uri', true);
             $this->source_uri    = get_post_meta($this->post_id, 'source_uri', true);
@@ -538,17 +556,11 @@ class Resource {
     }
 
     public function groups() {
-        // TODO find all resource_file_group posts where meta value parent_resource is the same as this post's id
-
         if (isset($this->_groups) && is_array($this->_groups)) {
             return $this->_groups;
         }
 
-        return $this->_groups = array_reduce($this->group_ids, function ($carry, $group_id) {
-            $group = new ResourceFileGroup($group_id);
-            array_push($carry, $group);
-            return $carry;
-        }, []);
+        return $this->_groups = ResourceFileGroup::with_parent_resource($this->id);
     }
 
     public function get_constituting_file_types() {

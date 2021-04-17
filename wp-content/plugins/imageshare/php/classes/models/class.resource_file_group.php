@@ -150,11 +150,32 @@ class ResourceFileGroup {
         }, $posts);
     }
 
+    public static function with_parent_resource($resource_id, $ids_only = false) {
+        $args = [
+            'numberposts'   => -1,
+            'post_type'     => [self::type],
+//            'post_status'   => 'publish',
+            'meta_key'      => 'parent_resource',
+            'meta_value'    => $resource_id
+        ];
+
+        if ($ids_only) {
+            $args['fields'] = 'ids';
+        }
+
+        $posts = get_posts($args);
+
+        if ($ids_only) {
+            return $posts;
+        }
+
+        return array_map(function ($post) {
+            return self::from_post($post);
+        }, $posts);
+    }
+
     public function is_default_for_parent() {
         return (bool) $this->is_default;
-//        if ($parent = $this->parent) {
-//            return $parent->default_file_group_id == $this->post_id;
-//        }
     }
 
     public function load_custom_attributes() {
