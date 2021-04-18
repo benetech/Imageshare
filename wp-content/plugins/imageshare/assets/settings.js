@@ -146,6 +146,6 @@ window.addEventListener('DOMContentLoaded', function () {
         doRequest();
     };
 
-    ensureGroupsBtn.addEventListener('click', verifyResourceGroups);
-    migrateDefaultStateAndParentBtn.addEventListener('click', migrateDefaultStateAndParent);
+    ensureGroupsBtn && ensureGroupsBtn.addEventListener('click', verifyResourceGroups);
+    migrateDefaultStateAndParentBtn && migrateDefaultStateAndParentBtn.addEventListener('click', migrateDefaultStateAndParent);
 });
