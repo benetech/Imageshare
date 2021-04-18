@@ -135,7 +135,6 @@ class Plugin {
         add_filter('acf/update_value', [$this, 'on_acf_update_value'], 20, 3);
         add_filter('acf/fields/relationship/query', [$this, 'on_acf_fields_relationship_query'], 10, 3);
         add_filter('acf/fields/relationship/result', [$this, 'on_acf_relationship_result'], 20, 4);
-        add_action('acf/save_post', [$this, 'on_pre_acf_save_post'], 9);
         add_filter('acf/validate_save_post', [FileGroupController::class, 'on_acf_validate_save_post'], 10, 1);
     }
 
@@ -146,9 +145,6 @@ class Plugin {
         $post_type = get_post_type($post_id);
 
         switch (get_post_type($post_id)) {
-            case Resource::type:
-                $text = Resource::on_acf_relationship_result($post_id, $post, $field);
-                break;
             case ResourceCollection::type:
                 $text = ResourceCollection::on_acf_relationship_result($post_id, $post, $field);
                 break;
@@ -263,16 +259,6 @@ class Plugin {
         }
 
         return $query;
-    }
-
-    public function on_pre_acf_save_post($post_id) {
-        $post_type = get_post_type($post_id);
-
-        switch ($post_type) {
-            case Resource::type:
-                Resource::on_pre_acf_save_post($post_id);
-                break;
-        }
     }
 
     public function on_delete_post($post_id) {

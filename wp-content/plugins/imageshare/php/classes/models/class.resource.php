@@ -100,53 +100,6 @@ class Resource {
     }
 
     /**
-     * FIXME deprecated
-     */
-    public static function xremove_resource_file($resource_file_id) {
-        $resources = self::containing($resource_file_id);
-
-        foreach ($resources as $resource) {
-            $resource = Resource::from_post($resource);
-
-            delete_post_meta($resource->post_id, 'resource_file_id', $resource_file_id);
-            $other_resource_file_ids = array_filter($resource->file_ids, function ($id) use ($resource_file_id) {
-                return $id != $resource_file_id;
-            });
-
-            update_field('files', $other_resource_file_ids, $resource->post_id);
-            $resource->file_ids = $other_resource_file_ids;
-
-            $resource->reindex();
-        }
-    }
-
-    /*
-     * FIXME deprecated
-     */
-    public static function xcontaining_file_group($resource_file_group_id, $ids_only = false) {
-        return array_map(function ($post) {
-            return self::from_post($post);
-        }, get_posts([
-            'post_type' => self::type,
-            'post_status' => ['publish', 'draft', 'pending', 'private'],
-            'meta_key' => 'resource_file_group_id',
-            'meta_value' => $resource_file_group_id,
-            'meta_compare' => '==='
-        ]));
-    }
-
-    /*
-     * FIXME deprecated
-     */
-    public static function xcontaining_resource_file($resource_file_id) {
-        $groups = ResourceFileGroup::containing_resource_file($resource_file_id, true);
-        return array_reduce($groups, function ($carry, $group) {
-            $resources = Resource::containing_file_group($group->post_id);
-            return array_merge($carry, $resources);
-        }, []);
-    }
-
-    /**
      * Utility function used by the settings page
      */
     public static function migrate_files_to_default_group($resource_id, $group_id) {
@@ -173,13 +126,6 @@ class Resource {
         // reindex the resource and resourcefilegroup
         self::by_id($resource_id)->reindex();
         ResourceFileGroup::by_id($group_id)->reindex();
-    }
-
-    // FIXME this can go once we've switched over
-    public static function set_default_file_group($resource_id, $file_group_id) {
-        update_field('default_file_group', $file_group_id, $resource_id);
-        add_post_meta($resource_id, 'resource_file_group_id', $file_group_id);
-        self::update_resource_file_group_ids($resource_id);
     }
 
     public function has_default_file_group() {
@@ -346,15 +292,6 @@ class Resource {
         }
     }
 
-    /*
-     * FIXME this can go once we're not dealing with groups at this level anymore 
-     */
-    public static function on_acf_relationship_result($post_id, $related_post, $field) {
-        // this can only be a published file group
-        $file = ResourceFileGroup::from_post($related_post);
-        return sprintf('%s', $file->title);
-    }
-
     public static function on_insert_post_data($post_id, $data) {
         if (wp_is_post_revision($post_id)) {
             return;
@@ -380,70 +317,6 @@ class Resource {
             Logger::log("Resource {$post_id} going from {$old_status} to {$new_status}");
             Model::force_publish_children($resource->groups());
         }
-    }
-
-    /*
-     * FIXME this can go once we're not dealing with groups at this level anymore 
-     */
-    public static function update_resource_file_group_ids($post_id) {
-        $group_ids = get_post_meta($post_id, 'groups', true) ?: [];
-        $default = get_post_meta($post_id, 'default_file_group', true);
-        $default = is_null($default) ? [] : [$default];
-
-        $ids = array_unique(array_merge($group_ids, $default));
-
-        delete_post_meta($post_id, 'resource_file_group_id');
-
-        foreach ($ids as $file_group_id) {
-            add_post_meta($post_id, 'resource_file_group_id', $file_group_id);
-        }
-
-        update_post_meta($post_id, 'groups', $ids);
-    }
-
-    /*
-     * FIXME this can go once we're not dealing with groups at this level anymore 
-     */
-    public static function on_pre_acf_save_post($post_id) {
-        // monkey patch the POST data to prevent race conditions
-        // between group file ids being saved and the default id being saved
-        // so we explicitly merge the two.
-
-        $groups_field = get_field_object('groups', $post_id);
-        $default_field = get_field_object('default_file_group', $post_id);
-
-        $groups_field_key = $groups_field['key'];
-        $default_field_key = $default_field['key'];
-
-        $groups_value = $_POST['acf'][$groups_field_key] ?: [];
-        $default_value = $_POST['acf'][$default_field_key] ?: null;
-
-        $default_value = is_null($default_value) ? [] : [$default_value];
-
-        $all_ids = array_unique(array_merge($groups_value, $default_value));
-
-        $_POST['acf'][$groups_field_key] = $all_ids;
-    }
-
-    /*
-     * FIXME this can go once we're not dealing with groups at this level anymore 
-     */
-    public function acf_update_value($field, $value) {
-        switch($field['name']) {
-            case 'groups':
-                // also store resource file group ids as flat database records for meta search
-                // use $this->post->ID as the resource might not be finished creating
-                delete_post_meta($this->post->ID, 'resource_file_group_id');
-
-                if (is_array($value)) {
-                    foreach ($value as $file_group_id) {
-                        add_post_meta($this->post->ID, 'resource_file_group_id', $file_group_id);
-                    }
-                };
-                break;
-        }
-
-        return $value;
     }
 
     public static function by_id($id) {
