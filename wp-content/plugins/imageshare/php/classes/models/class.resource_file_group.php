@@ -16,6 +16,9 @@ class ResourceFileGroup {
             'post_name' => sanitize_title_with_dashes($title),
             'comment_status' => 'closed',
             'post_category' => [],
+            'meta_input' => [
+                'files' => []
+            ]
         ];
 
         $post_id = wp_insert_post($post_data, true);

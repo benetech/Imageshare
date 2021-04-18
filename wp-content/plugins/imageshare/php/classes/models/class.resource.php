@@ -447,11 +447,11 @@ class Resource {
 
     public static function get_default_group_id($resource_id) {
         $groups = ResourceFileGroup::with_parent_resource($resource_id);
-        $default = array_filter(function ($group) {
+        $default = array_filter($groups, function ($group) {
             return $group->is_default_for_parent();
         });
 
-        return count($default) === 1 ? $default[0]->id : null;
+        return count($default) === 1 ? current($default)->id : null;
     }
 
     public function get_constituting_file_types() {
