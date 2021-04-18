@@ -151,6 +151,47 @@
         "title": "btis_file_group",
         "fields": [
             {
+                "key": "field_607c284c5f43d",
+                "label": "Parent resource",
+                "name": "parent_resource",
+                "type": "post_object",
+                "instructions": "",
+                "required": 1,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "post_type": [
+                    "btis_resource"
+                ],
+                "taxonomy": "",
+                "allow_null": 0,
+                "multiple": 0,
+                "return_format": "id",
+                "ui": 1
+            },
+            {
+                "key": "field_607c28815f43e",
+                "label": "Is default for parent resource",
+                "name": "is_default",
+                "type": "true_false",
+                "instructions": "",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "message": "",
+                "default_value": 0,
+                "ui": 0,
+                "ui_on_text": "",
+                "ui_off_text": ""
+            },
+            {
                 "key": "field_6001a1ccccdd3",
                 "label": "Files",
                 "name": "files",
@@ -310,56 +351,6 @@
                 "prepend": "",
                 "append": "",
                 "maxlength": ""
-            },
-            {
-                "key": "field_6001a3d0cf648",
-                "label": "File Groups",
-                "name": "groups",
-                "type": "relationship",
-                "instructions": "",
-                "required": 1,
-                "conditional_logic": 0,
-                "wrapper": {
-                    "width": "",
-                    "class": "",
-                    "id": ""
-                },
-                "post_type": [
-                    "btis_file_group"
-                ],
-                "post_status": [
-                    "publish"
-                ],
-                "taxonomy": "",
-                "filters": [
-                    "search"
-                ],
-                "elements": "",
-                "min": "",
-                "max": "",
-                "return_format": "id"
-            },
-            {
-                "key": "field_6001a42ccf649",
-                "label": "Default file group",
-                "name": "default_file_group",
-                "type": "post_object",
-                "instructions": "",
-                "required": 0,
-                "conditional_logic": 0,
-                "wrapper": {
-                    "width": "",
-                    "class": "",
-                    "id": ""
-                },
-                "post_type": [
-                    "btis_file_group"
-                ],
-                "taxonomy": "",
-                "allow_null": 0,
-                "multiple": 0,
-                "return_format": "id",
-                "ui": 1
             },
             {
                 "key": "field_5ed65c22117b1",
@@ -956,4 +947,3 @@
         "description": "JSON import validation settings"
     }
 ]
-
