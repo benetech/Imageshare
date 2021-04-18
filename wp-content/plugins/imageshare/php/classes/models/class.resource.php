@@ -129,7 +129,7 @@ class Resource {
     }
 
     public function has_default_file_group() {
-        return isset($this->default_file_group_id) && intval($this->default_file_group_id) > 0;
+        return !is_null(ResourceFileGroup::get_default_group_for_resource($this->id));
     }
 
     public static function reindex_resources_containing_resource_file($resource_file_id) {

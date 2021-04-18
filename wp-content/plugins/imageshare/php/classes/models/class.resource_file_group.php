@@ -184,6 +184,16 @@ class ResourceFileGroup {
         return (bool) $this->is_default;
     }
 
+    public static function get_default_group_for_resource($resource_id) {
+        $resources = self::with_parent_resource($resource_id);
+
+        $default = array_filter($resources, function ($group) {
+            return $group->is_default_for_parent();
+        });
+
+        return count($default) === 1 ? array_pop($default) : null;
+    }
+
     public function load_custom_attributes() {
         if (!empty($this->post)) {
             $this->id = $this->post->ID;

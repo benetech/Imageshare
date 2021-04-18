@@ -2,10 +2,13 @@
 
 namespace Imageshare\Controllers;
 
+require_once imageshare_php_file('classes/helpers/class.acf.php');
+
 use Imageshare\Logger;
 use Imageshare\Models\ResourceFileGroup;
 use Imageshare\Models\Resource;
 use Imageshare\Models\ResourceFile;
+use Imageshare\Helpers\ACFConfigHelper;
 
 class FileGroupController {
 
@@ -16,7 +19,25 @@ class FileGroupController {
             return;
         }
 
-        self::validate_resource_file_group_update($post, $post['acf'], get_field_objects($post['post_ID']));
+        $fields = get_field_objects();
+
+        if (!is_array($fields)) {
+            // annoying - new posts don't have ACF data available
+            // construct our own field config from the ACF config
+            $acf = new ACFConfigHelper;
+
+            $is_default_field_key = $acf->get_group_field(ResourceFileGroup::type, 'is_default')->key;
+            $parent_resource_field_key = $acf->get_group_field(ResourceFileGroup::type, 'parent_resource')->key;
+            $files_field_key = $acf->get_group_field(ResourceFileGroup::type, 'files')->key;
+
+            $fields = [
+                'is_default' => ['key' => $is_default_field_key],
+                'parent_resource' => ['key' => $parent_resource_field_key],
+                'files' => ['key' => $files_field_key]
+            ];
+        }
+
+        self::validate_resource_file_group_update($post, $post['acf'], $fields);
     }
 
     public static function validate_resource_file_group_update($post, $data, $fields) {
@@ -49,23 +70,22 @@ class FileGroupController {
     }
 
     public static function validate_is_default_group_for_parent_resource($post, $is_default_field_key, $parent_resource_id) {
-        $parent_resource = Resource::by_id($parent_resource_id);
+        $default_group = ResourceFileGroup::get_default_group_for_resource($parent_resource_id);
 
         // No default file group? All good.
-        if (!$parent_resource->has_default_file_group()) {
+        if (is_null($default_group)) {
             return false;
         }
 
         // Default file group, but is the same as the current one.
-        if ($parent_resource->default_file_group_id === $post['post_ID']) {
+        if ($default_group->id === $post['post_ID']) {
             return false;
         }
 
         // Trying to overwrite... throw error.
-        $existing_default_file_group = ResourceFileGroup::by_id($parent_resource->default_file_group_id);
-        $title = $existing_default_file_group->title;
-
+        $title = $default_group->title;
         acf_add_validation_error("acf[{$is_default_field_key}]", "Parent resource already has default file group: \"{$title}\"");
+
         return true;
     }
 }

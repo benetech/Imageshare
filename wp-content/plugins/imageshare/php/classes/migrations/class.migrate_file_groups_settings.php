@@ -3,10 +3,12 @@
 namespace Imageshare\Migrations;
 
 require_once imageshare_php_file('classes/models/class.resource_file_group.php');
+require_once imageshare_php_file('classes/helpers/class.acf.php');
 
 use Imageshare\Logger;
 use Imageshare\Models\Resource as ResourceModel;
 use Imageshare\Models\ResourceFileGroup as ResourceFileGroupModel;
+use Imageshare\Helpers\ACFConfigHelper;
 
 class MigrateFileGroupsSettings {
     /*
@@ -31,6 +33,11 @@ class MigrateFileGroupsSettings {
             'post_parent' => null,
         ));
 
+        $acf = new ACFConfigHelper;
+
+        $is_default_field_key = $acf->get_group_field('btis_file_group', 'is_default')->key;
+        $parent_resource_field_key = $acf->get_group_field('btis_file_group', 'parent_resource')->key;
+
         foreach ($batch as $post) {
             $resource = ResourceModel::from_post($post);
 
@@ -45,7 +52,10 @@ class MigrateFileGroupsSettings {
 
             foreach ($group_ids as $group_id) {
                 $group = ResourceFileGroupModel::by_id($group_id);
-                $group->set_parent_resource_id($resource->id); 
+                $group->set_parent_resource_id($resource->id);
+                // store the meta associations for the ACF meta fields.
+                // this is not ideal but ACF does not expose an API for this.
+                add_post_meta($group->id, '_parent_resource', $parent_resource_field_key, true);
             }
 
             // get the default group id
@@ -58,6 +68,9 @@ class MigrateFileGroupsSettings {
                     Logger::log("No valid ResourceFileGroup for {$default}!");
                 } else {
                     $group->set_as_default_for_parent();
+                    // store the meta associations for the ACF meta fields.
+                    // this is not ideal but ACF does not expose an API for this.
+                    add_post_meta($group->id, '_is_default', $is_default_field_key, true);
                 }
             }
             

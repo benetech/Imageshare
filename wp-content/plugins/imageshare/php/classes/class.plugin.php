@@ -271,9 +271,6 @@ class Plugin {
              case ResourceFile::type:
                 ResourceFileGroup::remove_resource_file_from_all_containing_groups($post_id);
                 break;
-             case ResourceFileGroup::type:
-                Resource::remove_resource_file_group($post_id);
-                break;
         }
     }
 
