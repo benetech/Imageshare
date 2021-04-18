@@ -25,3 +25,7 @@
     border: 1px solid #aaa;
     padding: 0 .5em;
 }
+
+.settings-page .imageshare-tool + .imageshare-tool {
+    margin-top: 1em;
+}

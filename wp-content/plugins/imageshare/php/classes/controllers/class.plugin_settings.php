@@ -2,20 +2,26 @@
 
 namespace Imageshare\Controllers;
 
+require_once imageshare_php_file('classes/class.logger.php');
+require_once imageshare_php_file('classes/views/class.plugin_settings.php');
+require_once imageshare_php_file('classes/models/class.resource.php');
+require_once imageshare_php_file('classes/models/class.resource_file.php');
+require_once imageshare_php_file('classes/migrations/class.migrate_verify_default_resource_file_group.php');
+require_once imageshare_php_file('classes/migrations/class.migrate_file_groups_settings.php');
+
 use Imageshare\Logger;
 use ImageShare\Views\PluginSettings as View;
 use ImageShare\Models\Resource as ResourceModel;
 use ImageShare\Models\ResourceFile as ResourceFileModel;
 use ImageShare\Models\ResourceFileGroup as ResourceFileGroupModel;
 
-use Imageshare\Migration\MigrateVerifyDefaultResourceFileGroup;
-use Imageshare\Migration\MigrateFileGroupsSettings;
+use Imageshare\Migrations\MigrateVerifyDefaultResourceFileGroup;
+use Imageshare\Migrations\MigrateFileGroupsSettings;
 
 class PluginSettings {
     const i18n_ns    = 'imageshare';
     const capability = 'manage_options';
     const page_slug  = 'imageshare_settings';
-
 
     public function __construct() {
         add_action('admin_menu', [$this, 'add_admin_menu']);

@@ -4,6 +4,9 @@ window.addEventListener('DOMContentLoaded', function () {
     const ensureGroupsBtn = document.getElementById('imageshare-ensure-groups');
     const ensureGroupsStatus = document.getElementById('imageshare-ensure-groups-status');
 
+    const migrateDefaultStateAndParentBtn = document.getElementById('imageshare-migrate-default-state-and-parent-resource-handling');
+    const migrateDefaultStateAndParentStatus = document.getElementById('imageshare-migrate-default-state-and-parent-resource-handling-status')
+
     const verifyResourceGroups = () => {
         let offset = 0;
         let fixed = 0;
@@ -72,6 +75,77 @@ window.addEventListener('DOMContentLoaded', function () {
         doRequest();
     };
 
-    ensureGroupsBtn.addEventListener('click', verifyResourceGroups);
+    const migrateDefaultStateAndParent = () => {
+        let offset = 0;
+        let fixed = 0;
+        let errors = 0;
+        let size = 0;
 
+        const button = migrateDefaultStateAndParentBtn;
+        const status = migrateDefaultStateAndParentStatus;
+
+        button.setAttribute('disabled', '');
+
+        const doRequest = () => {
+            const formData = new FormData();
+
+            formData.append('_ajax_nonce', imageshare_ajax_obj.nonce);
+            formData.append('action', 'imageshare_migrate_file_groups_settings');
+            formData.append('offset', offset);
+            formData.append('fixed', fixed);
+            formData.append('errors', errors);
+
+            if (size) {
+                formData.append('size', size);
+            }
+
+            fetch(imageshare_ajax_obj.ajax_url, {
+                mode: 'cors',
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+
+                size = 5;
+
+                status.textContent = ('Unexpected response code. Decreasing batch size to 5.');
+
+                return null;
+            })
+            .then(response => {
+                console.debug(response);
+
+                if (response === null) {
+                    return doRequest();
+                }
+
+                offset = response.offset;
+                fixed = response.fixed;
+                errors = response.errors;
+
+                total = response.offset + response.size;
+
+                if (response.size == 0) {
+                    status.textContent = `Finished processing. Processed: ${total}, fixed: ${fixed}, errors: ${errors}.`;
+                    button.removeAttribute('disabled');
+                } else {
+                    status.textContent = `Running. Processed: ${total}, fixed: ${fixed}.`;
+                    doRequest();
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                status.textContent = `Processing error: ${error.message}`;
+                button.removeAttribute('disabled');
+            });
+        };
+
+        doRequest();
+    };
+
+    ensureGroupsBtn.addEventListener('click', verifyResourceGroups);
+    migrateDefaultStateAndParentBtn.addEventListener('click', migrateDefaultStateAndParent);
 });

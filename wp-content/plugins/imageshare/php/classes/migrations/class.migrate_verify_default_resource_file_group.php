@@ -2,8 +2,8 @@
 
 namespace Imageshare\Migrations;
 
-use Imageshare\ResourceModel;
-use Imageshare\ResourceFileGroupModel;
+use Imageshare\Models\Resource as ResourceModel;
+use Imageshare\Models\ResourceFileGroup as ResourceFileGroupModel;
 
 class MigrateVerifyDefaultResourceFileGroup {
     /*

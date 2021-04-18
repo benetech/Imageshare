@@ -496,7 +496,7 @@ class Resource {
             $this->subject       = Model::get_meta_term_name($this->post_id, 'subject', 'subjects', true);
             $this->tags          = $this->get_tags();
 
-            $this->default_file_group_id = get_post_meta($this->post_id, 'default_file_group', true);
+            //$this->default_file_group_id = get_post_meta($this->post_id, 'default_file_group', true);
 
             $this->subject_term_id = get_post_meta($this->post_id, 'subject', true);
 

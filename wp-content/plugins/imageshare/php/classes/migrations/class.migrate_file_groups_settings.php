@@ -2,9 +2,13 @@
 
 namespace Imageshare\Migrations;
 
-use Imageshare\ResourceFileGroupModel;
+require_once imageshare_php_file('classes/models/class.resource_file_group.php');
 
-class MigrateFileGroupSettings {
+use Imageshare\Logger;
+use Imageshare\Models\Resource as ResourceModel;
+use Imageshare\Models\ResourceFileGroup as ResourceFileGroupModel;
+
+class MigrateFileGroupsSettings {
     /*
      * This migration:
      *   - moves file groups away from resources 
@@ -28,36 +32,42 @@ class MigrateFileGroupSettings {
         ));
 
         foreach ($batch as $post) {
-            $is_migrated = get_post_meta($post->id, 'has_migrated_file_groups_settings', false);
-
-            if ($is_migrated) {
-                continue;
-            }
-
             $resource = ResourceModel::from_post($post);
 
             // get all group ids
             // for each group, set the parent resource to this id
-            $group_ids = get_post_meta($post->id, 'groups', true) ?: [];
-            
+            $group_ids = get_post_meta($resource->id, 'groups', true);
+
+            if (is_null($group_ids) || $group_ids === '') {
+                // groups is null or empty string for {$resource->id}, setting to empty list
+                $group_ids = [];
+            }
+
             foreach ($group_ids as $group_id) {
-                $group = ResourceFileGroup::by_id($group_id);
-                $group->set_parent_resource_id($post->id); 
+                $group = ResourceFileGroupModel::by_id($group_id);
+                $group->set_parent_resource_id($resource->id); 
             }
 
             // get the default group id
             // set that group's is_default meta value
-            $default = get_post_meta($post_id, 'default_file_group', true);
-            $group = ResourceFileGroup::by_id($default);
-            $group->set_as_default_for_parent();
+            $default = get_post_meta($resource->id, 'default_file_group', true);
+
+            if (!is_null($default) && $default !== '') {
+                $group = ResourceFileGroupModel::by_id($default);
+                if (is_null($group)) {
+                    Logger::log("No valid ResourceFileGroup for {$default}!");
+                } else {
+                    $group->set_as_default_for_parent();
+                }
+            }
             
             // delete the 'groups' meta value
             // delete the 'resource_file_group_id' meta values
-            delete_post_meta($post->id, 'groups');
-            delete_post_meta($post->id, 'resource_file_group_id');
-            delete_post_meta($post->id, 'default_file_group');
+            delete_post_meta($resource->id, 'groups');
+            delete_post_meta($resource->id, 'resource_file_group_id');
+            delete_post_meta($resource->id, 'default_file_group');
 
-            update_post_meta('has_migrated_file_groups_settings', true);
+            $fixed++;
         }
 
         $batch_size = count($batch);
