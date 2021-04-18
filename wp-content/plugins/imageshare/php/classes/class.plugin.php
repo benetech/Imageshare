@@ -165,10 +165,6 @@ class Plugin {
 
         $post = get_post($post_id);
 
-        if ($post->post_type === Resource::type) {
-            return Resource::from_post($post)->acf_update_value($field, $value);
-        }
-
         if ($post->post_type === ResourceCollection::type) {
             return ResourceCollection::from_post($post)->acf_update_value($field, $value);
         }

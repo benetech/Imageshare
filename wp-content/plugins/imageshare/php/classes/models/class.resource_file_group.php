@@ -122,7 +122,7 @@ class ResourceFileGroup {
         update_post_meta($this->post_id, 'is_default', 1);
     }
 
-    private function get_parent_resource() {
+    public function get_parent_resource() {
         if (!isset($this->parent_resource)) {
             return null;
         }

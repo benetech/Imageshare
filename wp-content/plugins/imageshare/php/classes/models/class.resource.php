@@ -139,8 +139,8 @@ class Resource {
         $collection_ids = [];
 
         foreach ($existing as $resource) {
-            wpfts_post_reindex($resource->ID);
-            $collections = ResourceCollection::containing($resource->ID);
+            wpfts_post_reindex($resource->id);
+            $collections = ResourceCollection::containing($resource->id);
             $collection_ids = array_merge($collection_ids, array_map(function ($r) {
                 return $r->id;
             }, $collections));
@@ -149,6 +149,14 @@ class Resource {
         foreach (array_unique($collection_ids) as $collection_id) {
             wpfts_post_reindex($collection_id);
         }
+    }
+
+    public static function containing_resource_file($resource_file_id) {
+        $groups_containing = ResourceFileGroup::containing_resource_file($resource_file_id);
+        $parents = array_map(function ($group) {
+            return $group->get_parent_resource();
+        }, $groups_containing);
+        return $parents;
     }
 
     public function reindex() {
