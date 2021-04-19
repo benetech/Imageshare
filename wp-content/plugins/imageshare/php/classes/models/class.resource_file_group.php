@@ -137,7 +137,7 @@ class ResourceFileGroup {
 
     public static function containing_resource_file($resource_file_id, $ids_only = false) {
         $args = [
-            'numberposts'   => -1,
+            'numberposts'   => 1,
             'post_type'     => [self::type],
             'post_status'   => 'publish',
             'meta_key'      => 'file_id',
