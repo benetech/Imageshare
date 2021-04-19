@@ -163,7 +163,8 @@ class ResourceFileGroup {
         $args = [
             'numberposts'   => -1,
             'post_type'     => [self::type],
-//            'post_status'   => 'publish',
+            // only published -- huge performance hit otherwise
+            'post_status'   => 'publish',
             'meta_key'      => 'parent_resource',
             'meta_value'    => $resource_id
         ];
@@ -240,7 +241,6 @@ class ResourceFileGroup {
             array_push($carry, $file);
             return $carry;
         }, []);
-
     }
 
     public function acf_update_value($field, $value) {
