@@ -8,6 +8,7 @@ require_once imageshare_php_file('classes/models/class.resource.php');
 require_once imageshare_php_file('classes/models/class.resource_file.php');
 require_once imageshare_php_file('classes/migrations/class.migrate_verify_default_resource_file_group.php');
 require_once imageshare_php_file('classes/migrations/class.migrate_file_groups_settings.php');
+require_once imageshare_php_file('classes/migrations/class.migrate_introduce_join_tables.php');
 
 use Imageshare\Logger;
 use ImageShare\Views\PluginSettings as View;
@@ -17,6 +18,7 @@ use ImageShare\Models\ResourceFileGroup as ResourceFileGroupModel;
 
 use Imageshare\Migrations\MigrateVerifyDefaultResourceFileGroup;
 use Imageshare\Migrations\MigrateFileGroupsSettings;
+use Imageshare\Migrations\MigrateIntroduceJoinTables;
 
 class PluginSettings {
     const i18n_ns    = 'imageshare';
@@ -28,6 +30,7 @@ class PluginSettings {
         add_action('admin_enqueue_scripts', [$this, 'enqueue_scripts']);
         add_action('wp_ajax_imageshare_verify_default_resource_file_group', [MigrateVerifyDefaultResourceFileGroup::class, 'ajax_verify_default_resource_file_group']);
         add_action('wp_ajax_imageshare_migrate_file_groups_settings', [MigrateFileGroupsSettings::class, 'ajax_migrate_file_groups_settings']);
+        add_action('wp_ajax_imageshare_migrate_introduce_join_tables', [MigrateIntroduceJoinTables::class, 'ajax_migrate_introduce_join_tables']);
     }
 
     public function enqueue_scripts() {

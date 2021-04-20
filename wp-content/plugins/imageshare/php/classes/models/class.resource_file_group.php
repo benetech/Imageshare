@@ -137,9 +137,9 @@ class ResourceFileGroup {
 
     public static function containing_resource_file($resource_file_id, $ids_only = false) {
         $args = [
-            'numberposts'   => 1,
+            'numberposts'   => -1,
             'post_type'     => [self::type],
-            'post_status'   => 'publish',
+            'post_status'   => ['publish', 'draft'],
             'meta_key'      => 'file_id',
             'meta_value'    => $resource_file_id
         ];
@@ -163,10 +163,10 @@ class ResourceFileGroup {
         $args = [
             'numberposts'   => -1,
             'post_type'     => [self::type],
-            // only published -- huge performance hit otherwise
-            'post_status'   => 'publish',
-            'meta_key'      => 'parent_resource',
-            'meta_value'    => $resource_id
+            // only published and drafted -- huge performance hit otherwise
+            'post_status'   => ['publish', 'draft'],
+            'meta_key' => 'parent_resource',
+            'meta_value' => (string) $resource_id,
         ];
 
         if ($ids_only) {

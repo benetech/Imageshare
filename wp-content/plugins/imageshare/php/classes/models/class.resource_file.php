@@ -3,6 +3,7 @@
 namespace Imageshare\Models;
 
 use Imageshare\Logger;
+use Imageshare\DB;
 use Imageshare\Models\Model;
 use Imageshare\Models\Resource as ResourceModel;
 use Imageshare\Models\ResourceFileGroup as ResourceFileGroupModel;
@@ -267,8 +268,9 @@ class ResourceFile {
                 break;
 
             case 'group':
-                echo isset($post->group)
-                    ? '<a href="' . get_permalink($post->group->id) . '">' . esc_html($post->group->title) . '</a>'
+                $group = $post->get_parent_group();
+                echo !is_null($group)
+                    ? '<a href="' . get_permalink($group->id) . '">' . esc_html($group->title) . '</a>'
                     : self::i18n('None &#9888;')
                 ;
                 break;
@@ -310,7 +312,6 @@ class ResourceFile {
             $this->author = get_post_meta($this->post_id, 'author', true);
             $this->uri = get_post_meta($this->post_id, 'uri', true);
             $this->downloadable = get_post_meta($this->post_id, 'downloadable', true);
-            $this->group = $this->get_parent_group();
             $this->length_minutes = get_post_meta($this->post_id, 'length_minutes', true);
             $this->length = $this->get_length();
             $this->license = Model::get_meta_term_name($this->post_id, 'license', 'licenses');
@@ -338,16 +339,17 @@ class ResourceFile {
     }
 
     private function get_parent_group() {
-        if (!isset($this->_parent_group)) {
-            $containing = ResourceFileGroupModel::containing_resource_file($this->id);
-            if (count($containing)) {
-                $this->_parent_group = $containing[0];
-            } else {
-                $this->_parent_group = null;
-            }
+        if (isset($this->_parent_group)) {
+            return $this->_parent_group;
         }
 
-        return $this->_parent_group;
+        $parent_id = DB::get_group_containing_resource_file($this->id);
+
+        if (is_null($parent_id)) {
+            return $this->_parent_group = null;
+        }
+
+        return $this->_parent_group = ResourceFileGroupModel::by_id($parent_id);
     }
 
     public function length_formatted_string() {

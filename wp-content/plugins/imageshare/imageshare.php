@@ -24,8 +24,13 @@ define('IMAGESHARE_VERSION', '1.1');
 define('IMAGESHARE_TEMPLATE_PATH', IMAGESHARE_PLUGIN_PATH . DIRECTORY_SEPARATOR . 'templates');
 define('IMAGESHARE_TEMPLATE_CACHE_PATH', IMAGESHARE_PLUGIN_PATH . DIRECTORY_SEPARATOR . 'template_cache');
 
+
 function imageshare_php_file(string $path) {
     return _imageshare_file('php', $path);
+}
+
+function imageshare_sql_file(string $path) {
+    return _imageshare_file('assets' . DIRECTORY_SEPARATOR . 'sql', $path);
 }
 
 function imageshare_asset_file(string $path) {

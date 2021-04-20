@@ -7,6 +7,7 @@ require_once imageshare_php_file('classes/controllers/json_api/class.resources.p
 
 use Imageshare\Views\View;
 use Imageshare\Logger;
+use Imageshare\DB;
 use Swaggest\JsonSchema\Schema;
 use Imageshare\Models\Model;
 use Imageshare\Models\ResourceFileGroup;
@@ -426,21 +427,35 @@ class Resource {
     }
 
     public function published_files() {
-        return array_reduce($this->published_groups(), function ($carry, $group) {
-            return array_merge($carry, $group->published_files());
-        }, []);
+        if (isset($this->_published_files) && is_array($this->_published_files)) {
+            return $this->_published_files;
+        }
+
+        return $this->_published_files = array_filter($this->files(), function ($file) {
+            return $file->post->post_status === 'publish';
+        });
     }
 
     public function files() {
-        return array_reduce($this->groups(), function ($carry, $group) {
-            return array_merge($carry, $group->files());
-        }, []);
+        if (isset($this->_files) && is_array($this->_files)) {
+            return $this->_files;
+        }
+
+        $ids = DB::get_resource_file_ids($this->id);
+
+        return $this->_files = array_map(function ($id) {
+            return ResourceFile::by_id($id);
+        }, $ids);
     }
 
     public function groups() {
         if (isset($this->_groups) && is_array($this->_groups)) {
             return $this->_groups;
         }
+
+        return $this->_groups = array_map(function ($id) {
+            return ResourceFileGroup::by_id($id);
+        }, DB::get_resource_group_ids($this->id));
 
         return $this->_groups = ResourceFileGroup::with_parent_resource($this->id);
     }
