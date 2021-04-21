@@ -209,7 +209,11 @@ class Plugin {
         add_action('wp', [$this, 'on_wp']);
         add_action('pre_get_posts', [$this, 'patch_admin_search']);
         add_action('posts_join', [$this, 'patch_admin_search_join']);
-        add_action('posts_where', [$this, 'patch_admin_search_where']);
+
+        // this adds metadata as relevant to search.
+        // but sometimes it creates a double postmeta table usage. Not sure why.
+        //add_action('posts_where', [$this, 'patch_admin_search_where']);
+
         add_action('posts_groupby', [$this, 'patch_admin_search_groupby']);
     }
 
