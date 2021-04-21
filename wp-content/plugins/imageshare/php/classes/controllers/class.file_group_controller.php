@@ -5,12 +5,40 @@ namespace Imageshare\Controllers;
 require_once imageshare_php_file('classes/helpers/class.acf.php');
 
 use Imageshare\Logger;
+use Imageshare\DB;
 use Imageshare\Models\ResourceFileGroup;
 use Imageshare\Models\Resource;
 use Imageshare\Models\ResourceFile;
 use Imageshare\Helpers\ACFConfigHelper;
 
 class FileGroupController {
+
+    public static function acf_save_post($post_id, $post) {
+        $fields = get_field_objects();
+
+        $acf = new ACFConfigHelper;
+
+        $is_default_field_key = $acf->get_group_field(ResourceFileGroup::type, 'is_default')->key;
+        $parent_resource_field_key = $acf->get_group_field(ResourceFileGroup::type, 'parent_resource')->key;
+        $files_field_key = $acf->get_group_field(ResourceFileGroup::type, 'files')->key;
+
+        $is_default = $post['acf'][$is_default_field_key];
+        $parent_resource_id = $post['acf'][$parent_resource_field_key];
+        $files = $post['acf'][$files_field_key];
+
+        // remove any pre-existing relationship for resource and resource_file with this group
+        DB::remove_group_entries($post_id);
+        // store the new resource relationship
+        DB::add_resource_group_relationship($parent_resource_id, $post_id, $is_default);
+        // store the new files relationships
+        foreach ($files as $file_id) {
+            DB::add_group_resource_file_relationship($post_id, $file_id);
+        }
+    }
+
+    public static function delete_post($post_id) {
+        DB::remove_group_entries($post_id);
+    }
 
     public static function on_acf_validate_save_post() {
         $post = $_POST;

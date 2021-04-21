@@ -12,10 +12,13 @@ require_once imageshare_php_file('classes/models/class.resource_file_group.php')
 
 require_once imageshare_php_file('classes/controllers/class.resource_collection.php');
 require_once imageshare_php_file('classes/controllers/class.plugin_settings.php');
-require_once imageshare_php_file('classes/controllers/class.file_group_controller.php');
 require_once imageshare_php_file('classes/controllers/class.search.php');
 require_once imageshare_php_file('classes/controllers/class.post.php');
 require_once imageshare_php_file('classes/controllers/class.json_api.php');
+
+require_once imageshare_php_file('classes/controllers/class.file_group_controller.php');
+require_once imageshare_php_file('classes/controllers/class.resource_file_controller.php');
+require_once imageshare_php_file('classes/controllers/class.resource_controller.php');
 
 use Imageshare\Logger;
 
@@ -30,6 +33,9 @@ use Imageshare\Controllers\PluginSettings as PluginSettingsController;
 use Imageshare\Controllers\Search as SearchController;
 use Imageshare\Controllers\Post as PostController;
 use Imageshare\Controllers\JSONAPI as JSONAPIController;
+
+use Imageshare\Controllers\ResourceController;
+use Imageshare\Controllers\ResourceFileController;
 use Imageshare\Controllers\FileGroupController;
 
 class Plugin {
@@ -136,6 +142,7 @@ class Plugin {
         add_filter('acf/fields/relationship/query', [$this, 'on_acf_fields_relationship_query'], 10, 3);
         add_filter('acf/fields/relationship/result', [$this, 'on_acf_relationship_result'], 20, 4);
         add_filter('acf/validate_save_post', [FileGroupController::class, 'on_acf_validate_save_post'], 10, 1);
+        add_action('acf/save_post', [$this, 'on_acf_save_post'], 10);
     }
 
     /**
@@ -196,7 +203,7 @@ class Plugin {
 
         add_filter('plugin_action_links_' . plugin_basename($this->file), [$this, 'add_action_links']);
         add_filter('wp_insert_post_data', [$this, 'on_insert_post_data'], 2, 10);
-        add_filter('save_post_btis_resource_file', [self::model('ResourceFile'), 'on_save_post'], 3, 10);
+        add_filter('save_post', [$this, 'on_save_post'], 3, 10);
         add_filter('delete_post', [$this, 'on_delete_post'], 1, 10);
         add_filter('edited_term', [$this, 'on_edited_term',], 3, 10);
         add_action('wp', [$this, 'on_wp']);
@@ -257,15 +264,39 @@ class Plugin {
         return $query;
     }
 
+    public function on_acf_save_post($post_id) {
+        $post_type = get_post_type($post_id);
+        $data = $_POST;
+
+        switch ($post_type) {
+            case ResourceFileGroup::type:
+                FileGroupController::acf_save_post($post_id, $data);
+                break;
+        }
+    }
+
+    public function on_save_post($post_id, $post, $is_update) {
+        $post_type = get_post_type($post_id);
+
+        switch ($post_type) {
+            case ResourceFile::type:
+                ResourceFileController::save_post($post_id, $post);
+                break;
+        }
+    }
+
     public function on_delete_post($post_id) {
         $post_type = get_post_type($post_id);
 
         switch ($post_type) {
             case Resource::type:
-                ResourceCollection::remove_resource($post_id);
+                ResourceController::delete_post($post_id);
                 break;
-             case ResourceFile::type:
-                ResourceFileGroup::remove_resource_file_from_all_containing_groups($post_id);
+            case ResourceFile::type:
+                ResourceFileController::delete_post($post_id);
+                break;
+            case ResourceFileGroup::type:
+                FileGroupController::delete_post($post_id);
                 break;
         }
     }

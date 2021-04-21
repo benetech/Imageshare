@@ -135,6 +135,13 @@ class ResourceFileGroup {
 //        return count($resources) === 1 ? $resources[0] : null;
     }
 
+    public static function remove_parent_where($resource_id) {
+        $ids = self::with_parent_resource($resource_id, true);
+        foreach ($ids as $id) {
+            delete_post_meta($id, 'parent_resource');
+        }
+    }
+
     public static function containing_resource_file($resource_file_id, $ids_only = false) {
         $args = [
             'numberposts'   => -1,

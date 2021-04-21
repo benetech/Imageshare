@@ -75,7 +75,7 @@ class DB {
 
         $sql = "select gfjt.group_post_id from {$gfjt} gfjt where gfjt.resource_file_post_id = %d";
 
-        return $wpdb->get_col($wpdb->prepare($sql, $resource_file_id));
+        return $wpdb->get_var($wpdb->prepare($sql, $resource_file_id));
     }
 
     public static function remove_resource_entries($resource_id) {
@@ -94,8 +94,10 @@ class DB {
         DB::setup();
 
         $gfjt = IMAGESHARE_GROUP_RESOURCE_FILE_JOIN_TABLE_NAME;
+        $rgjt = IMAGESHARE_RESOURCE_GROUP_JOIN_TABLE_NAME;
 
         $wpdb->delete($gfjt, ['group_post_id' => $group_id], ['%d']);
+        $wpdb->delete($rgjt, ['group_post_id' => $group_id], ['%d']);
     }
 
     public static function remove_resource_file_entries($resource_file_id) {
