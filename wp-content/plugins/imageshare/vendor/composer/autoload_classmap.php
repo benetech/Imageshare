@@ -21,6 +21,8 @@ return array(
     'Imageshare\\Controllers\\PluginSettings' => $baseDir . '/php/classes/controllers/class.plugin_settings.php',
     'Imageshare\\Controllers\\Post' => $baseDir . '/php/classes/controllers/class.post.php',
     'Imageshare\\Controllers\\ResourceCollection' => $baseDir . '/php/classes/controllers/class.resource_collection.php',
+    'Imageshare\\Controllers\\ResourceController' => $baseDir . '/php/classes/controllers/class.resource_controller.php',
+    'Imageshare\\Controllers\\ResourceFileController' => $baseDir . '/php/classes/controllers/class.resource_file_controller.php',
     'Imageshare\\Controllers\\Search' => $baseDir . '/php/classes/controllers/class.search.php',
     'Imageshare\\DB' => $baseDir . '/php/classes/class.db.php',
     'Imageshare\\Helpers\\ACFConfigHelper' => $baseDir . '/php/classes/helpers/class.acf.php',

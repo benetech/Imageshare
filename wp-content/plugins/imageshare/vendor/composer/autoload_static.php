@@ -72,6 +72,8 @@ class ComposerStaticInit4a8275ef4761dc6a4dc3f8913e3bc09f
         'Imageshare\\Controllers\\PluginSettings' => __DIR__ . '/../..' . '/php/classes/controllers/class.plugin_settings.php',
         'Imageshare\\Controllers\\Post' => __DIR__ . '/../..' . '/php/classes/controllers/class.post.php',
         'Imageshare\\Controllers\\ResourceCollection' => __DIR__ . '/../..' . '/php/classes/controllers/class.resource_collection.php',
+        'Imageshare\\Controllers\\ResourceController' => __DIR__ . '/../..' . '/php/classes/controllers/class.resource_controller.php',
+        'Imageshare\\Controllers\\ResourceFileController' => __DIR__ . '/../..' . '/php/classes/controllers/class.resource_file_controller.php',
         'Imageshare\\Controllers\\Search' => __DIR__ . '/../..' . '/php/classes/controllers/class.search.php',
         'Imageshare\\DB' => __DIR__ . '/../..' . '/php/classes/class.db.php',
         'Imageshare\\Helpers\\ACFConfigHelper' => __DIR__ . '/../..' . '/php/classes/helpers/class.acf.php',
