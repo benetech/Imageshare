@@ -15,6 +15,8 @@ class DB {
 
     public static function add_resource_group_relationship($resource_id, $group_id, $is_default) {
         global $wpdb;
+
+        DB::setup();
         
         $record = [
             'resource_post_id' => $resource_id,
@@ -30,6 +32,8 @@ class DB {
     public static function add_group_resource_file_relationship($group_id, $file_id) {
         global $wpdb;
         
+        DB::setup();
+
         $record = [
             'group_post_id' => $group_id,
             'resource_file_post_id' => $file_id,

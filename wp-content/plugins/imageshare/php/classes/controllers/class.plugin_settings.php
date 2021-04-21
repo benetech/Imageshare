@@ -11,6 +11,7 @@ require_once imageshare_php_file('classes/migrations/class.migrate_file_groups_s
 require_once imageshare_php_file('classes/migrations/class.migrate_introduce_join_tables.php');
 
 use Imageshare\Logger;
+use Imageshare\DB;
 use ImageShare\Views\PluginSettings as View;
 use ImageShare\Models\Resource as ResourceModel;
 use ImageShare\Models\ResourceFile as ResourceFileModel;
@@ -169,6 +170,8 @@ class PluginSettings {
             $group = ResourceFileGroupModel::by_id($resource_file_group_id);
             $group->set_parent_resource_id($resource_id);
             $group->set_as_default_for_parent();
+
+            DB::add_resource_group_relationship($resource_id, $group->id, true);
         } else {
             $resource_file_group_id = ResourceModel::get_default_group_id($resource_id);
         }
@@ -195,6 +198,7 @@ class PluginSettings {
 
                 if (!$is_file_update) {
                     ResourceFileGroupModel::associate_resource_file($resource_file_group_id, $file_id);
+                    DB::add_group_resource_file_relationship($resource_file_group_id, $file_id);
                 }
 
                 array_push($files, [$file->display_name, $file_id, $is_file_update]);
