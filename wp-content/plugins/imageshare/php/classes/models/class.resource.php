@@ -137,6 +137,10 @@ class Resource {
         Logger::log("Reindexing resources containing resource file {$resource_file_id}");
         $existing = self::containing_resource_file($resource_file_id);
 
+        foreach ($existing as $resource) {
+            $resource->reindex();
+        }
+        /**
         $collection_ids = [];
 
         foreach ($existing as $resource) {
@@ -150,14 +154,13 @@ class Resource {
         foreach (array_unique($collection_ids) as $collection_id) {
             wpfts_post_reindex($collection_id);
         }
+        **/
     }
 
     public static function containing_resource_file($resource_file_id) {
-        $groups_containing = ResourceFileGroup::containing_resource_file($resource_file_id);
-        $parents = array_map(function ($group) {
-            return $group->get_parent_resource();
-        }, $groups_containing);
-        return $parents;
+        return array_map(function ($resource_id) {
+            return self::by_id($resource_id);
+        }, DB::get_resources_containing_file($resource_file_id));
     }
 
     public function reindex() {

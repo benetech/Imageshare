@@ -44,6 +44,19 @@ class DB {
         $wpdb->replace(IMAGESHARE_GROUP_RESOURCE_FILE_JOIN_TABLE_NAME, $record, $data_types);
     }
 
+    public static function get_resources_containing_file($resource_file_id) {
+        global $wpdb;
+
+        DB::setup();
+
+        $rgjt = IMAGESHARE_RESOURCE_GROUP_JOIN_TABLE_NAME;
+        $gfjt = IMAGESHARE_GROUP_RESOURCE_FILE_JOIN_TABLE_NAME;
+
+        $sql = "select rgjt.resource_post_id from {$rgjt} rgjt inner join {$gfjt} gfjt on gfjt.group_post_id = rgjt.group_post_id where gfjt.resource_file_post_id = %d";
+
+        return $wpdb->get_col($wpdb->prepare($sql, $resource_file_id));
+    }
+
     public static function get_resource_file_ids($resource_id) {
         global $wpdb;
 
