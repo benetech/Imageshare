@@ -95,6 +95,19 @@ class DB {
         return $wpdb->get_var($wpdb->prepare($sql, $resource_file_id));
     }
 
+    public static function get_resource_default_group($resource_id) {
+        global $wpdb;
+
+        DB::setup();
+
+        $rgjt = IMAGESHARE_RESOURCE_GROUP_JOIN_TABLE_NAME;
+
+        $sql = "select rgjt.group_post_id from {$rgjt} rgjt where rgjt.resource_post_id = %d and is_default_group=1";
+
+        return $wpdb->get_var($wpdb->prepare($sql, $resource_id));
+    }
+
+
     public static function remove_resource_entries($resource_id) {
         global $wpdb;
 

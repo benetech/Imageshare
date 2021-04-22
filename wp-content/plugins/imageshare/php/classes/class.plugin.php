@@ -212,7 +212,7 @@ class Plugin {
 
         // this adds metadata as relevant to search.
         // but sometimes it creates a double postmeta table usage. Not sure why.
-        //add_action('posts_where', [$this, 'patch_admin_search_where']);
+        add_action('posts_where', [$this, 'patch_admin_search_where']);
 
         add_action('posts_groupby', [$this, 'patch_admin_search_groupby']);
     }
@@ -221,6 +221,8 @@ class Plugin {
         global $pagenow;
         return is_admin() &&
             $pagenow === 'edit.php' &&
+            // don't amend search when working with trash -- causes postmeta problems.
+            (!(isset($_GET['post_status']) && $_GET['post_status'] === 'trash')) &&
             (!isset($_POST['action']) || !(isset($_POST['action']) && $_POST['action'] === 'wpftsi_submit_testsearch'))
         ;
     }

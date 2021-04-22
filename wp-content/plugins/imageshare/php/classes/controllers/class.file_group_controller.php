@@ -98,20 +98,22 @@ class FileGroupController {
     }
 
     public static function validate_is_default_group_for_parent_resource($post, $is_default_field_key, $parent_resource_id) {
-        $default_group = ResourceFileGroup::get_default_group_for_resource($parent_resource_id);
+        $default_group_id = DB::get_resource_default_group($parent_resource_id);
 
         // No default file group? All good.
-        if (is_null($default_group)) {
+        if (is_null($default_group_id)) {
             return false;
         }
 
         // Default file group, but is the same as the current one.
-        if ($default_group->id === $post['post_ID']) {
+        if ($default_group_id === $post['post_ID']) {
             return false;
         }
 
+        $group = ResourceFileGroup::by_id($default_group_id);
+
         // Trying to overwrite... throw error.
-        $title = $default_group->title;
+        $title = $group->title;
         acf_add_validation_error("acf[{$is_default_field_key}]", "Parent resource already has default file group: \"{$title}\"");
 
         return true;
