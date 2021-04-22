@@ -17,11 +17,7 @@ class MigrateIntroduceJoinTables {
     public static function ajax_migrate_introduce_join_tables() {
         DB::setup();
 
-        if (is_null(get_option('imageshare_join_tables_created', null))) {
-            Logger::log('Creating join tables');
-            self::create_join_tables();
-            add_option('imageshare_join_tables_created', true);
-        }
+        self::create_join_tables();
 
         $offset = intval(isset($_POST['offset']) ? $_POST['offset'] : 0);
         $fixed = intval(isset($_POST['fixed']) ? $_POST['fixed'] : 0);
