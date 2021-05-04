@@ -28,6 +28,11 @@
         'relationship' => $relationship
     ];
 
+    // Set up CORS
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Request-Method: GET, OPTIONS');
+    header('Access-Control-Request-Headers: Content-Type');
+
     switch ($controller) {
         case 'types':
             TypesController::render($args);
