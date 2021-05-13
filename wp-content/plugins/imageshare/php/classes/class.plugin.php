@@ -85,6 +85,18 @@ class Plugin {
         $file = dirname(plugin_dir_url(__FILE__), 2) . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'acf_imageshare_relationship.js';
         wp_enqueue_script('imageshare-admin-acf_imageshare_relationship-js', $file, ['acf-input', 'select2']);
 
+        $file = dirname(plugin_dir_url(__FILE__), 2) . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'admin.js';
+        wp_enqueue_script('imageshare-admin-js', $file, ['acf-input', 'select2']);
+
+        global $pagenow;
+
+        // only hook this custom javascript when a new file group is created
+        if (get_post_type() === ResourceFileGroup::type && in_array($pagenow, ['post-new.php'])) {
+            $file = dirname(plugin_dir_url(__FILE__), 2) . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'admin-edit-file-group.js';
+            wp_enqueue_script('imageshare-admin-edit-file-group-js', $file, ['acf-input', 'select2']);
+
+            wp_localize_script('imageshare-admin-edit-file-group-js', 'imageshare_acf_fields', FileGroupController::get_acf_fields());
+        }
     }
 
     public function activate() {
@@ -140,6 +152,7 @@ class Plugin {
     private function set_acf_hooks_and_filters() {
         add_filter('acf/update_value', [$this, 'on_acf_update_value'], 20, 3);
         add_filter('acf/fields/relationship/query', [$this, 'on_acf_fields_relationship_query'], 10, 3);
+        add_filter('acf/fields/imgs_relationship/query', [$this, 'on_acf_fields_relationship_query'], 10, 3);
         add_filter('acf/fields/relationship/result', [$this, 'on_acf_relationship_result'], 20, 4);
         add_filter('acf/validate_save_post', [FileGroupController::class, 'on_acf_validate_save_post'], 10, 1);
         add_action('acf/save_post', [$this, 'on_acf_save_post'], 10);
@@ -399,9 +412,18 @@ class Plugin {
 
     }
 
-    public function on_acf_fields_relationship_query($args, $fields, $post_id) {
+    public function on_acf_fields_relationship_query($args, $field, $post_id) {
         // disable full-text search for relationship querying
         $args['wpfts_disable'] = 1;
+
+        $post_type = get_post_type($post_id);
+
+        switch ($post_type) {
+            case ResourceFileGroup::type:
+                $args = FileGroupController::filter_relationship_query($args, $field, $post_id);
+                break;
+        }
+
         return $args;
     }
 

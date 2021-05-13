@@ -1,5 +1,5 @@
 window.addEventListener('DOMContentLoaded', function () {
-    console.debug('[Imageshare] settings loaded', imageshare_ajax_obj);
+    console.debug('[Imageshare] settings loaded');
 
     const ensureGroupsBtn = document.getElementById('imageshare-ensure-groups');
     const ensureGroupsStatus = document.getElementById('imageshare-ensure-groups-status');
@@ -48,8 +48,6 @@ window.addEventListener('DOMContentLoaded', function () {
                 return null;
             })
             .then(response => {
-                console.debug(response);
-
                 if (response === null) {
                     return doRequest();
                 }
@@ -119,8 +117,6 @@ window.addEventListener('DOMContentLoaded', function () {
                 return null;
             })
             .then(response => {
-                console.debug(response);
-
                 if (response === null) {
                     return doRequest();
                 }
@@ -190,8 +186,6 @@ window.addEventListener('DOMContentLoaded', function () {
                 return null;
             })
             .then(response => {
-                console.debug(response);
-
                 if (response === null) {
                     return doRequest();
                 }

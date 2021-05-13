@@ -283,7 +283,7 @@ class acf_custom_field_relationship extends acf_field {
 
 
                         // order posts by search
-                        if( $is_search && empty($args['orderby']) ) {
+                        if( $is_search && empty($args['orderby']) && isset($args['s'])) {
 
                                 $posts = acf_order_by_search( $posts, $args['s'] );
 

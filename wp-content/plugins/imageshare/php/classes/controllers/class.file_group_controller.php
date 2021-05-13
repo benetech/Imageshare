@@ -118,4 +118,31 @@ class FileGroupController {
 
         return true;
     }
+
+    public static function filter_relationship_query($args, $field, $post_id) {
+        if (isset($args['s'])) {
+            // the 's' parameter is the parent resource
+
+            $parent = Resource::by_id(intval($args['s']));
+
+            if (!is_null($parent)) {
+                // only return ids associated with the parent resource that was selected
+                $args['post__in'] = DB::get_resource_file_ids($parent->id);
+            }
+
+            unset($args['s']);
+        }
+
+        return $args;
+    }
+
+    public static function get_acf_fields() {
+        $acf = new ACFConfigHelper;
+
+        return [
+            'is_default' => $acf->get_group_field(ResourceFileGroup::type, 'is_default')->key,
+            'parent_resource' => $acf->get_group_field(ResourceFileGroup::type, 'parent_resource')->key,
+            'files' => $acf->get_group_field(ResourceFileGroup::type, 'files')->key
+        ];
+    }
 }
