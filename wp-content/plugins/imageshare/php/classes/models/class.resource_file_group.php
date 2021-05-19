@@ -3,6 +3,7 @@
 namespace Imageshare\Models;
 
 use Imageshare\Logger;
+use Imageshare\DB;
 
 class ResourceFileGroup {
 
@@ -278,10 +279,12 @@ class ResourceFileGroup {
 
     public static function remove_resource_file_from_all_containing_groups_not_in($resource_file_id, $group_ids) {
         $groups = self::containing_resource_file($resource_file_id);
+
         foreach ($groups as $group) {
             if (in_array($group->id, $group_ids)) {
                 continue;
             }
+
             $group->remove_resource_file($resource_file_id);
         }
     }
@@ -297,13 +300,19 @@ class ResourceFileGroup {
         Logger::log("Removing resource file {$resource_file_id} from group {$this->id}");
 
         delete_post_meta($this->id, 'file_id', $resource_file_id);
+
+        DB::remove_resource_file_from_group($this->id, $resource_file_id);
+
         $other_resource_file_ids = array_filter($this->get_file_ids(), function ($id) use ($resource_file_id) {
             return $id != $resource_file_id;
         });
 
         update_field('files', $other_resource_file_ids, $this->id);
+
         $this->file_ids = $other_resource_file_ids;
+
         unset($this->_files);
+
         wpfts_post_reindex($this->id);
     }
 

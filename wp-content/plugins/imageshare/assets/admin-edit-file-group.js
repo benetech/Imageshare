@@ -15,7 +15,8 @@ window.addEventListener('load', () => {
                 const parent = field__parentResource.val();
                 // we cannot send arbitrary parameters. These get filtered out.
                 // abuse the search parameter to send the parent resource along.
-                data['s'] = parent;
+
+                data['s'] = 'parent_resource_id:' + parent;
             }
 
             return data;

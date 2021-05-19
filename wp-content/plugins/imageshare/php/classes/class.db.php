@@ -150,4 +150,15 @@ class DB {
 
         $wpdb->delete($gfjt, ['resource_file_post_id' => $resource_file_id], ['%d']);
     }
+
+    public static function remove_resource_file_from_group($file_group_id, $resource_file_id) {
+        global $wpdb;
+
+        DB::setup();
+
+        $gfjt = IMAGESHARE_GROUP_RESOURCE_FILE_JOIN_TABLE_NAME;
+
+        $wpdb->delete($gfjt, ['group_post_id' => $file_group_id, 'resource_file_post_id' => $resource_file_id], ['%d', '%d']);
+    }
+
 }
