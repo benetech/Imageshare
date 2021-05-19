@@ -6,6 +6,10 @@ window.addEventListener('load', () => {
     const field__files = acf.getField(imageshare_acf_fields['files']);
 
     acf.addFilter('relationship_ajax_data', (data, element) => {
+        if(element === field__files && data['s'] && data['s'].length) {
+            return data;
+        }
+
         if (element === field__files) {
             const isDefault = !!field__isDefault.val();
 
