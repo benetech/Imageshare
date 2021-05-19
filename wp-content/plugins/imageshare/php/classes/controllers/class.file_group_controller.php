@@ -21,10 +21,12 @@ class FileGroupController {
         $is_default_field_key = $acf->get_group_field(ResourceFileGroup::type, 'is_default')->key;
         $parent_resource_field_key = $acf->get_group_field(ResourceFileGroup::type, 'parent_resource')->key;
         $files_field_key = $acf->get_group_field(ResourceFileGroup::type, 'files')->key;
+        $order_field_key = $acf->get_group_field(ResourceFileGroup::type, 'order')->key;
 
         $is_default = $post['acf'][$is_default_field_key];
         $parent_resource_id = $post['acf'][$parent_resource_field_key];
         $files = $post['acf'][$files_field_key];
+        $order = $post['acf'][$order_field_key];
 
         // remove any pre-existing relationship for resource and resource_file with this group
         DB::remove_group_entries($post_id);
@@ -34,6 +36,8 @@ class FileGroupController {
         foreach ($files as $file_id) {
             DB::add_group_resource_file_relationship($post_id, $file_id);
         }
+
+        Resource::by_id($parent_resource_id)->reorder_groups($post_id, $order);
     }
 
     public static function delete_post($post_id) {
@@ -92,6 +96,10 @@ class FileGroupController {
     }
 
     public static function remove_files_from_containing_file_groups($post, $file_ids) {
+        if (!is_array($file_ids)) {
+            return;
+        }
+
         foreach ($file_ids as $file_id) {
             ResourceFileGroup::remove_resource_file_from_all_containing_groups_not_in($file_id, [$post['post_ID']]);
         }

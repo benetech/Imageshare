@@ -567,4 +567,62 @@ class Resource {
             return $resource_file->get_accommodations();
         }, $this->published_files());
     }
+
+    public function reorder_groups($changed_group_id, $new_order) {
+        $groups = $this->groups();
+
+        foreach ($groups as $group) {
+            if ($group->is_default_for_parent()) {
+                continue;
+            }
+
+            if ($group->id === $changed_group_id) {
+                continue;
+            }
+
+            if ($group->order >= $new_order) {
+                // bump the order where we inserted
+                Logger::log("Updating group {$group->id}, order {$group->order} +1");
+                update_post_meta($group->id, 'order', $group->order + 1);
+                $group->order = $group->order + 1;
+            }
+        }
+
+        // remove any spacing in the ordering
+
+        $last_index = 0;
+
+        // sort first
+        usort($groups, function ($a, $b) {
+            return $a->order === $b->order
+                ? 0
+                : $a->order < $b->order ? -1 : 1
+            ;
+        });
+
+        foreach ($groups as $group) {
+            $next_index = $last_index+1;
+
+            if ($group->is_default_for_parent()) {
+                continue;
+            }
+
+            if ($group->id === $changed_group_id) {
+                $group->order = $new_order;
+            }
+
+            $order = intval($group->order);
+
+            if ($order === $next_index) {
+                $last_index = $next_index;
+                continue;
+            }
+
+            Logger::log(sprintf("Updating group %d, from order %d to %d", $group->id, $group->order, $next_index));
+            update_post_meta($group->id, 'order', $next_index);
+            $group->order = $next_index;
+
+            $last_index = $next_index;
+        }
+    }
 }

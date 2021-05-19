@@ -62,6 +62,7 @@ class ResourceFileGroup {
         $columns['size'] = self::i18n('Size');
         $columns['parent'] = self::i18n('Resource');
         $columns['is_default'] = self::i18n('Default for parent resource');
+        $columns['order'] = self::i18n('Display order');
         return $columns;
     }
 
@@ -92,6 +93,10 @@ class ResourceFileGroup {
 
             case 'is_default':
                 echo (bool) $post->is_default_for_parent() ? self::i18n('Yes') : self::i18n('No');
+                break;
+
+            case 'order':
+                echo $post->is_default_for_parent() ? 0 : $post->order ?? 1;
                 break;
         }
     }
