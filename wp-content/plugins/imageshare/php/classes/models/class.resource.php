@@ -373,15 +373,11 @@ class Resource {
             $this->description   = get_post_meta($this->post_id, 'description', true);
             $this->source        = get_post_meta($this->post_id, 'source', true);
 
-            // TODO the ?: [] guard can go eventually
-            //$this->group_ids     = get_post_meta($this->post_id, 'groups', true) ?: [];
-
             $this->download_uri  = get_post_meta($this->post_id, 'download_uri', true);
             $this->source_uri    = get_post_meta($this->post_id, 'source_uri', true);
             $this->subject       = Model::get_meta_term_name($this->post_id, 'subject', 'subjects', true);
             $this->tags          = $this->get_tags();
 
-            //$this->default_file_group_id = get_post_meta($this->post_id, 'default_file_group', true);
 
             $this->subject_term_id = get_post_meta($this->post_id, 'subject', true);
 
@@ -418,6 +414,14 @@ class Resource {
 
         $rest = array_filter($groups, function ($group) {
             return !$group->is_default_for_parent();
+        });
+
+        usort($rest, function ($a, $b) {
+            if ($a->order === $b->order) {
+                return 0;
+            }
+
+            return ($a->order < $b->order) ? -1 : 1;
         });
 
         return array_merge($default, $rest);

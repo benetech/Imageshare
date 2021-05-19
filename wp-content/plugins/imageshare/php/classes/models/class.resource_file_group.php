@@ -215,9 +215,10 @@ class ResourceFileGroup {
 
             $this->parent_resource = get_post_meta($this->post_id, 'parent_resource', true);
             $this->is_default = get_post_meta($this->post_id, 'is_default', true);
+            $this->order = get_post_meta($this->post_id, 'order', true) ?? 1;
 
             $this->file_ids = $this->get_file_ids();
-//            $this->parent = $this->get_parent();
+
 
             return $this->id;
         }

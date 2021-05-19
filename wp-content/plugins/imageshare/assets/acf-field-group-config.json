@@ -218,6 +218,27 @@
                 "min": "",
                 "max": "",
                 "return_format": "id"
+            },
+            {
+                "key": "field_60a4ec8d77f8d",
+                "label": "Display order",
+                "name": "order",
+                "type": "number",
+                "instructions": "The display order of this group in the list of groups. From low-to-high. [0, 1, 2], 0 = first, 2 = last.",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "default_value": 1,
+                "placeholder": "",
+                "prepend": "",
+                "append": "",
+                "min": 1,
+                "max": "",
+                "step": 1
             }
         ],
         "location": [
@@ -947,3 +968,4 @@
         "description": "JSON import validation settings"
     }
 ]
+
