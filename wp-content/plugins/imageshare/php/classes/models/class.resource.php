@@ -444,11 +444,9 @@ class Resource {
             return $this->_files;
         }
 
-        $ids = DB::get_resource_file_ids($this->id);
-
-        return $this->_files = array_map(function ($id) {
-            return ResourceFile::by_id($id);
-        }, $ids);
+        return array_merge(Model::flatten(array_map(function ($group) {
+            return $group->files();
+        }, $this->published_groups())));
     }
 
     public function groups() {
@@ -459,8 +457,6 @@ class Resource {
         return $this->_groups = array_map(function ($id) {
             return ResourceFileGroup::by_id($id);
         }, DB::get_resource_group_ids($this->id));
-
-        return $this->_groups = ResourceFileGroup::with_parent_resource($this->id);
     }
 
     public static function get_default_group_id($resource_id) {
