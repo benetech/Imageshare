@@ -7,16 +7,28 @@ window.addEventListener('load', () => {
 
     acf.addFilter('relationship_ajax_data', (data, element) => {
         if (element === field__files) {
-            const parent = field__parentResource.val();
-            // we cannot send arbitrary parameters. These get filtered out.
-            // abuse the search parameter to send the parent resource along.
-            data['s'] = parent;
+            const isDefault = !!field__isDefault.val();
+
+            if (!isDefault) {
+                // only filter parent resource default group files when we're not
+                // setting a 
+                const parent = field__parentResource.val();
+                // we cannot send arbitrary parameters. These get filtered out.
+                // abuse the search parameter to send the parent resource along.
+                data['s'] = parent;
+            }
+
             return data;
         }
     });
 
     field__parentResource.on('change', function () {
         // when the parent is changed, fetch the files again.
+        field__files.fetch();
+    });
+
+    field__isDefault.on('change', function () {
+        // when default state is toggled, fetch the files again
         field__files.fetch();
     });
 });

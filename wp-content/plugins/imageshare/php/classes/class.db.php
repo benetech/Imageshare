@@ -107,6 +107,17 @@ class DB {
         return $wpdb->get_var($wpdb->prepare($sql, $resource_id));
     }
 
+    public static function get_resource_group_file_ids($resource_group_id) {
+        global $wpdb;
+
+        DB::setup();
+
+        $gfjt = IMAGESHARE_GROUP_RESOURCE_FILE_JOIN_TABLE_NAME;
+
+        $sql = "select gfjt.resource_file_post_id from {$gfjt} gfjt where gfjt.group_post_id = %d";
+
+        return $wpdb->get_col($wpdb->prepare($sql, $resource_group_id));
+    }
 
     public static function remove_resource_entries($resource_id) {
         global $wpdb;

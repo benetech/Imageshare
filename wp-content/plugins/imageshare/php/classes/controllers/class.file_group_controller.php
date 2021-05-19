@@ -122,12 +122,18 @@ class FileGroupController {
     public static function filter_relationship_query($args, $field, $post_id) {
         if (isset($args['s'])) {
             // the 's' parameter is the parent resource
+            // this is done because ACF ajax handling strips any custom parameters
+            // and does not supply a filter hook at this level
 
             $parent = Resource::by_id(intval($args['s']));
 
             if (!is_null($parent)) {
-                // only return ids associated with the parent resource that was selected
-                $args['post__in'] = DB::get_resource_file_ids($parent->id);
+                $default_group_id = Resource::get_default_group_id($parent->id);
+
+                if (!is_null($default_group_id)) {
+                    // only return ids associated with the parent resource default group that was selected
+                    $args['post__in'] = DB::get_resource_group_file_ids($default_group_id);
+                }
             }
 
             unset($args['s']);
