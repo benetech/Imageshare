@@ -17,7 +17,7 @@ class Resource {
 
     const type = 'btis_resource';
 
-    const KEYWORD_MIN_LENGTH = 3;
+    const KEYWORD_MIN_LENGTH = 4;
     const KEYWORD_MAX_LENGTH = 20;
 
     public static function get_keywords() {
