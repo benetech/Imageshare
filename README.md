@@ -189,6 +189,26 @@ Available details are documented below; specific records can be queried via thei
 }
 ```
 
+### Keywords: `/json-api/keywords`
+```
+{
+    "data": [
+        "spanish",
+        "boulder",
+        "seaside",
+        "singing",
+        "auroras",
+        "burning",
+        "regions",
+        "control",
+        "mercury",
+        "keeping",
+        "eyeball",
+        "printed"
+    ]
+}
+```
+
 ### Collections: `/json-api/collections`
 
 ```json

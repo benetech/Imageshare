@@ -12,6 +12,7 @@ return array(
     'Imageshare\\Controllers\\JSONAPI\\Base' => $baseDir . '/php/classes/controllers/json_api/class.base.php',
     'Imageshare\\Controllers\\JSONAPI\\Collections' => $baseDir . '/php/classes/controllers/json_api/class.collections.php',
     'Imageshare\\Controllers\\JSONAPI\\Formats' => $baseDir . '/php/classes/controllers/json_api/class.formats.php',
+    'Imageshare\\Controllers\\JSONAPI\\Keywords' => $baseDir . '/php/classes/controllers/json_api/class.keywords.php',
     'Imageshare\\Controllers\\JSONAPI\\Resources' => $baseDir . '/php/classes/controllers/json_api/class.resources.php',
     'Imageshare\\Controllers\\JSONAPI\\Sources' => $baseDir . '/php/classes/controllers/json_api/class.sources.php',
     'Imageshare\\Controllers\\JSONAPI\\Subjects' => $baseDir . '/php/classes/controllers/json_api/class.subjects.php',

@@ -17,6 +17,53 @@ class Resource {
 
     const type = 'btis_resource';
 
+    const KEYWORD_MIN_LENGTH = 3;
+    const KEYWORD_MAX_LENGTH = 20;
+
+    public static function get_keywords() {
+        $titles = DB::get_resource_titles();
+
+        $map_distinct = function ($list, $item) {
+            $all_words = preg_split('/\s+/', $item);
+            $valid_words = array_filter($all_words, function ($word) {
+                $l = mb_strlen($word, 'utf8');
+                return
+                    $l >= self::KEYWORD_MIN_LENGTH &&
+                    $l <= self::KEYWORD_MAX_LENGTH &&
+                    preg_match('/^\w+$/', $word) === 1
+                ;
+            });
+
+            foreach ($valid_words as $word) {
+                $list[strtolower($word)] = true;
+            }
+
+            return $list;
+        };
+
+        $map = array_reduce($titles, $map_distinct, []);
+
+        $words = array_keys($map);
+
+        usort($words, function ($a, $b) {
+            $alen = mb_strlen($a, 'utf8');
+            $blen = mb_strlen($b, 'utf8');
+
+            if ($alen === $blen) {
+                $cmp = strcmp($a, $b);
+                if ($cmp === 0) {
+                    return 0;
+                }
+
+                return $cmp ? -1 : 1;
+            }
+
+            return $alen < $blen ? -1 : 1;
+        });
+
+        return $words;
+    }
+
     public static function available_subjects($hide_empty = false) {
         return array_map(function($terms) {
             return array_reverse($terms);

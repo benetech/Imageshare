@@ -9,6 +9,7 @@
     use Imageshare\Controllers\JSONAPI\Collections as CollectionsController;
     use Imageshare\Controllers\JSONAPI\Resources as ResourcesController;
     use Imageshare\Controllers\JSONAPI\Tags as TagsController;
+    use Imageshare\Controllers\JSONAPI\Keywords as KeywordsController;
 
     $controller = get_query_var('btis_api');
 
@@ -66,4 +67,7 @@
             TagsController::render();
             break;
 
+        case 'keywords':
+            KeywordsController::render();
+            break;
     }

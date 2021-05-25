@@ -63,6 +63,7 @@ class ComposerStaticInit4a8275ef4761dc6a4dc3f8913e3bc09f
         'Imageshare\\Controllers\\JSONAPI\\Base' => __DIR__ . '/../..' . '/php/classes/controllers/json_api/class.base.php',
         'Imageshare\\Controllers\\JSONAPI\\Collections' => __DIR__ . '/../..' . '/php/classes/controllers/json_api/class.collections.php',
         'Imageshare\\Controllers\\JSONAPI\\Formats' => __DIR__ . '/../..' . '/php/classes/controllers/json_api/class.formats.php',
+        'Imageshare\\Controllers\\JSONAPI\\Keywords' => __DIR__ . '/../..' . '/php/classes/controllers/json_api/class.keywords.php',
         'Imageshare\\Controllers\\JSONAPI\\Resources' => __DIR__ . '/../..' . '/php/classes/controllers/json_api/class.resources.php',
         'Imageshare\\Controllers\\JSONAPI\\Sources' => __DIR__ . '/../..' . '/php/classes/controllers/json_api/class.sources.php',
         'Imageshare\\Controllers\\JSONAPI\\Subjects' => __DIR__ . '/../..' . '/php/classes/controllers/json_api/class.subjects.php',

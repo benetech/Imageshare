@@ -13,7 +13,8 @@ class JSONAPI {
         'sources',
         'collections',
         'resources',
-        'tags'
+        'tags',
+        'keywords'
     ];
 
     public function __construct() {

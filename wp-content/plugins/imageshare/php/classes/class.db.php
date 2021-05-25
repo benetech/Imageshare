@@ -161,4 +161,11 @@ class DB {
         $wpdb->delete($gfjt, ['group_post_id' => $file_group_id, 'resource_file_post_id' => $resource_file_id], ['%d', '%d']);
     }
 
+    public static function get_resource_titles() {
+        global $wpdb;
+
+        $sql = "select post_title from wp_posts where post_status = 'publish' and post_type = 'btis_resource'";
+
+        return $wpdb->get_col($sql);
+    }
 }
