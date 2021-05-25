@@ -30,7 +30,7 @@ class Resource {
                 return
                     $l >= self::KEYWORD_MIN_LENGTH &&
                     $l <= self::KEYWORD_MAX_LENGTH &&
-                    preg_match('/^\w+$/', $word) === 1
+                    preg_match('/^[\w-]+$/', $word) === 1
                 ;
             });
 
