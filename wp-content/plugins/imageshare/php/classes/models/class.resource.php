@@ -43,7 +43,13 @@ class Resource {
 
         $map = array_reduce($titles, $map_distinct, []);
 
-        $words = array_keys($map);
+        $tags = array_map('strtolower', get_tags([
+            'taxonomy' => ['subjects'],
+            'hide_empty' => true,
+            'fields' => 'names'
+        ]));
+
+        $words = array_merge(array_keys($map), $tags);
 
         usort($words, function ($a, $b) {
             $alen = mb_strlen($a, 'utf8');

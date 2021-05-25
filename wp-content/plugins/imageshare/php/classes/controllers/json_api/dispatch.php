@@ -67,7 +67,7 @@
             TagsController::render();
             break;
 
-        case 'keywords':
+        case 'terms':
             KeywordsController::render();
             break;
     }

@@ -14,7 +14,7 @@ class JSONAPI {
         'collections',
         'resources',
         'tags',
-        'keywords'
+        'terms'
     ];
 
     public function __construct() {
