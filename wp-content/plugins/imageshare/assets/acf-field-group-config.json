@@ -224,9 +224,17 @@
                 "label": "Display order",
                 "name": "order",
                 "type": "number",
-                "instructions": "The display order of this group in the list of groups. From low-to-high. [0, 1, 2], 0 = first, 2 = last.",
+                "instructions": "The display order of this group in the list of groups. From low-to-high. [1, 2, 3], 1 = first, 2 = last.",
                 "required": 0,
-                "conditional_logic": 0,
+                "conditional_logic": [
+                    [
+                        {
+                            "field": "field_607c28815f43e",
+                            "operator": "!=",
+                            "value": "1"
+                        }
+                    ]
+                ],
                 "wrapper": {
                     "width": "",
                     "class": "",
@@ -968,4 +976,3 @@
         "description": "JSON import validation settings"
     }
 ]
-
