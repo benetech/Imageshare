@@ -40,8 +40,35 @@ class FileGroupController {
         Resource::by_id($parent_resource_id)->reorder_groups($post_id, $order);
     }
 
-    public static function delete_post($post_id) {
+    public static function before_delete_post($post_id) {
+        $group = ResourceFileGroup::by_id($post_id);
+
+        // if the group is the default group for its parent, any files it contains become orphaned
+        // otherwise, its files are migrated to the default group for this group's parent resource
+        // if there is no default group for the resource, the files become orphaned
+
+        // remove the entries no matter what
         DB::remove_group_entries($post_id);
+
+        if (!$group->is_default_for_parent()) {
+            // get the files
+            $file_ids = $group->get_file_ids();
+            // get the parent resource for this group
+            $resource = $group->get_parent_resource();
+            // get the default group for the resource
+            $default_group_id = Resource::get_default_group_id($resource->id);
+
+            // no default group id? Log a warning and return early
+            if (is_null($default_group_id)) {
+                Logger::log("File Group {$post_id} has no default group!");
+                return;
+            }
+
+            Logger::log("Moving files of {$post_id} to {$default_group_id}");
+            $default_group = ResourceFileGroup::by_id($default_group_id);
+            // move the files to the default group
+            $default_group->add_file_ids($file_ids);
+        }
     }
 
     public static function on_acf_validate_save_post() {

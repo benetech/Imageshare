@@ -218,6 +218,7 @@ class Plugin {
         add_filter('wp_insert_post_data', [$this, 'on_insert_post_data'], 2, 10);
         add_filter('save_post', [$this, 'on_save_post'], 3, 10);
         add_filter('delete_post', [$this, 'on_delete_post'], 1, 10);
+        add_filter('before_delete_post', [$this, 'on_before_delete_post'], 1, 10);
         add_filter('edited_term', [$this, 'on_edited_term',], 3, 10);
         add_action('wp', [$this, 'on_wp']);
         add_action('pre_get_posts', [$this, 'patch_admin_search']);
@@ -304,6 +305,17 @@ class Plugin {
         }
     }
 
+    public function on_before_delete_post($post_id) {
+        $post_type = get_post_type($post_id);
+
+        switch ($post_type) {
+            case ResourceFileGroup::type:
+                FileGroupController::before_delete_post($post_id);
+                break;
+        }
+    }
+
+
     public function on_delete_post($post_id) {
         $post_type = get_post_type($post_id);
 
@@ -313,9 +325,6 @@ class Plugin {
                 break;
             case ResourceFile::type:
                 ResourceFileController::delete_post($post_id);
-                break;
-            case ResourceFileGroup::type:
-                FileGroupController::delete_post($post_id);
                 break;
         }
     }

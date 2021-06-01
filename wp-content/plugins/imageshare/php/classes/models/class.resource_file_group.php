@@ -137,8 +137,6 @@ class ResourceFileGroup {
         }
 
         return Resource::by_id($this->parent_resource);
-//        $resources = Resource::containing_file_group($this->post_id);
-//        return count($resources) === 1 ? $resources[0] : null;
     }
 
     public static function remove_parent_where($resource_id) {
@@ -231,12 +229,22 @@ class ResourceFileGroup {
         return null;
     }
 
-    private function get_file_ids() {
+    public function get_file_ids() {
         $file_ids = get_post_meta($this->post_id, 'files', true);
         if (is_array($file_ids)) {
             return $file_ids;
         }
         return [];
+    }
+
+    public function add_file_ids($file_ids) {
+        $merged = array_unique(array_merge($file_ids, $this->file_ids));
+
+        update_post_meta($this->id, 'files', $merged);
+
+        foreach ($file_ids as $file_id) {
+            DB::add_group_resource_file_relationship($this->id, $file_id);
+        }
     }
 
     public function published_files() {
