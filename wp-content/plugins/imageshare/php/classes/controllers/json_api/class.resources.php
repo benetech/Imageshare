@@ -60,7 +60,6 @@ class Resources extends Base {
             ],
             'data' => count($data) > 1 ? $data : $data[0],
         ];
-
     }
 
     public static function add_subject($resource) {
@@ -291,7 +290,7 @@ class Resources extends Base {
     }
 
     public static function is_valid_key($key) {
-        return in_array($key, ['query', 'type', 'format', 'source', 'page', 'subject']);
+        return in_array($key, ['query', 'type', 'format', 'source', 'page', 'subject', 'acc']);
     }
 
     public static function search($args) {
