@@ -103,7 +103,7 @@ class Taxonomy extends Base {
         $term_ids = get_terms([
             'taxonomy' => static::taxonomy,
             'orderby' => 'id',
-            'hide_empty' => false,
+            'hide_empty' => true,
             'fields' => 'ids'
         ]);
 
